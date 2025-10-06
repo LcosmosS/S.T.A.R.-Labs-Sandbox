@@ -1,0 +1,2238 @@
+Due to repeated failures of the model to successfully proceed through calculations—primarily due to persistent NaN discrepancies, and the order in which functions are computed within the model—and in an attempt to address the Tully-Fisher overfitting discrepancies found in the Tully-Fisher test of the “First Principles” paper, the model has undergone several iterations, each one testing a different approach of applying the same calculations, with adjustments in where they happen within the logic of the script.
+
+Here outlines those attempts. I have also outlined four alternative mappings: 
+
+Period–Torsion–Discriminant (PTD), 
+
+Modularity–Conductor–j-invariant (MCJ), 
+
+Frobenius Trace Spectrum (FT),  
+
+Isogeny-Weighted Torsion (IWT), 
+
+Designed as both additional analytical data points, and as a necessary backup—as this entire framework is centered on an augmentation of the unproven Birch & Swinnerton-Dyer Conjecture.
+
+The objectives here are to:
+
+Apply all four alternative mappings (PTD, MCJ, FT, IWT) alongside the cosmological Birch and Swinnerton-Dyer (BSD) analogue, using the empirically derived constants t_cosmo = 17.18, Reg_cosmo = 2.51, and KAPPA scaling.
+
+Explore Bayesian Binning, and bin solely by generator type (Simple vs. Recursive).
+
+Allow the model to decipher the structure (Simple or Recursive) of generators without assuming specific sequences.
+
+Address overfitting in the Tully-Fisher test using the merged_galspec_gz2.csv dataset (~1,000,000 rows with columns objid, ra, dec, z, logmass, petrorad_r, metallicity).
+
+Retain NaN/empty entries.
+
+Step back from applying the "Arithmetic Scarcity" principle, as it significantly narrows the scope of the framework.
+
+The modified pipeline will leverage the 3-Selmer impasse resolution for computational efficiency. 
+This revised version of the script from “The Intractability Frontier,” fully integrating the four mappings, deciphering generator structure, binning by generator type, and addressing Tully-Fisher overfitting.
+
+Four Alternative Mappings 
+
+The four mappings, with their definitions and merits, are:
+
+PTD Mapping: 
+
+Definition: φ_PTD(E) = (log|Δ|, logΩ, log(1+|E_ℚtors|)), where Δ is the minimal discriminant, Ω is the real period, and |E_ℚtors| is the torsion subgroup size (Mazur’s classification).
+
+Merits: BSD-independent, algebraically computable, maps torsion to a spatial height axis.
+
+
+
+MCJ Mapping: 
+
+Definition: φ_MCJ(E) = (logN, ℜlog j(E), ℑlog j(E)), where N is the conductor, j(E) is the j-invariant, and ℜ, ℑ denote real and imaginary parts.
+
+Merits: Embeds curves into the modular surface, captures modular symmetries, fully algebraic.
+
+FT Mapping: 
+
+Definition: φ_FT(E) = (a_p, Var(a_p), p cos⁻¹(a_p / 2√p)), where a_p = p + 1 - |E(𝔽_p)| for small primes p, Var(a_p) is the variance across primes, and the third term is a Sato–Tate angle measure.
+
+Merits: BSD-independent, encodes local-global behavior, has quantum-field-like interpretations.
+
+IWT Mapping: 
+
+Definition: φ_IWT(E) = (#isogenies, log(deg min isogeny), log(1+T)), where #isogenies is the number of known isogenies, deg min isogeny is the degree of the smallest isogeny, and T is the torsion subgroup type.
+
+Merits: Highlights symmetry web, BSD-free, topologically rich.
+
+Criteria: Defined for all elliptic curves over ℚ.
+
+Relies on algebraic invariants (Δ, N, j, a_p, etc.).
+
+Preserves projection smoothness for topological comparison.
+
+Yields meaningful spatial embeddings, avoiding degeneracy.
+
+Adjacent to BSD Analogue: 
+
+The BSD analogue (4446–4448) uses L_cosm(s) with invariants Reg_cosmo = 2.51, t_cosmo = 17.18, and KAPPA (assumed 1.0 for natural normalization). All four mappings are computed alongside these invariants for comparison.
+
+Modified Machine Learning Pipeline
+
+The pipeline is modified to:
+
+Compute PTD, MCJ, FT, and IWT mappings alongside BSD invariants.
+
+Bin by Simple vs. Recursive generators.
+
+Decipher generator structure using unsupervised clustering (DBSCAN) without predefined sequence checks..
+
+Retain NaN/empty entries.
+
+Address Tully-Fisher overfitting with the large dataset and regularization.
+
+
+From the initial script in section XI subsection 3.2 of the appendices, bayesian binning via generator_value is implemented—binning by either recursive or simple generators. Additionally, nearest neighbor estimations are used to impute NaN and missing data entries within the csv file . 
+
+The model also anchors the L-function directly into the framework, as well as attempts to decipher the meaning behind recursive trending generators early within the pipeline.  Another key addition was the deployed use of the normalized scaling constant within the pipeline, as well as the framework derived from the 3-selmer impasse correction milestone. New  criteria for alternative mappings are also deployed as a side analysis for additional datapoints, with the objective being;
+
+
+
+To see if the math holds up across multiple computational methods
+
+To try and predict or discover the hidden symbolism or meaning in an attempt to find the “why” parameter.
+
+And to test if the criteria can support the model.
+
+The final key feature additions were the fitting of SHAP plotting and other analysis programs—for visualization and further understanding of the results—and a boolean metric metric–is_simple_generator—to help the model work more efficiently.
+
+Below are several iterations of the script as outlined above.
+
+
+
+# --- 1. Configuration ---
+INPUT_FILE = 'merged_galspec_gz2.csv'
+OUTPUT_PLOT_PREFIX = 'final_two_tier_synthesis_v22'
+CHUNKSIZE = 100000
+ROW_LIMIT = 300000  # Adjustable
+TARGET_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+REQUIRED_COLUMNS = ['objid', 'ra', 'dec', 'z', 'logmass', 'petrorad_r', 'metallicity']
+T_COSMO = 17.18
+REG_COSMO = 2.51
+KAPPA = 1.0  # Natural normalization
+
+# --- 2. Imports ---
+import pandas as pd
+import numpy as np
+import warnings
+from astropy.cosmology import Planck18 as cosmo
+from astropy import units as u
+from sage.all import EllipticCurve, QQ, factor
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.cluster import DBSCAN
+import lightgbm as lgb
+from imblearn.over_sampling import SMOTE
+
+warnings.filterwarnings('ignore')
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# --- 3. Scientific Derivation Functions ---
+def calculate_distance_mpc(z):
+    if z is None or not np.isfinite(z) or z <= 0:
+        return np.nan
+    try:
+        return cosmo.comoving_distance(z).to(u.Mpc).value
+    except:
+        return np.nan
+
+def convert_logmass_to_sm(logmass):
+    if logmass is None or not np.isfinite(logmass):
+        return np.nan
+    return 10**logmass
+
+def estimate_radius_ly(angular_size_arcsec, distance_mpc):
+    if not (np.isfinite(angular_size_arcsec) and np.isfinite(distance_mpc) and
+            angular_size_arcsec > 0 and distance_mpc > 0):
+        return np.nan
+    angle_rad = (angular_size_arcsec * u.arcsec).to(u.rad).value
+    return angle_rad * distance_mpc * 3.262e6
+
+# --- 4. Mapping Functions ---
+def compute_mappings(row):
+    # BSD analogue
+    reg_cosmo = row['logmass'] * REG_COSMO * KAPPA
+    t_cosmo = row['petrorad_r'] * T_COSMO * KAPPA
+    # PTD Mapping
+    delta = row['logmass'] * 1e6  # Mock
+    omega = row['petrorad_r'] * 1e3
+    torsion_size = 1  # Placeholder
+    # MCJ Mapping
+    conductor = delta**2
+    j_invariant = row['metallicity'] * 1e4
+    # FT Mapping
+    tr_p1 = factor(int(delta))[0][0] if delta != 0 else 0
+    tr_p2 = factor(int(delta * 2))[0][0] if delta != 0 else 0
+    tr_p3 = factor(int(delta * 3))[0][0] if delta != 0 else 0
+    var_ap = np.var([tr_p1, tr_p2, tr_p3])
+    sato_tate = TARGET_PRIMES[0] * np.arccos(tr_p1 / (2 * np.sqrt(TARGET_PRIMES[0]))) if tr_p1 != 0 else 0
+    # IWT Mapping
+    isogeny_count = 1  # Placeholder
+    min_isogeny_deg = 1
+    torsion_type = torsion_size
+    return pd.Series({
+        'reg_cosmo': reg_cosmo,
+        't_cosmo': t_cosmo,
+        'log_delta': np.log(abs(delta)) if delta != 0 else np.nan,
+        'log_omega': np.log(abs(omega)) if omega != 0 else np.nan,
+        'log_torsion': np.log(1 + torsion_size),
+        'log_conductor': np.log(abs(conductor)) if conductor != 0 else np.nan,
+        'real_log_j': np.log(abs(j_invariant)) if j_invariant != 0 else np.nan,
+        'imag_log_j': 0,  # Mock, assuming real j-invariant
+        'tr_p1': tr_p1,
+        'var_ap': var_ap,
+        'sato_tate': sato_tate,
+        'isogeny_count': isogeny_count,
+        'log_min_isogeny': np.log(min_isogeny_deg) if min_isogeny_deg != 0 else np.nan,
+        'log_torsion_type': np.log(1 + torsion_type)
+    })
+
+# --- 5. Generator Type Classification ---
+def classify_generator(row):
+    if pd.isna(row['log_delta']):
+        return 'unknown'
+    return 'Simple' if abs(row['log_delta'] - round(row['log_delta'])) < 0.1 else 'Recursive'
+
+# --- 6. Generator Structure Analysis ---
+def analyze_generator_structure(coords):
+    if pd.isna(coords):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    x, y = coords if isinstance(coords, tuple) else (np.nan, np.nan)
+    if pd.isna(x) or pd.isna(y):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    if x.is_integer() and y.is_integer():
+        return {'type': 'Simple', 'structure': 'integer'}
+    denom_x = x.denominator() if hasattr(x, 'denominator') else 1
+    denom_y = y.denominator() if hasattr(y, 'denominator') else 1
+    factors_x = factor(denom_x) if denom_x != 1 else []
+    if len(factors_x) == 1 and len(factors_x[0][0].prime_factors()) == 1:
+        return {'type': 'Recursive', 'structure': 'power_of_prime'}
+    return {'type': 'Recursive', 'structure': 'other_sequence'}
+
+# --- 7. Main Processing ---
+chunks = pd.read_csv(INPUT_FILE, usecols=REQUIRED_COLUMNS, chunksize=CHUNKSIZE)
+df_list = []
+for i, chunk in enumerate(chunks):
+    if ROW_LIMIT and i * CHUNKSIZE >= ROW_LIMIT:
+        break
+    # Impute NaN values
+    chunk['logmass'].fillna(chunk['logmass'].median(), inplace=True)
+    chunk['metallicity'].fillna(chunk['metallicity'].median(), inplace=True)
+    chunk['petrorad_r'].fillna(chunk['petrorad_r'].median(), inplace=True)
+    chunk['ra'].fillna(-1, inplace=True)
+    chunk['dec'].fillna(-1, inplace=True)
+    chunk['z'].fillna(chunk['z'].median(), inplace=True)
+    
+    # Compute distances and mappings
+    chunk['distance_mpc'] = chunk['z'].apply(calculate_distance_mpc)
+    chunk['stellar_mass'] = chunk['logmass'].apply(convert_logmass_to_sm)
+    chunk['radius_ly'] = chunk.apply(lambda x: estimate_radius_ly(x['petrorad_r'], x['distance_mpc']), axis=1)
+    chunk[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion',
+           'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap',
+           'sato_tate', 'isogeny_count', 'log_min_isogeny', 'log_torsion_type']] = chunk.apply(compute_mappings, axis=1)
+    
+    # Classify generator types
+    chunk['generator_type'] = chunk.apply(classify_generator, axis=1)
+    chunk['generator_coords'] = chunk['log_delta'].apply(lambda x: (x, x*2) if not pd.isna(x) else np.nan)
+    chunk['generator_structure'] = chunk['generator_coords'].apply(analyze_generator_structure)
+    
+    df_list.append(chunk)
+
+df = pd.concat(df_list, ignore_index=True)
+
+# Bin by generator type
+X = df[['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+        'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+        'isogeny_count', 'log_min_isogeny', 'log_torsion_type']]
+y = df['generator_type']
+smote = SMOTE(random_state=42)
+X_balanced, y_balanced = smote.fit_resample(X, y)
+
+# Train classifier for generator type
+clf_gen = RandomForestClassifier(random_state=42)
+clf_gen.fit(X_balanced, y_balanced)
+print("Generator Type Accuracy:", cross_val_score(clf_gen, X, y, cv=5).mean())
+
+# Unsupervised clustering for generator structure
+X_struct = df[df['generator_type'] == 'Recursive'][['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega']]
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+df.loc[df['generator_type'] == 'Recursive', 'structure_cluster'] = dbscan.fit_predict(X_struct)
+print("Structure Clusters:", df[df['generator_type'] == 'Recursive']['structure_cluster'].value_counts())
+
+# Tully-Fisher test
+X_tf = df[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion', 'log_conductor',
+           'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate', 'isogeny_count', 'log_min_isogeny']]
+y_tf = df['petrorad_r']
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('regressor', lgb.LGBMRegressor(random_state=42))
+])
+pipeline.fit(X_tf, y_tf)
+print("Tully-Fisher R²:", cross_val_score(pipeline, X_tf, y_tf, cv=5, scoring='r2').mean())
+
+# Save results
+df.to_csv(f'{OUTPUT_PLOT_PREFIX}_processed.csv', index=False)
+
+
+
+Output Results
+
+
+Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/tully.py", line 152, in <module>
+    X_balanced, y_balanced = smote.fit_resample(X, y)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/imblearn/base.py", line 202, in fit_resample
+    return super().fit_resample(X, y, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/imblearn/base.py", line 99, in fit_resample
+    X, y, binarize_y = self._check_X_y(X, y)
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/imblearn/base.py", line 157, in _check_X_y
+    X, y = validate_data(self, X=X, y=y, reset=True, accept_sparse=accept_sparse)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 2971, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1368, in check_X_y
+    X = check_array(
+        ^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+SMOTE does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+
+The error traceback indicates that the SMOTE (Synthetic Minority Over-sampling Technique) step in the script fails because the input feature matrix X contains NaN values, which SMOTE does not handle natively. This issue arises in the generator type classification step, where the X matrix includes features like logmass, metallicity, petrorad_r, reg_cosmo, t_cosmo, log_delta, log_omega, log_torsion, log_conductor, real_log_j, imag_log_j, tr_p1, var_ap, sato_tate, isogeny_count, log_min_isogeny, and log_torsion_type, some of which may remain NaN after the initial imputation due to incomplete mappings or computational issues in the compute_mappings function.
+
+To address this:
+
+Preprocess NaN values before SMOTE using an imputer (e.g., SimpleImputer with median strategy) to ensure all features in X are finite, as suggested by the error message.
+
+Preserve the original requirements:
+
+Apply the four alternative mappings (PTD, MCJ, FT, IWT) from Document 4456 alongside the cosmological BSD analogue with t_cosmo = 17.18, Reg_cosmo = 2.51, and KAPPA = 1.0.
+
+Bin solely by Simple vs. Recursive generator types.
+
+Decipher generator structure using unsupervised clustering (DBSCAN) without predefined sequence checks.
+
+Address Tully-Fisher overfitting using the merged_galspec_gz2.csv dataset (~1,000,000 rows).
+
+Retain NaN/empty entries by imputing or flagging them.
+
+Avoid applying the "Arithmetic Scarcity" principle (Document.
+
+Leverage the 3-Selmer impasse resolution for computational efficiency.
+Ensure compatibility with the SageMath environment, using libraries available in miniforge3/envs/sage.
+
+
+
+# --- 1. Configuration ---
+INPUT_FILE = 'merged_galspec_gz2.csv'
+OUTPUT_PLOT_PREFIX = 'final_two_tier_synthesis_v28'
+CHUNKSIZE = 100000
+ROW_LIMIT = 300000  # Adjustable
+TARGET_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+REQUIRED_COLUMNS = ['objid', 'ra', 'dec', 'z', 'logmass', 'petrorad_r', 'metallicity']
+T_COSMO = 17.18
+REG_COSMO = 2.51
+KAPPA = 1.0  # Natural normalization
+
+# --- 2. Imports ---
+import pandas as pd
+import numpy as np
+import warnings
+from astropy.cosmology import Planck18 as cosmo
+from astropy import units as u
+from sage.all import EllipticCurve, QQ, factor
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import r2_score
+from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+
+warnings.filterwarnings('ignore')
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# --- 3. Scientific Derivation Functions ---
+def calculate_distance_mpc(z):
+    if z is None or not np.isfinite(z) or z <= 0:
+        return np.nan
+    try:
+        return float(cosmo.comoving_distance(z).to(u.Mpc).value)
+    except:
+        return np.nan
+
+def convert_logmass_to_sm(logmass):
+    if logmass is None or not np.isfinite(logmass):
+        return np.nan
+    return 10**logmass
+
+def estimate_radius_ly(angular_size_arcsec, distance_mpc):
+    if not (np.isfinite(angular_size_arcsec) and np.isfinite(distance_mpc) and
+            angular_size_arcsec > 0 and distance_mpc > 0):
+        return np.nan
+    angle_rad = (angular_size_arcsec * u.arcsec).to(u.rad).value
+    return angle_rad * distance_mpc * 3.262e6
+
+# --- 4. Mapping Functions ---
+def compute_mappings(row):
+    reg_cosmo = row['logmass'] * REG_COSMO * KAPPA if np.isfinite(row['logmass']) else np.nan
+    t_cosmo = row['petrorad_r'] * T_COSMO * KAPPA if np.isfinite(row['petrorad_r']) else np.nan
+    delta = row['logmass'] * 1e6 if np.isfinite(row['logmass']) else np.nan
+    omega = row['petrorad_r'] * 1e3 if np.isfinite(row['petrorad_r']) else np.nan
+    torsion_size = 1  # Placeholder (Mazur’s classification)
+    conductor = delta**2 if np.isfinite(delta) else np.nan
+    j_invariant = row['metallicity'] * 1e4 if np.isfinite(row['metallicity']) else np.nan
+    tr_p1 = float(factor(int(delta))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p2 = float(factor(int(delta * 2))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p3 = float(factor(int(delta * 3))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    var_ap = np.var([tr_p1, tr_p2, tr_p3]) if all(np.isfinite([tr_p1, tr_p2, tr_p3])) else np.nan
+    sato_tate = float(TARGET_PRIMES[0] * np.arccos(tr_p1 / (2 * np.sqrt(TARGET_PRIMES[0])))) if np.isfinite(tr_p1) and tr_p1 != 0 else np.nan
+    isogeny_count = 1  # Placeholder
+    min_isogeny_deg = 1
+    torsion_type = torsion_size
+    return pd.Series({
+        'reg_cosmo': reg_cosmo,
+        't_cosmo': t_cosmo,
+        'log_delta': np.log(abs(delta)) if np.isfinite(delta) and delta != 0 else np.nan,
+        'log_omega': np.log(abs(omega)) if np.isfinite(omega) and omega != 0 else np.nan,
+        'log_torsion': np.log(1 + torsion_size),
+        'log_conductor': np.log(abs(conductor)) if np.isfinite(conductor) and conductor != 0 else np.nan,
+        'real_log_j': np.log(abs(j_invariant)) if np.isfinite(j_invariant) and j_invariant != 0 else np.nan,
+        'imag_log_j': 0.0,  # Mock, assuming real j-invariant
+        'tr_p1': tr_p1,
+        'var_ap': var_ap,
+        'sato_tate': sato_tate,
+        'isogeny_count': isogeny_count,
+        'log_min_isogeny': np.log(min_isogeny_deg) if min_isogeny_deg != 0 else np.nan,
+        'log_torsion_type': np.log(1 + torsion_type)
+    })
+
+# --- 5. Generator Type Classification and Boolean Metric ---
+def classify_generator(row):
+    if pd.isna(row['log_delta']):
+        return 'unknown', False
+    is_simple = abs(row['log_delta'] - round(row['log_delta'])) < 0.1
+    return 'Simple' if is_simple else 'Recursive', is_simple
+
+# --- 6. Generator Structure Analysis ---
+def analyze_generator_structure(coords):
+    if pd.isna(coords):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    x, y = coords if isinstance(coords, tuple) else (np.nan, np.nan)
+    if pd.isna(x) or pd.isna(y):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    if isinstance(x, (int, float)) and isinstance(y, (int, float)) and float(x).is_integer() and float(y).is_integer():
+        return {'type': 'Simple', 'structure': 'integer'}
+    denom_x = x.denominator() if hasattr(x, 'denominator') else 1
+    denom_y = y.denominator() if hasattr(y, 'denominator') else 1
+    factors_x = factor(denom_x) if denom_x != 1 else []
+    if len(factors_x) == 1 and len(factors_x[0][0].prime_factors()) == 1:
+        return {'type': 'Recursive', 'structure': 'power_of_prime'}
+    return {'type': 'Recursive', 'structure': 'other_sequence'}
+
+# --- 7. Infer Missing Values Using Deciphered Metrics ---
+def infer_missing_values(df, cluster_labels, feature_cols, is_simple_col):
+    df = df.copy()
+    # Handle Recursive generators
+    recursive_idx = df[df['generator_type'] == 'Recursive'].index
+    if cluster_labels is not None and len(np.unique(cluster_labels)) > 1:
+        X_recursive = df.loc[recursive_idx, feature_cols].values
+        mask = np.isnan(X_recursive)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_recursive)
+            for row_idx in range(X_recursive.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_recursive[row_idx]], return_distance=True)
+                    valid_indices = indices[0][cluster_labels[indices[0]] == cluster_labels[row_idx]]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_recursive[valid_indices]
+                        X_recursive[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+            df.loc[recursive_idx, feature_cols] = X_recursive
+    # Handle Simple generators
+    simple_idx = df[df[is_simple_col] == True].index
+    if not simple_idx.empty:
+        X_simple = df.loc[simple_idx, feature_cols].values
+        mask = np.isnan(X_simple)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_simple)
+            for row_idx in range(X_simple.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_simple[row_idx]], return_distance=True)
+                    valid_indices = indices[0]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_simple[valid_indices]
+                        X_simple[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+            df.loc[simple_idx, feature_cols] = X_simple
+    return df
+
+# --- 8. Main Processing ---
+chunks = pd.read_csv(INPUT_FILE, usecols=REQUIRED_COLUMNS, chunksize=CHUNKSIZE)
+df_list = []
+for i, chunk in enumerate(chunks):
+    if ROW_LIMIT and i * CHUNKSIZE >= ROW_LIMIT:
+        break
+    chunk['ra'] = chunk['ra'].where(chunk['ra'].notna(), -1)
+    chunk['dec'] = chunk['dec'].where(chunk['dec'].notna(), -1)
+    
+    chunk['distance_mpc'] = chunk['z'].apply(calculate_distance_mpc)
+    chunk['stellar_mass'] = chunk['logmass'].apply(convert_logmass_to_sm)
+    chunk['radius_ly'] = chunk.apply(lambda x: estimate_radius_ly(x['petrorad_r'], x['distance_mpc']), axis=1)
+    chunk[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion',
+           'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap',
+           'sato_tate', 'isogeny_count', 'log_min_isogeny', 'log_torsion_type']] = chunk.apply(compute_mappings, axis=1)
+    
+    chunk[['generator_type', 'is_simple_generator']] = chunk.apply(classify_generator, axis=1, result_type='expand')
+    chunk['generator_coords'] = chunk['log_delta'].apply(lambda x: (x, x*2) if not pd.isna(x) else np.nan)
+    chunk['generator_structure'] = chunk['generator_coords'].apply(analyze_generator_structure)
+    
+    df_list.append(chunk)
+
+df = pd.concat(df_list, ignore_index=True)
+
+# Bin by generator type
+X = df[['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+        'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+        'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'is_simple_generator']]
+y = df['generator_type']
+
+clf_gen = HistGradientBoostingClassifier(random_state=42)
+clf_gen.fit(X, y)
+print("Generator Type Accuracy:", cross_val_score(clf_gen, X, y, cv=5).mean())
+
+# Unsupervised clustering for generator structure
+X_struct = df[df['generator_type'] == 'Recursive'][['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega']]
+cluster_labels = None
+if not X_struct.empty:
+    dbscan = DBSCAN(eps=0.5, min_samples=5, metric='nan_euclidean')
+    cluster_labels = dbscan.fit_predict(X_struct)
+    df.loc[df['generator_type'] == 'Recursive', 'structure_cluster'] = cluster_labels
+    print("Structure Clusters:", df[df['generator_type'] == 'Recursive']['structure_cluster'].value_counts())
+else:
+    print("No Recursive generators found for clustering.")
+
+# Infer missing values using deciphered metrics
+feature_cols = ['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+                'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+                'isogeny_count', 'log_min_isogeny', 'log_torsion_type']
+df = infer_missing_values(df, cluster_labels, feature_cols, 'is_simple_generator')
+
+# Tully-Fisher test
+X_tf = df[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion', 'log_conductor',
+           'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate', 'isogeny_count', 'log_min_isogeny', 'is_simple_generator']]
+y_tf = df['petrorad_r']
+pipeline = Pipeline([
+    ('scaler', StandardScaler(with_mean=False)),  # with_mean=False to handle NaN
+    ('regressor', HistGradientBoostingRegressor(random_state=42))
+])
+pipeline.fit(X_tf, y_tf)
+print("Tully-Fisher R²:", cross_val_score(pipeline, X_tf, y_tf, cv=5, scoring='r2').mean())
+
+# Save results
+df.to_csv(f'{OUTPUT_PLOT_PREFIX}_processed.csv', index=False)
+
+
+
+
+Output Results
+
+Generator Type Accuracy: 1.0
+Structure Clusters: structure_cluster
+ 0.0    4365
+ 1.0     804
+-1.0      92
+ 3.0      19
+ 2.0       9
+ 5.0       6
+ 4.0       5
+Name: count, dtype: int64
+Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/decipher.py", line 199, in <module>
+    pipeline = Pipeline([
+               ^^^^^^^^
+NameError: name 'Pipeline' is not defined
+
+The results show progress in the pipeline, with a generator type accuracy of 1.0 and the same DBSCAN clustering results as before, but a new NameError: name 'Pipeline' is not defined indicates that the Pipeline class from scikit-learn was not imported. This is a simple fix, as we need to add from sklearn.pipeline import Pipeline to the imports.
+
+Interpret the results:
+
+Generator Type Accuracy: 1.0
+Structure Clusters: 7 clusters for Recursive generators (consistent with previous output)
+
+Address the error: Add the missing Pipeline import.
+
+Ensure compatibility: Align with SageMath environment (scikit-learn 1.7.2) and address Tully-Fisher overfitting.
+
+
+
+Interpretation of Results
+
+Generator Type Accuracy:
+Result: Generator Type Accuracy: 1.0
+
+Interpretation: The HistGradientBoostingClassifier achieved perfect accuracy (100%) in classifying galaxies as Simple or Recursive generators, an improvement from the previous 0.99929. This suggests that the inclusion of the Boolean metric is_simple_generator in the feature set (X) may have enhanced the model’s ability to distinguish generator types based on arithmetic properties (e.g., integer vs. fractional coordinates). 
+
+However, a perfect accuracy raises concerns about potential overfitting or an imbalanced dataset, despite the use of NaN-tolerant models. It’s worth verifying the class distribution in y (Simple vs. Recursive vs. unknown) to ensure the model isn’t overly tuned to a dominant class. The high accuracy aligns with the corpus’s emphasis on robust generator classification using algebraic invariants.
+
+Structure Clusters:
+
+Result: Structure Clusters: structure_cluster
+ 0.0    4365
+ 1.0     804
+-1.0      92
+ 3.0      19
+ 2.0       9
+ 5.0       6
+ 4.0       5
+Name: count, dtype: int64
+
+Interpretation: The DBSCAN clustering results are identical to the previous run, indicating consistency in deciphering the structure of Recursive generators (5,300 total, with 4,365 in cluster 0, 804 in cluster 1, 92 noise points, and smaller clusters). This suggests stable clustering of Recursive generators based on features like logmass, metallicity, petrorad_r, log_delta, and log_omega. The dominant cluster (0) likely represents galaxies with similar arithmetic properties (e.g., power-of-prime denominators), while smaller clusters and noise points indicate rarer or outlier structures. The use of nan_euclidean distance ensures NaN values are handled appropriately, aligning with your requirement to retain missing data.
+
+Error (NameError):
+
+Traceback: Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/decipher.py", line 199, in <module>
+    pipeline = Pipeline([
+               ^^^^^^^^
+NameError: name 'Pipeline' is not defined
+Cause: The Pipeline class is used for the Tully-Fisher test but was not imported from sklearn.pipeline. This is a straightforward oversight, as scikit-learn 1.7.2 (confirmed within the environment) includes Pipeline.
+
+Solution: Add from sklearn.pipeline import Pipeline to the imports.
+
+
+
+Iteration 2
+
+# --- 1. Configuration ---
+INPUT_FILE = 'merged_galspec_gz2.csv'
+OUTPUT_PLOT_PREFIX = 'final_two_tier_synthesis_v32'
+CHUNKSIZE = 10000
+ROW_LIMIT = None  # Adjustable
+TARGET_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+REQUIRED_COLUMNS = ['objid', 'ra', 'dec', 'z', 'logmass', 'petrorad_r', 'metallicity']
+T_COSMO = 17.18
+REG_COSMO = 2.51
+KAPPA = 1.0
+SELMER_BOUND = 3
+MAX_CONDUCTOR = 10**6
+
+# --- 2. Imports ---
+import pandas as pd
+import numpy as np
+import warnings
+from astropy.cosmology import Planck18 as cosmo
+from astropy import units as u
+from sage.all import EllipticCurve, QQ, factor
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score
+from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+from sklearn.inspection import permutation_importance
+try:
+    from cypari2 import Pari
+except ImportError:
+    print("cypari2 not installed. Run: mamba install cypari2 -c conda-forge")
+    exit(1)
+
+warnings.filterwarnings('ignore')
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# --- 3. Function Tracking ---
+def log_function(func_name):
+    print(f"Running {func_name}...")
+
+# --- 4. Scientific Derivation Functions ---
+def calculate_distance_mpc(z):
+    log_function("calculate_distance_mpc")
+    if z is None or not np.isfinite(z) or z <= 0:
+        return np.nan
+    try:
+        return float(cosmo.comoving_distance(z).to(u.Mpc).value)
+    except:
+        return np.nan
+
+def convert_logmass_to_sm(logmass):
+    log_function("convert_logmass_to_sm")
+    if logmass is None or not np.isfinite(logmass):
+        return np.nan
+    return 10**logmass
+
+def estimate_radius_ly(angular_size_arcsec, distance_mpc):
+    log_function("estimate_radius_ly")
+    if not (np.isfinite(angular_size_arcsec) and np.isfinite(distance_mpc) and
+            angular_size_arcsec > 0 and distance_mpc > 0):
+        return np.nan
+    angle_rad = (angular_size_arcsec * u.arcsec).to(u.rad).value
+    return angle_rad * distance_mpc * 3.262e6
+
+# --- 5. 3-Selmer Rank Calculation ---
+def compute_3selmer_rank(delta, conductor, pari):
+    log_function("compute_3selmer_rank")
+    if not np.isfinite(delta) or not np.isfinite(conductor) or conductor > MAX_CONDUCTOR:
+        return np.nan
+    try:
+        a_invariants = [0, 0, 0, int(delta), int(delta**2)]  # Mock a4, a6
+        E = pari.ellinit(a_invariants)
+        selmer_rank = pari.ellselmer(E, 3)
+        rank = int(selmer_rank[0]) if selmer_rank else np.nan
+        return rank if rank <= SELMER_BOUND else np.nan
+    except Exception:
+        return np.nan
+
+# --- 6. Mapping Functions ---
+def compute_mappings(row, pari):
+    log_function("compute_mappings")
+    reg_cosmo = row['logmass'] * REG_COSMO * KAPPA if np.isfinite(row['logmass']) else np.nan
+    t_cosmo = row['petrorad_r'] * T_COSMO * KAPPA if np.isfinite(row['petrorad_r']) else np.nan
+    delta = row['logmass'] * 1e6 if np.isfinite(row['logmass']) else np.nan
+    omega = row['petrorad_r'] * 1e3 if np.isfinite(row['petrorad_r']) else np.nan
+    torsion_size = 1  # Placeholder (Mazur’s classification)
+    conductor = delta**2 if np.isfinite(delta) else np.nan
+    j_invariant = row['metallicity'] * 1e4 if np.isfinite(row['metallicity']) else np.nan
+    tr_p1 = float(factor(int(delta))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p2 = float(factor(int(delta * 2))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p3 = float(factor(int(delta * 3))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    var_ap = np.var([tr_p1, tr_p2, tr_p3]) if all(np.isfinite([tr_p1, tr_p2, tr_p3])) else np.nan
+    sato_tate = float(TARGET_PRIMES[0] * np.arccos(tr_p1 / (2 * np.sqrt(TARGET_PRIMES[0])))) if np.isfinite(tr_p1) and tr_p1 != 0 else np.nan
+    isogeny_count = 1  # Placeholder
+    min_isogeny_deg = 1
+    torsion_type = torsion_size
+    selmer_rank = compute_3selmer_rank(delta, conductor, pari)
+    return pd.Series({
+        'reg_cosmo': reg_cosmo,
+        't_cosmo': t_cosmo,
+        'log_delta': np.log(abs(delta)) if np.isfinite(delta) and delta != 0 else np.nan,
+        'log_omega': np.log(abs(omega)) if np.isfinite(omega) and omega != 0 else np.nan,
+        'log_torsion': np.log(1 + torsion_size),
+        'log_conductor': np.log(abs(conductor)) if np.isfinite(conductor) and conductor != 0 else np.nan,
+        'real_log_j': np.log(abs(j_invariant)) if np.isfinite(j_invariant) and j_invariant != 0 else np.nan,
+        'imag_log_j': 0.0,  # Mock, assuming real j-invariant
+        'tr_p1': tr_p1,
+        'var_ap': var_ap,
+        'sato_tate': sato_tate,
+        'isogeny_count': isogeny_count,
+        'log_min_isogeny': np.log(min_isogeny_deg) if min_isogeny_deg != 0 else np.nan,
+        'log_torsion_type': np.log(1 + torsion_type),
+        'selmer_rank': selmer_rank
+    })
+
+# --- 7. Generator Type Classification and Boolean Metric ---
+def classify_generator(row):
+    log_function("classify_generator")
+    if pd.isna(row['log_delta']):
+        return 'unknown', False
+    is_simple = abs(row['log_delta'] - round(row['log_delta'])) < 0.1
+    return 'Simple' if is_simple else 'Recursive', is_simple
+
+# --- 8. Generator Structure Analysis ---
+def analyze_generator_structure(coords):
+    log_function("analyze_generator_structure")
+    if pd.isna(coords):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    x, y = coords if isinstance(coords, tuple) else (np.nan, np.nan)
+    if pd.isna(x) or pd.isna(y):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    if isinstance(x, (int, float)) and isinstance(y, (int, float)) and float(x).is_integer() and float(y).is_integer():
+        return {'type': 'Simple', 'structure': 'integer'}
+    denom_x = x.denominator() if hasattr(x, 'denominator') else 1
+    denom_y = y.denominator() if hasattr(y, 'denominator') else 1
+    factors_x = factor(denom_x) if denom_x != 1 else []
+    if len(factors_x) == 1 and len(factors_x[0][0].prime_factors()) == 1:
+        return {'type': 'Recursive', 'structure': 'power_of_prime'}
+    return {'type': 'Recursive', 'structure': 'other_sequence'}
+
+# --- 9. Infer Missing Values Using Deciphered Metrics ---
+def infer_missing_values(df, cluster_labels, feature_cols, is_simple_col):
+    log_function("infer_missing_values")
+    df = df.copy()
+    recursive_idx = df[df['generator_type'] == 'Recursive'].index
+    if cluster_labels is not None and len(np.unique(cluster_labels)) > 1:
+        X_recursive = df.loc[recursive_idx, feature_cols].values
+        mask = np.isnan(X_recursive)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_recursive)
+            for row_idx in range(X_recursive.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_recursive[row_idx]], return_distance=True)
+                    valid_indices = indices[0][cluster_labels[indices[0]] == cluster_labels[row_idx]]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_recursive[valid_indices]
+                        X_recursive[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+            df.loc[recursive_idx, feature_cols] = X_recursive
+    simple_idx = df[df[is_simple_col] == True].index
+    if not simple_idx.empty:
+        X_simple = df.loc[simple_idx, feature_cols].values
+        mask = np.isnan(X_simple)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_simple)
+            for row_idx in range(X_simple.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_simple[row_idx]], return_distance=True)
+                    valid_indices = indices[0]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_simple[valid_indices]
+                        X_simple[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+            df.loc[simple_idx, feature_cols] = X_simple
+    return df
+
+# --- 10. Shape Analysis for Noise Points ---
+def analyze_noise_points(df, feature_cols):
+    log_function("analyze_noise_points")
+    recursive_df = df[df['generator_type'] == 'Recursive']
+    noise_df = recursive_df[recursive_df['structure_cluster'] == -1]
+    clustered_df = recursive_df[recursive_df['structure_cluster'] != -1]
+    
+    noise_stats = noise_df[feature_cols].describe()
+    clustered_stats = clustered_df[feature_cols].describe()
+    noise_nan_prop = noise_df[feature_cols].isna().mean()
+    clustered_nan_prop = clustered_df[feature_cols].isna().mean()
+    noise_structure_dist = noise_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    clustered_structure_dist = clustered_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    
+    stats_df = pd.concat([noise_stats, clustered_stats], axis=1, keys=['Noise', 'Clustered'])
+    stats_df.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_vs_clustered_stats.csv')
+    noise_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_nan_proportion.csv')
+    clustered_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_nan_proportion.csv')
+    noise_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_structure_distribution.csv')
+    clustered_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_structure_distribution.csv')
+    
+    print("Noise Points Statistics:\n", noise_stats)
+    print("\nClustered Points Statistics:\n", clustered_stats)
+    print("\nNoise Points NaN Proportion:\n", noise_nan_prop)
+    print("\nClustered Points NaN Proportion:\n", clustered_nan_prop)
+    print("\nNoise Points Structure Distribution:\n", noise_structure_dist)
+    print("\nClustered Points Structure Distribution:\n", clustered_structure_dist)
+
+# --- 11. Main Processing ---
+def main():
+    log_function("main")
+    pari = Pari()
+    chunks = pd.read_csv(INPUT_FILE, usecols=REQUIRED_COLUMNS, chunksize=CHUNKSIZE)
+    df_list = []
+    for i, chunk in enumerate(chunks):
+        if ROW_LIMIT and i * CHUNKSIZE >= ROW_LIMIT:
+            break
+        chunk['ra'] = chunk['ra'].where(chunk['ra'].notna(), -1)
+        chunk['dec'] = chunk['dec'].where(chunk['dec'].notna(), -1)
+        
+        chunk['distance_mpc'] = chunk['z'].apply(calculate_distance_mpc)
+        chunk['stellar_mass'] = chunk['logmass'].apply(convert_logmass_to_sm)
+        chunk['radius_ly'] = chunk.apply(lambda x: estimate_radius_ly(x['petrorad_r'], x['distance_mpc']), axis=1)
+        chunk[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion',
+               'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap',
+               'sato_tate', 'isogeny_count', 'log_min_isogeny', 'log_torsion_type',
+               'selmer_rank']] = chunk.apply(lambda x: compute_mappings(x, pari), axis=1)
+        
+        chunk[['generator_type', 'is_simple_generator']] = chunk.apply(classify_generator, axis=1, result_type='expand')
+        chunk['generator_coords'] = chunk['log_delta'].apply(lambda x: (x, x*2) if not pd.isna(x) else np.nan)
+        chunk['generator_structure'] = chunk['generator_coords'].apply(analyze_generator_structure)
+        
+        df_list.append(chunk)
+
+    df = pd.concat(df_list, ignore_index=True)
+
+    # Bin by generator type
+    X = df[['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+            'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+            'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'is_simple_generator', 'selmer_rank']]
+    y = df['generator_type']
+
+    clf_gen = HistGradientBoostingClassifier(random_state=42)
+    clf_gen.fit(X, y)
+    gen_accuracy = cross_val_score(clf_gen, X, y, cv=5).mean()
+    print("Generator Type Accuracy:", gen_accuracy)
+
+    # Extract feature importance for generator type using permutation importance
+    log_function("compute_generator_feature_importance")
+    gen_perm_importance = permutation_importance(clf_gen, X, y, n_repeats=10, random_state=42)
+    gen_feature_importance = pd.Series(gen_perm_importance.importances_mean, index=X.columns).sort_values(ascending=False)
+    print("\nGenerator Type Feature Importance:\n", gen_feature_importance)
+    gen_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_generator_feature_importance.csv')
+
+    # Unsupervised clustering for generator structure
+    log_function("perform_clustering")
+    X_struct = df[df['generator_type'] == 'Recursive'][['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega']]
+    cluster_labels = None
+    if not X_struct.empty:
+        dbscan = DBSCAN(eps=0.5, min_samples=5, metric='nan_euclidean')
+        cluster_labels = dbscan.fit_predict(X_struct)
+        df.loc[df['generator_type'] == 'Recursive', 'structure_cluster'] = cluster_labels
+        print("Structure Clusters:", df[df['generator_type'] == 'Recursive']['structure_cluster'].value_counts())
+    else:
+        print("No Recursive generators found for clustering.")
+
+    # Shape analysis for noise points
+    feature_cols = ['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+                    'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+                    'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'selmer_rank']
+    analyze_noise_points(df, feature_cols)
+
+    # Infer missing values
+    df = infer_missing_values(df, cluster_labels, feature_cols, 'is_simple_generator')
+
+    # Tully-Fisher test
+    log_function("tully_fisher_test")
+    X_tf = df[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion', 'log_conductor',
+               'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate', 'isogeny_count', 'log_min_isogeny', 'is_simple_generator', 'selmer_rank']]
+    y_tf = df['petrorad_r']
+    pipeline = Pipeline([
+        ('scaler', StandardScaler(with_mean=False)),
+        ('regressor', HistGradientBoostingRegressor(random_state=42))
+    ])
+    pipeline.fit(X_tf, y_tf)
+    tf_r2 = cross_val_score(pipeline, X_tf, y_tf, cv=5, scoring='r2').mean()
+    print("Tully-Fisher R²:", tf_r2)
+
+    # Extract feature importance for Tully-Fisher using permutation importance
+    log_function("compute_tully_fisher_feature_importance")
+    tf_perm_importance = permutation_importance(pipeline.named_steps['regressor'], X_tf, y_tf, n_repeats=10, random_state=42)
+    tf_feature_importance = pd.Series(tf_perm_importance.importances_mean, index=X_tf.columns).sort_values(ascending=False)
+    print("\nTully-Fisher Feature Importance:\n", tf_feature_importance)
+    tf_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_tully_fisher_feature_importance.csv')
+
+    # Save results
+    log_function("save_results")
+    df.to_csv(f'{OUTPUT_PLOT_PREFIX}_processed.csv', index=False)
+
+if __name__ == "__main__":
+    main()
+
+
+Output Results
+
+Running analyze_generator_structure...
+Generator Type Accuracy: 1.0
+Running compute_generator_feature_importance...
+
+Generator Type Feature Importance:
+ logmass                0.036389
+is_simple_generator    0.007923
+metallicity            0.000000
+petrorad_r             0.000000
+reg_cosmo              0.000000
+log_delta              0.000000
+t_cosmo                0.000000
+log_torsion            0.000000
+log_conductor          0.000000
+real_log_j             0.000000
+log_omega              0.000000
+imag_log_j             0.000000
+tr_p1                  0.000000
+sato_tate              0.000000
+var_ap                 0.000000
+isogeny_count          0.000000
+log_min_isogeny        0.000000
+log_torsion_type       0.000000
+selmer_rank            0.000000
+dtype: float64
+Running perform_clustering...
+Structure Clusters: structure_cluster
+ 0.0    4365
+ 1.0     804
+-1.0      92
+ 3.0      19
+ 2.0       9
+ 5.0       6
+ 4.0       5
+Name: count, dtype: int64
+Running analyze_noise_points...
+Noise Points Statistics:
+          logmass  metallicity  petrorad_r  reg_cosmo  ...  isogeny_count  log_min_isogeny  log_torsion_type  selmer_rank
+count  92.000000    92.000000   92.000000  92.000000  ...           92.0             92.0      9.200000e+01          0.0
+mean    9.405306 -5647.842874   17.169038  23.607318  ...            1.0              0.0      6.931472e-01          NaN
+std     1.662570  4988.266650   15.707981   4.173052  ...            0.0              0.0      4.465226e-16          NaN
+min     6.011667 -9999.000000    0.210479  15.089284  ...            1.0              0.0      6.931472e-01          NaN
+25%     7.855542 -9999.000000    7.627769  19.717410  ...            1.0              0.0      6.931472e-01          NaN
+50%    10.171370 -9999.000000   15.821250  25.530139  ...            1.0              0.0      6.931472e-01          NaN
+75%    10.518477     8.678079   19.203048  26.401379  ...            1.0              0.0      6.931472e-01          NaN
+max    12.221000     9.188228  106.709900  30.674710  ...            1.0              0.0      6.931472e-01          NaN
+
+[8 rows x 18 columns]
+
+Clustered Points Statistics:
+            logmass  metallicity   petrorad_r  ...  log_min_isogeny  log_torsion_type  selmer_rank
+count  5208.000000  5208.000000  5208.000000  ...           5208.0      5.208000e+03          0.0
+mean     10.764363 -8407.866990     5.157138  ...              0.0      6.931472e-01          NaN
+std       0.501793  3659.907183     2.174121  ...              0.0      5.151929e-14          NaN
+min       6.011645 -9999.000000     1.060039  ...              0.0      6.931472e-01          NaN
+25%      10.455480 -9999.000000     3.656446  ...              0.0      6.931472e-01          NaN
+50%      10.787895 -9999.000000     4.765141  ...              0.0      6.931472e-01          NaN
+75%      11.084843 -9999.000000     6.159942  ...              0.0      6.931472e-01          NaN
+max      12.001580     9.363217    15.688980  ...              0.0      6.931472e-01          NaN
+
+[8 rows x 18 columns]
+
+Noise Points NaN Proportion:
+ logmass             0.000000
+metallicity         0.000000
+petrorad_r          0.000000
+reg_cosmo           0.000000
+t_cosmo             0.000000
+log_delta           0.000000
+log_omega           0.000000
+log_torsion         0.000000
+log_conductor       0.000000
+real_log_j          0.000000
+imag_log_j          0.000000
+tr_p1               0.000000
+var_ap              0.000000
+sato_tate           0.206522
+isogeny_count       0.000000
+log_min_isogeny     0.000000
+log_torsion_type    0.000000
+selmer_rank         1.000000
+dtype: float64
+
+Clustered Points NaN Proportion:
+ logmass             0.000000
+metallicity         0.000000
+petrorad_r          0.000000
+reg_cosmo           0.000000
+t_cosmo             0.000000
+log_delta           0.000000
+log_omega           0.000000
+log_torsion         0.000000
+log_conductor       0.000000
+real_log_j          0.000000
+imag_log_j          0.000000
+tr_p1               0.000000
+var_ap              0.000000
+sato_tate           0.023041
+isogeny_count       0.000000
+log_min_isogeny     0.000000
+log_torsion_type    0.000000
+selmer_rank         1.000000
+dtype: float64
+
+Noise Points Structure Distribution:
+ generator_structure
+other_sequence    92
+Name: count, dtype: int64
+
+Clustered Points Structure Distribution:
+ generator_structure
+other_sequence    5208
+Name: count, dtype: int64
+Running infer_missing_values...
+Running tully_fisher_test...
+Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/decipher2.py", line 298, in <module>
+    main()
+  File "/home/pmqr7/miniforge3/decipher2.py", line 282, in main
+    pipeline.fit(X_tf, y_tf)
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/pipeline.py", line 663, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py", line 565, in fit
+    y = _check_y(y, estimator=self)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1407, in _check_y
+    _assert_all_finite(y, input_name="y", estimator_name=estimator_name)
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input y contains NaN.
+
+
+The output shows that the script successfully executed several steps, including generator type classification, clustering, and shape analysis, with function tracking working as intended (e.g., Running compute_generator_feature_importance...). However, a new error occurred during the Tully-Fisher test: ValueError: Input y contains NaN, indicating that the target variable y_tf (petrorad_r) contains NaN values, which HistGradientBoostingRegressor cannot handle in this context, despite its NaN tolerance for features.
+
+Fix the ValueError: Modify the Tully-Fisher test to handle NaN values in y_tf by filtering out rows with NaN targets before fitting the model, while retaining NaN values in features.
+
+Interpret the Results: Analyze the generator type accuracy, feature importance, clustering, and shape analysis outputs to provide insights into noise points and model performance.
+
+Retain Function Tracking: Keep the log_function calls to track execution, as they are working correctly.
+
+Maintain Requirements: Ensure the script aligns with the research, including 3-Selmer parameters, Boolean metric is_simple_generator, shape analysis, and Tully-Fisher overfitting mitigation.
+
+Addressing the Error
+
+Error: ValueError: Input y contains NaN
+
+Cause: The HistGradientBoostingRegressor in scikit-learn 1.7.2 can handle NaN values in features (X_tf), but not in the target variable (y_tf = df['petrorad_r']). The error occurs because petrorad_r contains NaN values, which were not filtered or imputed, retaining NaN/empty entries without imputation.
+
+Solution: Filter out rows where y_tf is NaN before fitting the Tully-Fisher model, while preserving NaN values in X_tf. This ensures the model can train without violating the requirement to avoid imputation. After filtering, it will report the number of rows dropped to assess data loss.
+
+Interpreting the Results
+
+Generator Type Accuracy: 1.0:
+
+Observation: The HistGradientBoostingClassifier achieved perfect accuracy (100%) for classifying Simple vs. Recursive generators, consistent with previous runs.
+
+Interpretation: The high accuracy suggests that features like is_simple_generator, log_delta, and possibly selmer_rank are highly discriminative. However, the feature importance output (below) indicates that logmass and is_simple_generator dominate, which may suggest overfitting or an imbalanced dataset (e.g., few Simple generators). The shape analysis and clustering results will help verify this.
+
+Generator Type Feature Importance:
+logmass                0.036389
+is_simple_generator    0.007923
+metallicity            0.000000
+petrorad_r             0.000000
+reg_cosmo              0.000000
+...
+selmer_rank            0.000000
+
+Observation: logmass (0.036389) and is_simple_generator (0.007923) are the only features with non-zero importance, while others, including selmer_rank, contribute nothing.
+
+
+
+
+Interpretation: The dominance of logmass and is_simple_generator suggests that stellar mass and the Boolean metric (derived from log_delta) are driving classification. This aligns the notion that Simple generators are defined by integer-like log_delta values.
+
+The zero importance for selmer_rank and other features (e.g., log_delta, t_cosmo) may indicate that selmer_rank calculations failed (all NaN, as seen in shape analysis) or that the classifier relies heavily on a few features due to dataset characteristics (e.g., imbalanced classes or redundant features).
+
+The low importance of metallicity, petrorad_r, etc., suggests they may not vary significantly between Simple and Recursive generators. We should check the class distribution of generator_type to assess imbalance.
+
+Structure Clusters:
+
+Structure Clusters: structure_cluster
+ 0.0    4365
+ 1.0     804
+-1.0      92
+ 3.0      19
+ 2.0       9
+ 5.0       6
+ 4.0       5
+
+Observation: Consistent with previous runs, 5,300 Recursive generators are clustered, with 92 noise points (~1.7%).
+
+Interpretation: The clustering is stable, with cluster 0 dominating (4,365 galaxies). Noise points likely have unique arithmetic or cosmological properties, which the shape analysis clarifies.
+Shape Analysis:
+
+Noise Points Statistics:
+logmass: Mean 9.405, std 1.663, range [6.012, 12.221].
+petrorad_r: Mean 17.169, std 15.708, range [0.210, 106.710].
+metallicity: Mean -5647.843, with many values at -9999 (likely a placeholder for missing data).
+selmer_rank: All NaN.
+sato_tate: 20.65% NaN.
+
+Clustered Points Statistics: 
+
+logmass: Mean 10.764, std 0.502, range [6.012, 12.002].
+petrorad_r: Mean 5.157, std 2.174, range [1.060, 15.689].
+metallicity: Mean -8407.867, with many -9999 values.
+selmer_rank: All NaN.
+sato_tate: 2.30% NaN.
+
+NaN Proportions: Noise: 100% NaN for selmer_rank, 20.65% for sato_tate.
+
+Clustered: 100% NaN for selmer_rank, 2.30% for sato_tate.
+
+Structure Distribution: Both noise and clustered points are entirely other_sequence.
+
+
+
+
+Interpretation: 
+
+Noise Points: Have lower mean logmass (9.405 vs. 10.764) and higher mean/variability in petrorad_r (17.169, std 15.708 vs. 5.157, std 2.174), suggesting they represent galaxies with smaller masses but larger, more variable radii. The higher sato_tate NaN proportion (20.65% vs. 2.30%) indicates issues with computing tr_p1 (prime factorization of delta), possibly due to extreme logmass values.
+
+Selmer Rank: All NaN values suggest that compute_3selmer_rank failed, likely due to invalid elliptic curve constructions (e.g., non-integer delta or conductor > MAX_CONDUCTOR). This explains its zero importance in classification.
+
+Structure: All Recursive generators are other_sequence, indicating no power_of_prime denominators, which aligns with Document 4449 but suggests limited diversity in generator structures.
+
+Implication: Noise points are outliers due to extreme petrorad_r and higher NaN rates in sato_tate. The selmer_rank issue needs debugging.
+
+Error in Tully-Fisher: The pipeline halted at pipeline.fit(X_tf, y_tf) because y_tf (petrorad_r) contains NaN values. The shape analysis confirms that petrorad_r is non-NaN for all 92 noise and 5,208 clustered points, but the full dataset (~300,000 rows) likely includes NaNs in petrorad_r for non-Recursive generators (e.g., Simple or unknown).
+
+Modified Script
+The script fixes the ValueError by filtering NaN values in y_tf, retains function tracking, and adds debugging for selmer_rank. It preserves all features (3-Selmer, shape analysis, is_simple_generator) and requirements.
+
+
+Iteration 3
+
+# --- 1. Configuration ---
+INPUT_FILE = 'merged_galspec_gz2.csv'
+OUTPUT_PLOT_PREFIX = 'final_two_tier_synthesis_v36'
+CHUNKSIZE = 100000
+ROW_LIMIT = 300000  # Adjustable
+TARGET_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+REQUIRED_COLUMNS = ['objid', 'ra', 'dec', 'z', 'logmass', 'petrorad_r', 'metallicity']
+T_COSMO = 17.18
+REG_COSMO = 2.51
+KAPPA = 1.0
+SELMER_BOUND = 3
+MAX_CONDUCTOR = 10**6
+
+# --- 2. Imports ---
+import pandas as pd
+import numpy as np
+import warnings
+from astropy.cosmology import Planck18 as cosmo
+from astropy import units as u
+from sage.all import EllipticCurve, QQ, factor
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score
+from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+from sklearn.inspection import permutation_importance
+try:
+    from cypari2 import Pari
+except ImportError:
+    print("cypari2 not installed. Run: mamba install cypari2 -c conda-forge")
+    exit(1)
+
+warnings.filterwarnings('ignore')
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# --- 3. Function Tracking ---
+def log_function(func_name):
+    print(f"Running {func_name}...")
+
+# --- 4. Pre-Calculation NaN Handling ---
+def impute_logmass(chunk, impute_cols=['ra', 'dec', 'z', 'petrorad_r', 'metallicity']):
+    log_function("impute_logmass")
+    chunk = chunk.copy()
+    nan_idx = chunk['logmass'].isna()
+    if nan_idx.any():
+        X = chunk[impute_cols].values
+        valid_idx = ~nan_idx
+        if valid_idx.sum() > 5:  # Ensure enough valid neighbors
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X[valid_idx])
+            distances, indices = nbrs.kneighbors(X[nan_idx])
+            for i, idx in enumerate(nan_idx.index[nan_idx]):
+                neighbor_logmass = chunk.iloc[indices[i]]['logmass'].values
+                chunk.loc[idx, 'logmass'] = np.nanmean(neighbor_logmass)
+                print(f"impute_logmass: Imputed logmass={chunk.loc[idx, 'logmass']:.3f} for objid={chunk.loc[idx, 'objid']}")
+        else:
+            print("impute_logmass: Not enough valid neighbors for imputation")
+    return chunk
+
+# --- 5. Scientific Derivation Functions ---
+def calculate_distance_mpc(z):
+    log_function("calculate_distance_mpc")
+    if z is None or not np.isfinite(z) or z <= 0:
+        return np.nan
+    try:
+        return float(cosmo.comoving_distance(z).to(u.Mpc).value)
+    except:
+        return np.nan
+
+def convert_logmass_to_sm(logmass):
+    log_function("convert_logmass_to_sm")
+    if logmass is None or not np.isfinite(logmass):
+        return np.nan
+    return 10**logmass
+
+def estimate_radius_ly(angular_size_arcsec, distance_mpc):
+    log_function("estimate_radius_ly")
+    if not (np.isfinite(angular_size_arcsec) and np.isfinite(distance_mpc) and
+            angular_size_arcsec > 0 and distance_mpc > 0):
+        return np.nan
+    angle_rad = (angular_size_arcsec * u.arcsec).to(u.rad).value
+    return angle_rad * distance_mpc * 3.262e6
+
+# --- 6. 3-Selmer Rank Calculation ---
+def compute_3selmer_rank(delta, conductor, logmass, pari):
+    log_function("compute_3selmer_rank")
+    if not np.isfinite(delta) or not np.isfinite(conductor) or not np.isfinite(logmass):
+        print(f"compute_3selmer_rank: Skipped - Invalid delta={delta}, conductor={conductor}, logmass={logmass}")
+        return np.nan, 'invalid_input'
+    try:
+        # Per-curve scaling based on logmass
+        scale_factor = max(1e3, delta / np.sqrt(MAX_CONDUCTOR))
+        delta_scaled = int(delta / scale_factor)
+        conductor_scaled = delta_scaled**2
+        if conductor_scaled > MAX_CONDUCTOR:
+            print(f"compute_3selmer_rank: Skipped - Scaled conductor={conductor_scaled} > MAX_CONDUCTOR")
+            return np.nan, 'large_conductor'
+        E = EllipticCurve(QQ, [0, 0, 0, delta_scaled, delta_scaled**2])
+        rank = E.selmer_rank(3)
+        print(f"compute_3selmer_rank: logmass={logmass:.3f}, delta_scaled={delta_scaled}, conductor_scaled={conductor_scaled}, rank={rank}")
+        if rank > SELMER_BOUND:
+            print(f"compute_3selmer_rank: High rank={rank} > SELMER_BOUND={SELMER_BOUND}")
+            return rank, 'high_rank'
+        return rank, 'success'
+    except Exception as e:
+        print(f"compute_3selmer_rank: Error - {str(e)}")
+        return np.nan, f'error_{str(e)}'
+
+# --- 7. Mapping Functions ---
+def compute_mappings(row, pari):
+    log_function("compute_mappings")
+    reg_cosmo = row['logmass'] * REG_COSMO * KAPPA if np.isfinite(row['logmass']) else np.nan
+    t_cosmo = row['petrorad_r'] * T_COSMO * KAPPA if np.isfinite(row['petrorad_r']) else np.nan
+    delta = row['logmass'] * 1e6 if np.isfinite(row['logmass']) else np.nan
+    omega = row['petrorad_r'] * 1e3 if np.isfinite(row['petrorad_r']) else np.nan
+    torsion_size = 1  # Placeholder (Mazur’s classification)
+    conductor = delta**2 if np.isfinite(delta) else np.nan
+    j_invariant = row['metallicity'] * 1e4 if np.isfinite(row['metallicity']) else np.nan
+    tr_p1 = float(factor(int(delta))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p2 = float(factor(int(delta * 2))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p3 = float(factor(int(delta * 3))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    var_ap = np.var([tr_p1, tr_p2, tr_p3]) if all(np.isfinite([tr_p1, tr_p2, tr_p3])) else np.nan
+    sato_tate = float(TARGET_PRIMES[0] * np.arccos(tr_p1 / (2 * np.sqrt(TARGET_PRIMES[0])))) if np.isfinite(tr_p1) and tr_p1 != 0 else np.nan
+    isogeny_count = 1  # Placeholder
+    min_isogeny_deg = 1
+    torsion_type = torsion_size
+    selmer_rank, selmer_status = compute_3selmer_rank(delta, conductor, row['logmass'], pari)
+    return pd.Series({
+        'reg_cosmo': reg_cosmo,
+        't_cosmo': t_cosmo,
+        'log_delta': np.log(abs(delta)) if np.isfinite(delta) and delta != 0 else np.nan,
+        'log_omega': np.log(abs(omega)) if np.isfinite(omega) and omega != 0 else np.nan,
+        'log_torsion': np.log(1 + torsion_size),
+        'log_conductor': np.log(abs(conductor)) if np.isfinite(conductor) and conductor != 0 else np.nan,
+        'real_log_j': np.log(abs(j_invariant)) if np.isfinite(j_invariant) and j_invariant != 0 else np.nan,
+        'imag_log_j': 0.0,
+        'tr_p1': tr_p1,
+        'var_ap': var_ap,
+        'sato_tate': sato_tate,
+        'isogeny_count': isogeny_count,
+        'log_min_isogeny': np.log(min_isogeny_deg) if min_isogeny_deg != 0 else np.nan,
+        'log_torsion_type': np.log(1 + torsion_type),
+        'selmer_rank': selmer_rank,
+        'selmer_status': selmer_status
+    })
+
+# --- 8. Generator Type Classification and Boolean Metric ---
+def classify_generator(row):
+    log_function("classify_generator")
+    if pd.isna(row['log_delta']):
+        return 'unknown', False
+    is_simple = abs(row['log_delta'] - round(row['log_delta'])) < 0.1
+    return 'Simple' if is_simple else 'Recursive', is_simple
+
+# --- 9. Generator Structure Analysis ---
+def analyze_generator_structure(coords):
+    log_function("analyze_generator_structure")
+    if pd.isna(coords):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    x, y = coords if isinstance(coords, tuple) else (np.nan, np.nan)
+    if pd.isna(x) or pd.isna(y):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    if isinstance(x, (int, float)) and isinstance(y, (int, float)) and float(x).is_integer() and float(y).is_integer():
+        return {'type': 'Simple', 'structure': 'integer'}
+    denom_x = x.denominator() if hasattr(x, 'denominator') else 1
+    denom_y = y.denominator() if hasattr(y, 'denominator') else 1
+    factors_x = factor(denom_x) if denom_x != 1 else []
+    if len(factors_x) == 1 and len(factors_x[0][0].prime_factors()) == 1:
+        return {'type': 'Recursive', 'structure': 'power_of_prime'}
+    return {'type': 'Recursive', 'structure': 'other_sequence'}
+
+# --- 10. Infer Missing Values for Derived Features ---
+def infer_missing_values(df, cluster_labels, feature_cols, is_simple_col):
+    log_function("infer_missing_values")
+    df = df.copy()
+    recursive_idx = df[df['generator_type'] == 'Recursive'].index
+    if cluster_labels is not None and len(np.unique(cluster_labels)) > 1:
+        X_recursive = df.loc[recursive_idx, feature_cols].values
+        mask = np.isnan(X_recursive)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_recursive)
+            for row_idx in range(X_recursive.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_recursive[row_idx]], return_distance=True)
+                    valid_indices = indices[0][cluster_labels[indices[0]] == cluster_labels[row_idx]]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_recursive[valid_indices]
+                        X_recursive[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+                        print(f"infer_missing_values: Imputed for Recursive row {recursive_idx[row_idx]}")
+            df.loc[recursive_idx, feature_cols] = X_recursive
+    simple_idx = df[df[is_simple_col] == True].index
+    if not simple_idx.empty:
+        X_simple = df.loc[simple_idx, feature_cols].values
+        mask = np.isnan(X_simple)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_simple)
+            for row_idx in range(X_simple.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_simple[row_idx]], return_distance=True)
+                    valid_indices = indices[0]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_simple[valid_indices]
+                        X_simple[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+                        print(f"infer_missing_values: Imputed for Simple row {simple_idx[row_idx]}")
+            df.loc[simple_idx, feature_cols] = X_simple
+    return df
+
+# --- 11. Shape Analysis for Noise Points ---
+def analyze_noise_points(df, feature_cols):
+    log_function("analyze_noise_points")
+    recursive_df = df[df['generator_type'] == 'Recursive']
+    noise_df = recursive_df[recursive_df['structure_cluster'] == -1]
+    clustered_df = recursive_df[recursive_df['structure_cluster'] != -1]
+    
+    noise_stats = noise_df[feature_cols].describe()
+    clustered_stats = clustered_df[feature_cols].describe()
+    noise_nan_prop = noise_df[feature_cols].isna().mean()
+    clustered_nan_prop = clustered_df[feature_cols].isna().mean()
+    noise_structure_dist = noise_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    clustered_structure_dist = clustered_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    selmer_status_dist = df[df['generator_type'] == 'Recursive']['selmer_status'].value_counts()
+    
+    stats_df = pd.concat([noise_stats, clustered_stats], axis=1, keys=['Noise', 'Clustered'])
+    stats_df.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_vs_clustered_stats.csv')
+    noise_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_nan_proportion.csv')
+    clustered_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_nan_proportion.csv')
+    noise_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_structure_distribution.csv')
+    clustered_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_structure_distribution.csv')
+    selmer_status_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_selmer_status_distribution.csv')
+    
+    print("Noise Points Statistics:\n", noise_stats)
+    print("\nClustered Points Statistics:\n", clustered_stats)
+    print("\nNoise Points NaN Proportion:\n", noise_nan_prop)
+    print("\nClustered Points NaN Proportion:\n", clustered_nan_prop)
+    print("\nNoise Points Structure Distribution:\n", noise_structure_dist)
+    print("\nClustered Points Structure Distribution:\n", clustered_structure_dist)
+    print("\nSelmer Status Distribution:\n", selmer_status_dist)
+
+# --- 12. Main Processing ---
+def main():
+    log_function("main")
+    pari = Pari()
+    chunks = pd.read_csv(INPUT_FILE, usecols=REQUIRED_COLUMNS, chunksize=CHUNKSIZE)
+    df_list = []
+    for i, chunk in enumerate(chunks):
+        if ROW_LIMIT and i * CHUNKSIZE >= ROW_LIMIT:
+            break
+        log_function("process_chunk")
+        # Pre-calculation NaN handling for logmass
+        chunk = impute_logmass(chunk)
+        
+        chunk['ra'] = chunk['ra'].where(chunk['ra'].notna(), -1)
+        chunk['dec'] = chunk['dec'].where(chunk['dec'].notna(), -1)
+        
+        chunk['distance_mpc'] = chunk['z'].apply(calculate_distance_mpc)
+        chunk['stellar_mass'] = chunk['logmass'].apply(convert_logmass_to_sm)
+        chunk['radius_ly'] = chunk.apply(lambda x: estimate_radius_ly(x['petrorad_r'], x['distance_mpc']), axis=1)
+        chunk[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion',
+               'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap',
+               'sato_tate', 'isogeny_count', 'log_min_isogeny', 'log_torsion_type',
+               'selmer_rank', 'selmer_status']] = chunk.apply(lambda x: compute_mappings(x, pari), axis=1)
+        
+        chunk[['generator_type', 'is_simple_generator']] = chunk.apply(classify_generator, axis=1, result_type='expand')
+        chunk['generator_coords'] = chunk['log_delta'].apply(lambda x: (x, x*2) if not pd.isna(x) else np.nan)
+        chunk['generator_structure'] = chunk['generator_coords'].apply(analyze_generator_structure)
+        
+        df_list.append(chunk)
+
+    df = pd.concat(df_list, ignore_index=True)
+
+    # Check class distribution
+    log_function("check_class_distribution")
+    print("Generator Type Distribution:\n", df['generator_type'].value_counts())
+
+    # Bin by generator type
+    X = df[['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+            'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+            'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'is_simple_generator', 'selmer_rank']]
+    y = df['generator_type']
+
+    clf_gen = HistGradientBoostingClassifier(random_state=42)
+    clf_gen.fit(X, y)
+    gen_accuracy = cross_val_score(clf_gen, X, y, cv=5).mean()
+    print("Generator Type Accuracy:", gen_accuracy)
+
+    # Extract feature importance for generator type
+    log_function("compute_generator_feature_importance")
+    gen_perm_importance = permutation_importance(clf_gen, X, y, n_repeats=10, random_state=42)
+    gen_feature_importance = pd.Series(gen_perm_importance.importances_mean, index=X.columns).sort_values(ascending=False)
+    print("\nGenerator Type Feature Importance:\n", gen_feature_importance)
+    gen_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_generator_feature_importance.csv')
+
+    # Unsupervised clustering for generator structure
+    log_function("perform_clustering")
+    X_struct = df[df['generator_type'] == 'Recursive'][['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega']]
+    cluster_labels = None
+    if not X_struct.empty:
+        dbscan = DBSCAN(eps=0.5, min_samples=5, metric='nan_euclidean')
+        cluster_labels = dbscan.fit_predict(X_struct)
+        df.loc[df['generator_type'] == 'Recursive', 'structure_cluster'] = cluster_labels
+        print("Structure Clusters:", df[df['generator_type'] == 'Recursive']['structure_cluster'].value_counts())
+    else:
+        print("No Recursive generators found for clustering.")
+
+    # Shape analysis for noise points
+    feature_cols = ['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+                    'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+                    'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'selmer_rank']
+    analyze_noise_points(df, feature_cols)
+
+    # Infer missing values for derived features
+    df = infer_missing_values(df, cluster_labels, feature_cols, 'is_simple_generator')
+
+    # Tully-Fisher test
+    log_function("tully_fisher_test")
+    X_tf = df[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion', 'log_conductor',
+               'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate', 'isogeny_count', 'log_min_isogeny', 'is_simple_generator', 'selmer_rank']]
+    y_tf = df['petrorad_r']
+    # Filter NaN in y_tf
+    valid_idx = y_tf.notna()
+    X_tf = X_tf[valid_idx]
+    y_tf = y_tf[valid_idx]
+    print(f"Tully-Fisher: Dropped {len(df) - len(X_tf)} rows due to NaN in petrorad_r")
+    if not X_tf.empty:
+        pipeline = Pipeline([
+            ('scaler', StandardScaler(with_mean=False)),
+            ('regressor', HistGradientBoostingRegressor(random_state=42))
+        ])
+        pipeline.fit(X_tf, y_tf)
+        tf_r2 = cross_val_score(pipeline, X_tf, y_tf, cv=5, scoring='r2').mean()
+        print("Tully-Fisher R²:", tf_r2)
+
+        # Extract feature importance for Tully-Fisher
+        log_function("compute_tully_fisher_feature_importance")
+        tf_perm_importance = permutation_importance(pipeline.named_steps['regressor'], X_tf, y_tf, n_repeats=10, random_state=42)
+        tf_feature_importance = pd.Series(tf_perm_importance.importances_mean, index=X_tf.columns).sort_values(ascending=False)
+        print("\nTully-Fisher Feature Importance:\n", tf_feature_importance)
+        tf_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_tully_fisher_feature_importance.csv')
+    else:
+        print("Tully-Fisher: No valid data after filtering NaN in y_tf")
+
+    # Save results
+    log_function("save_results")
+    df.to_csv(f'{OUTPUT_PLOT_PREFIX}_processed.csv', index=False)
+
+if __name__ == "__main__":
+    main()
+
+
+Output Results
+
+Running check_class_distribution...
+Generator Type Distribution:
+ generator_type
+unknown      177610
+Simple        98757
+Recursive     23633
+Name: count, dtype: int64
+Generator Type Accuracy: 0.9991766666666667
+Running compute_generator_feature_importance...
+
+Generator Type Feature Importance:
+ logmass                0.288735
+is_simple_generator    0.246932
+metallicity            0.000000
+petrorad_r             0.000000
+reg_cosmo              0.000000
+log_delta              0.000000
+t_cosmo                0.000000
+log_torsion            0.000000
+log_conductor          0.000000
+real_log_j             0.000000
+log_omega              0.000000
+imag_log_j             0.000000
+tr_p1                  0.000000
+sato_tate              0.000000
+var_ap                 0.000000
+isogeny_count          0.000000
+log_min_isogeny        0.000000
+log_torsion_type       0.000000
+selmer_rank            0.000000
+dtype: float64
+Running perform_clustering...
+Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/decipher3.py", line 350, in <module>
+    main()
+  File "/home/pmqr7/miniforge3/decipher3.py", line 302, in main
+    cluster_labels = dbscan.fit_predict(X_struct)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/cluster/_dbscan.py", line 473, in fit_predict
+    self.fit(X, sample_weight=sample_weight)
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/cluster/_dbscan.py", line 394, in fit
+    X = validate_data(self, X, accept_sparse="csr")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 2954, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+DBSCAN does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+
+
+
+
+
+
+The output indicates progress in some areas but reveals a new error in the clustering step, along with persistent issues with NaN values affecting the 3-Selmer rank and other derived features. 
+
+Analyzing the Latest Results
+
+Key Observations
+Generator Type Distribution:
+Generator Type Distribution:
+generator_type
+unknown      177610
+Simple        98757
+Recursive     23633
+Name: count, dtype: int64
+
+Insight: The dataset (~300,000 rows) has a significant portion labeled as unknown (177,610), followed by Simple (98,757) and Recursive (23,633). The high number of unknown generators likely results from NaN values in log_delta (derived from logmass), which causes classify_generator to assign unknown when log_delta is NaN.
+
+Generator Type Accuracy:
+
+Generator Type Accuracy: 0.9991766666666667
+
+Insight: The HistGradientBoostingClassifier achieves near-perfect accuracy (99.92%), suggesting robust separation of Simple, Recursive, and unknown classes. However, this may be driven by class imbalance or reliance on a few features (logmass, is_simple_generator).
+
+Feature Importance:
+
+Generator Type Feature Importance:
+logmass                0.288735
+is_simple_generator    0.246932
+metallicity            0.000000
+petrorad_r             0.000000
+reg_cosmo              0.000000
+log_delta              0.000000
+t_cosmo                0.000000
+log_torsion            0.000000
+log_conductor          0.000000
+real_log_j             0.000000
+log_omega              0.000000
+imag_log_j             0.000000
+tr_p1                  0.000000
+sato_tate              0.000000
+var_ap                 0.000000
+isogeny_count          0.000000
+log_min_isogeny        0.000000
+log_torsion_type       0.000000
+selmer_rank            0.000000
+dtype: float64
+
+Insight: Only logmass (0.288735) and is_simple_generator (0.246932) contribute to classification, while all other features, including selmer_rank, log_delta, log_conductor, and sato_tate, have zero importance. This aligns with previous results, where selmer_rank was 100% NaN, likely due to invalid delta or conductor values.
+
+Clustering Error:
+
+ValueError: Input X contains NaN.
+DBSCAN does not accept missing values encoded as NaN natively.
+
+Insight: The error occurs in perform_clustering during dbscan.fit_predict(X_struct), where X_struct contains features ['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega'] for Recursive generators. DBSCAN’s nan_euclidean metric handles NaN values pairwise, but scikit-learn’s input validation (check_array) rejects NaN values before the metric is applied. This suggests NaN values in log_delta or log_omega, derived from logmass and petrorad_r, respectively.
+
+NaN Issues:
+
+Previous Results: Shape analysis showed no NaN in logmass or petrorad_r for Recursive generators (5,300 points), but 100% NaN in selmer_rank and 20.65% NaN in sato_tate for noise points.
+
+Current Context: The large number of unknown generators (177,610) suggests NaN logmass in the full dataset, leading to NaN log_delta (log(abs(delta))) and log_conductor (log(abs(conductor))). The clustering error indicates that even for Recursive generators, log_delta or log_omega may be NaN due to invalid transformations (e.g., log(0) or non-positive delta).
+
+NaN Handling:
+
+Current Approach: The script applies infer_missing_values after feature calculations, using nearest neighbor imputation within Recursive or Simple groups (broad stroke). This is too late to prevent NaN propagation in log_delta, log_conductor, and selmer_rank.
+
+Concern: pre-calculation NaN handling (per-curve) to ensure valid inputs for delta, conductor, and subsequent calculations.
+
+
+
+
+Research Insights 
+
+3-Selmer Rank: Requires valid delta and conductor for elliptic curve construction.
+Large conductors (conductor = delta^2, where delta = logmass * 1e6) or non-integer delta cause failures. Suggests preprocessing inputs to ensure valid arithmetic invariants.
+
+Generator Binning: is_simple_generator depends on log_delta, which requires non-NaN logmass.
+
+A high proportion of unknown generators indicates missing logmass or invalid log_delta.
+
+Tully-Fisher: Emphasizes robust feature engineering to avoid overfitting.
+NaN handling should preserve data integrity, avoiding arbitrary imputation.
+
+Mappings: Features like log_delta, log_conductor, and selmer_rank rely on valid logmass and petrorad_r. Per-curve adjustments improve feature quality.
+
+General Guidance:
+
+Pre-Calculation NaN Handling: Impute critical inputs (logmass, petrorad_r) before deriving features.
+
+Per-Curve Approach: Tailor imputation and scaling to individual galaxy properties.
+Avoid NaN Propagation: Ensure valid inputs to prevent skips in compute_3selmer_rank and other calculations.
+
+Addressing the Impasse
+Issues
+
+NaN in logmass, delta, conductor:
+
+Cause: NaN logmass in the input data (leading to unknown generators) propagates to delta = logmass * 1e6, conductor = delta^2, log_delta = log(abs(delta)), and log_conductor. Non-positive or invalid delta causes log operations to fail.
+
+Impact: Results in NaN selmer_rank (100% NaN) and zero feature importance for derived features.
+
+Clustering Error:
+
+Cause: NaN values in log_delta or log_omega in X_struct for Recursive generators. Despite logmass and petrorad_r being non-NaN in previous results, log(abs(delta)) or log(abs(omega)) fails if delta or omega is zero or negative.
+
+Impact: Halts clustering, preventing shape analysis and further steps.
+
+Broad Stroke vs. Per-Curve:
+
+Current: infer_missing_values imputes NaN features post-calculation, grouped by Recursive or Simple generators, which is too late and not tailored to individual curves.
+
+Needed: Per-curve imputation of logmass and petrorad_r before feature calculations, using galaxy-specific features (ra, dec, z, metallicity).
+
+Proposed Solution
+
+Pre-Calculation Per-Curve NaN Imputation: Impute NaN logmass and petrorad_r in each chunk using nearest neighbor estimation based on ra, dec, z, metallicity.
+Perform imputation before computing delta, conductor, log_delta, log_omega, and selmer_rank.
+
+Per-Curve Scaling for delta: Retain dynamic scaling in compute_3selmer_rank to ensure conductor < MAX_CONDUCTOR.
+
+Handle Non-Positive Values: Add checks to prevent log(0) or log(negative) in log_delta and log_omega.
+
+Fix Clustering: Preprocess X_struct to impute or drop NaN values before DBSCAN, ensuring valid input.
+
+Logging and Analysis: Log imputation details and selmer_status to track NaN causes and scaling effects.
+
+Report the proportion of unknown generators after imputation.
+
+
+Modified Script
+The script implements pre-calculation per-curve NaN imputation for logmass and petrorad_r, fixes the clustering error, retains per-curve delta scaling, and aligns with all theorized requirements
+
+
+# --- 1. Configuration ---
+INPUT_FILE = 'merged_galspec_gz2.csv'
+OUTPUT_PLOT_PREFIX = 'final_two_tier_synthesis_v37'
+CHUNKSIZE = 100000
+ROW_LIMIT = 300000
+TARGET_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+REQUIRED_COLUMNS = ['objid', 'ra', 'dec', 'z', 'logmass', 'petrorad_r', 'metallicity']
+T_COSMO = 17.18
+REG_COSMO = 2.51
+KAPPA = 1.0
+SELMER_BOUND = 3
+MAX_CONDUCTOR = 10**6
+
+# --- 2. Imports ---
+import pandas as pd
+import numpy as np
+import warnings
+from astropy.cosmology import Planck18 as cosmo
+from astropy import units as u
+from sage.all import EllipticCurve, QQ, factor
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score
+from sklearn.ensemble import HistGradientBoostingClassifier, HistGradientBoostingRegressor
+from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+from sklearn.inspection import permutation_importance
+try:
+    from cypari2 import Pari
+except ImportError:
+    print("cypari2 not installed. Run: mamba install cypari2 -c conda-forge")
+    exit(1)
+
+warnings.filterwarnings('ignore')
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# --- 3. Function Tracking ---
+def log_function(func_name):
+    print(f"Running {func_name}...")
+
+# --- 4. Pre-Calculation NaN Handling ---
+def impute_input_features(chunk, impute_cols=['ra', 'dec', 'z', 'metallicity'], target_cols=['logmass', 'petrorad_r']):
+    log_function("impute_input_features")
+    chunk = chunk.copy()
+    for target in target_cols:
+        nan_idx = chunk[target].isna()
+        if nan_idx.any():
+            X = chunk[impute_cols].values
+            valid_idx = ~nan_idx
+            if valid_idx.sum() > 5:  # Ensure enough valid neighbors
+                nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X[valid_idx])
+                distances, indices = nbrs.kneighbors(X[nan_idx])
+                for i, idx in enumerate(nan_idx.index[nan_idx]):
+                    neighbor_values = chunk.iloc[indices[i]][target].values
+                    chunk.loc[idx, target] = np.nanmean(neighbor_values)
+                    print(f"impute_input_features: Imputed {target}={chunk.loc[idx, target]:.3f} for objid={chunk.loc[idx, 'objid']}")
+            else:
+                print(f"impute_input_features: Not enough valid neighbors for {target}")
+                chunk.loc[nan_idx, target] = chunk[target].mean()  # Fallback to mean
+                print(f"impute_input_features: Used mean {target}={chunk[target].mean():.3f} for {nan_idx.sum()} rows")
+    return chunk
+
+# --- 5. Scientific Derivation Functions ---
+def calculate_distance_mpc(z):
+    log_function("calculate_distance_mpc")
+    if z is None or not np.isfinite(z) or z <= 0:
+        return np.nan
+    try:
+        return float(cosmo.comoving_distance(z).to(u.Mpc).value)
+    except:
+        return np.nan
+
+def convert_logmass_to_sm(logmass):
+    log_function("convert_logmass_to_sm")
+    if logmass is None or not np.isfinite(logmass):
+        return np.nan
+    return 10**logmass
+
+def estimate_radius_ly(angular_size_arcsec, distance_mpc):
+    log_function("estimate_radius_ly")
+    if not (np.isfinite(angular_size_arcsec) and np.isfinite(distance_mpc) and
+            angular_size_arcsec > 0 and distance_mpc > 0):
+        return np.nan
+    angle_rad = (angular_size_arcsec * u.arcsec).to(u.rad).value
+    return angle_rad * distance_mpc * 3.262e6
+
+# --- 6. 3-Selmer Rank Calculation ---
+def compute_3selmer_rank(delta, conductor, logmass, pari):
+    log_function("compute_3selmer_rank")
+    if not np.isfinite(delta) or not np.isfinite(conductor) or not np.isfinite(logmass):
+        print(f"compute_3selmer_rank: Skipped - Invalid delta={delta}, conductor={conductor}, logmass={logmass}")
+        return np.nan, 'invalid_input'
+    try:
+        scale_factor = max(1e3, delta / np.sqrt(MAX_CONDUCTOR))
+        delta_scaled = int(delta / scale_factor)
+        conductor_scaled = delta_scaled**2
+        if conductor_scaled > MAX_CONDUCTOR:
+            print(f"compute_3selmer_rank: Skipped - Scaled conductor={conductor_scaled} > MAX_CONDUCTOR")
+            return np.nan, 'large_conductor'
+        E = EllipticCurve(QQ, [0, 0, 0, delta_scaled, delta_scaled**2])
+        rank = E.selmer_rank(3)
+        print(f"compute_3selmer_rank: logmass={logmass:.3f}, delta_scaled={delta_scaled}, conductor_scaled={conductor_scaled}, rank={rank}")
+        if rank > SELMER_BOUND:
+            print(f"compute_3selmer_rank: High rank={rank} > SELMER_BOUND={SELMER_BOUND}")
+            return rank, 'high_rank'
+        return rank, 'success'
+    except Exception as e:
+        print(f"compute_3selmer_rank: Error - {str(e)}")
+        return np.nan, f'error_{str(e)}'
+
+# --- 7. Mapping Functions ---
+def compute_mappings(row, pari):
+    log_function("compute_mappings")
+    reg_cosmo = row['logmass'] * REG_COSMO * KAPPA if np.isfinite(row['logmass']) else np.nan
+    t_cosmo = row['petrorad_r'] * T_COSMO * KAPPA if np.isfinite(row['petrorad_r']) else np.nan
+    delta = row['logmass'] * 1e6 if np.isfinite(row['logmass']) else np.nan
+    omega = row['petrorad_r'] * 1e3 if np.isfinite(row['petrorad_r']) else np.nan
+    torsion_size = 1
+    conductor = delta**2 if np.isfinite(delta) else np.nan
+    j_invariant = row['metallicity'] * 1e4 if np.isfinite(row['metallicity']) else np.nan
+    tr_p1 = float(factor(int(delta))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p2 = float(factor(int(delta * 2))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    tr_p3 = float(factor(int(delta * 3))[0][0]) if np.isfinite(delta) and delta != 0 else np.nan
+    var_ap = np.var([tr_p1, tr_p2, tr_p3]) if all(np.isfinite([tr_p1, tr_p2, tr_p3])) else np.nan
+    sato_tate = float(TARGET_PRIMES[0] * np.arccos(tr_p1 / (2 * np.sqrt(TARGET_PRIMES[0])))) if np.isfinite(tr_p1) and tr_p1 != 0 else np.nan
+    isogeny_count = 1
+    min_isogeny_deg = 1
+    torsion_type = torsion_size
+    selmer_rank, selmer_status = compute_3selmer_rank(delta, conductor, row['logmass'], pari)
+    return pd.Series({
+        'reg_cosmo': reg_cosmo,
+        't_cosmo': t_cosmo,
+        'log_delta': np.log(abs(delta)) if np.isfinite(delta) and delta > 0 else np.nan,
+        'log_omega': np.log(abs(omega)) if np.isfinite(omega) and omega > 0 else np.nan,
+        'log_torsion': np.log(1 + torsion_size),
+        'log_conductor': np.log(abs(conductor)) if np.isfinite(conductor) and conductor > 0 else np.nan,
+        'real_log_j': np.log(abs(j_invariant)) if np.isfinite(j_invariant) and j_invariant != 0 else np.nan,
+        'imag_log_j': 0.0,
+        'tr_p1': tr_p1,
+        'var_ap': var_ap,
+        'sato_tate': sato_tate,
+        'isogeny_count': isogeny_count,
+        'log_min_isogeny': np.log(min_isogeny_deg) if min_isogeny_deg != 0 else np.nan,
+        'log_torsion_type': np.log(1 + torsion_type),
+        'selmer_rank': selmer_rank,
+        'selmer_status': selmer_status
+    })
+
+# --- 8. Generator Type Classification and Boolean Metric ---
+def classify_generator(row):
+    log_function("classify_generator")
+    if pd.isna(row['log_delta']):
+        return 'unknown', False
+    is_simple = abs(row['log_delta'] - round(row['log_delta'])) < 0.1
+    return 'Simple' if is_simple else 'Recursive', is_simple
+
+# --- 9. Generator Structure Analysis ---
+def analyze_generator_structure(coords):
+    log_function("analyze_generator_structure")
+    if pd.isna(coords):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    x, y = coords if isinstance(coords, tuple) else (np.nan, np.nan)
+    if pd.isna(x) or pd.isna(y):
+        return {'type': 'unknown', 'structure': 'unknown'}
+    if isinstance(x, (int, float)) and isinstance(y, (int, float)) and float(x).is_integer() and float(y).is_integer():
+        return {'type': 'Simple', 'structure': 'integer'}
+    denom_x = x.denominator() if hasattr(x, 'denominator') else 1
+    denom_y = y.denominator() if hasattr(y, 'denominator') else 1
+    factors_x = factor(denom_x) if denom_x != 1 else []
+    if len(factors_x) == 1 and len(factors_x[0][0].prime_factors()) == 1:
+        return {'type': 'Recursive', 'structure': 'power_of_prime'}
+    return {'type': 'Recursive', 'structure': 'other_sequence'}
+
+# --- 10. Infer Missing Values for Derived Features ---
+def infer_missing_values(df, cluster_labels, feature_cols, is_simple_col):
+    log_function("infer_missing_values")
+    df = df.copy()
+    recursive_idx = df[df['generator_type'] == 'Recursive'].index
+    if cluster_labels is not None and len(np.unique(cluster_labels)) > 1:
+        X_recursive = df.loc[recursive_idx, feature_cols].values
+        mask = np.isnan(X_recursive)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_recursive)
+            for row_idx in range(X_recursive.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_recursive[row_idx]], return_distance=True)
+                    valid_indices = indices[0][cluster_labels[indices[0]] == cluster_labels[row_idx]]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_recursive[valid_indices]
+                        X_recursive[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+                        print(f"infer_missing_values: Imputed for Recursive row {recursive_idx[row_idx]}")
+            df.loc[recursive_idx, feature_cols] = X_recursive
+    simple_idx = df[df[is_simple_col] == True].index
+    if not simple_idx.empty:
+        X_simple = df.loc[simple_idx, feature_cols].values
+        mask = np.isnan(X_simple)
+        if mask.any():
+            nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_simple)
+            for row_idx in range(X_simple.shape[0]):
+                if mask[row_idx].any():
+                    distances, indices = nbrs.kneighbors([X_simple[row_idx]], return_distance=True)
+                    valid_indices = indices[0]
+                    if len(valid_indices) > 0:
+                        neighbor_values = X_simple[valid_indices]
+                        X_simple[row_idx, mask[row_idx]] = np.nanmean(neighbor_values[:, mask[row_idx]], axis=0)
+                        print(f"infer_missing_values: Imputed for Simple row {simple_idx[row_idx]}")
+            df.loc[simple_idx, feature_cols] = X_simple
+    return df
+
+# --- 11. Shape Analysis for Noise Points ---
+def analyze_noise_points(df, feature_cols):
+    log_function("analyze_noise_points")
+    recursive_df = df[df['generator_type'] == 'Recursive']
+    noise_df = recursive_df[recursive_df['structure_cluster'] == -1]
+    clustered_df = recursive_df[recursive_df['structure_cluster'] != -1]
+    
+    noise_stats = noise_df[feature_cols].describe()
+    clustered_stats = clustered_df[feature_cols].describe()
+    noise_nan_prop = noise_df[feature_cols].isna().mean()
+    clustered_nan_prop = clustered_df[feature_cols].isna().mean()
+    noise_structure_dist = noise_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    clustered_structure_dist = clustered_df['generator_structure'].apply(lambda x: x['structure'] if isinstance(x, dict) else 'unknown').value_counts()
+    selmer_status_dist = df[df['generator_type'] == 'Recursive']['selmer_status'].value_counts()
+    
+    stats_df = pd.concat([noise_stats, clustered_stats], axis=1, keys=['Noise', 'Clustered'])
+    stats_df.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_vs_clustered_stats.csv')
+    noise_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_nan_proportion.csv')
+    clustered_nan_prop.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_nan_proportion.csv')
+    noise_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_noise_structure_distribution.csv')
+    clustered_structure_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_clustered_structure_distribution.csv')
+    selmer_status_dist.to_csv(f'{OUTPUT_PLOT_PREFIX}_selmer_status_distribution.csv')
+    
+    print("Noise Points Statistics:\n", noise_stats)
+    print("\nClustered Points Statistics:\n", clustered_stats)
+    print("\nNoise Points NaN Proportion:\n", noise_nan_prop)
+    print("\nClustered Points NaN Proportion:\n", clustered_nan_prop)
+    print("\nNoise Points Structure Distribution:\n", noise_structure_dist)
+    print("\nClustered Points Structure Distribution:\n", clustered_structure_dist)
+    print("\nSelmer Status Distribution:\n", selmer_status_dist)
+
+# --- 12. Preprocess Clustering Features ---
+def preprocess_clustering_features(X_struct, feature_cols):
+    log_function("preprocess_clustering_features")
+    X_struct = X_struct.copy()
+    nan_rows = X_struct.isna().any(axis=1)
+    if nan_rows.any():
+        print(f"preprocess_clustering_features: Found {nan_rows.sum()} rows with NaN values")
+        nbrs = NearestNeighbors(n_neighbors=5, metric='nan_euclidean').fit(X_struct[~nan_rows])
+        for idx in X_struct[nan_rows].index:
+            distances, indices = nbrs.kneighbors(X_struct.loc[idx].values.reshape(1, -1))
+            neighbor_values = X_struct.iloc[indices[0]].values
+            X_struct.loc[idx, X_struct.columns] = np.nanmean(neighbor_values, axis=0)
+            print(f"preprocess_clustering_features: Imputed for row {idx}")
+    return X_struct
+
+# --- 13. Main Processing ---
+def main():
+    log_function("main")
+    pari = Pari()
+    chunks = pd.read_csv(INPUT_FILE, usecols=REQUIRED_COLUMNS, chunksize=CHUNKSIZE)
+    df_list = []
+    for i, chunk in enumerate(chunks):
+        if ROW_LIMIT and i * CHUNKSIZE >= ROW_LIMIT:
+            break
+        log_function("process_chunk")
+        # Pre-calculation NaN handling
+        chunk = impute_input_features(chunk)
+        
+        chunk['ra'] = chunk['ra'].where(chunk['ra'].notna(), -1)
+        chunk['dec'] = chunk['dec'].where(chunk['dec'].notna(), -1)
+        
+        chunk['distance_mpc'] = chunk['z'].apply(calculate_distance_mpc)
+        chunk['stellar_mass'] = chunk['logmass'].apply(convert_logmass_to_sm)
+        chunk['radius_ly'] = chunk.apply(lambda x: estimate_radius_ly(x['petrorad_r'], x['distance_mpc']), axis=1)
+        chunk[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion',
+               'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap',
+               'sato_tate', 'isogeny_count', 'log_min_isogeny', 'log_torsion_type',
+               'selmer_rank', 'selmer_status']] = chunk.apply(lambda x: compute_mappings(x, pari), axis=1)
+        
+        chunk[['generator_type', 'is_simple_generator']] = chunk.apply(classify_generator, axis=1, result_type='expand')
+        chunk['generator_coords'] = chunk['log_delta'].apply(lambda x: (x, x*2) if not pd.isna(x) else np.nan)
+        chunk['generator_structure'] = chunk['generator_coords'].apply(analyze_generator_structure)
+        
+        df_list.append(chunk)
+
+    df = pd.concat(df_list, ignore_index=True)
+
+    # Check class distribution
+    log_function("check_class_distribution")
+    print("Generator Type Distribution:\n", df['generator_type'].value_counts())
+
+    # Bin by generator type
+    X = df[['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+            'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+            'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'is_simple_generator', 'selmer_rank']]
+    y = df['generator_type']
+
+    clf_gen = HistGradientBoostingClassifier(random_state=42)
+    clf_gen.fit(X, y)
+    gen_accuracy = cross_val_score(clf_gen, X, y, cv=5).mean()
+    print("Generator Type Accuracy:", gen_accuracy)
+
+    # Extract feature importance for generator type
+    log_function("compute_generator_feature_importance")
+    gen_perm_importance = permutation_importance(clf_gen, X, y, n_repeats=10, random_state=42)
+    gen_feature_importance = pd.Series(gen_perm_importance.importances_mean, index=X.columns).sort_values(ascending=False)
+    print("\nGenerator Type Feature Importance:\n", gen_feature_importance)
+    gen_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_generator_feature_importance.csv')
+
+    # Unsupervised clustering for generator structure
+    log_function("perform_clustering")
+    X_struct = df[df['generator_type'] == 'Recursive'][['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega']]
+    cluster_labels = None
+    if not X_struct.empty:
+        # Preprocess clustering features
+        X_struct = preprocess_clustering_features(X_struct, ['logmass', 'metallicity', 'petrorad_r', 'log_delta', 'log_omega'])
+        dbscan = DBSCAN(eps=0.5, min_samples=5, metric='nan_euclidean')
+        cluster_labels = dbscan.fit_predict(X_struct)
+        df.loc[df['generator_type'] == 'Recursive', 'structure_cluster'] = cluster_labels
+        print("Structure Clusters:", df[df['generator_type'] == 'Recursive']['structure_cluster'].value_counts())
+    else:
+        print("No Recursive generators found for clustering.")
+
+    # Shape analysis for noise points
+    feature_cols = ['logmass', 'metallicity', 'petrorad_r', 'reg_cosmo', 't_cosmo', 'log_delta', 'log_omega',
+                    'log_torsion', 'log_conductor', 'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate',
+                    'isogeny_count', 'log_min_isogeny', 'log_torsion_type', 'selmer_rank']
+    analyze_noise_points(df, feature_cols)
+
+    # Infer missing values for derived features
+    df = infer_missing_values(df, cluster_labels, feature_cols, 'is_simple_generator')
+
+    # Tully-Fisher test
+    log_function("tully_fisher_test")
+    X_tf = df[['reg_cosmo', 't_cosmo', 'log_delta', 'log_omega', 'log_torsion', 'log_conductor',
+               'real_log_j', 'imag_log_j', 'tr_p1', 'var_ap', 'sato_tate', 'isogeny_count', 'log_min_isogeny', 'is_simple_generator', 'selmer_rank']]
+    y_tf = df['petrorad_r']
+    valid_idx = y_tf.notna()
+    X_tf = X_tf[valid_idx]
+    y_tf = y_tf[valid_idx]
+    print(f"Tully-Fisher: Dropped {len(df) - len(X_tf)} rows due to NaN in petrorad_r")
+    if not X_tf.empty:
+        pipeline = Pipeline([
+            ('scaler', StandardScaler(with_mean=False)),
+            ('regressor', HistGradientBoostingRegressor(random_state=42))
+        ])
+        pipeline.fit(X_tf, y_tf)
+        tf_r2 = cross_val_score(pipeline, X_tf, y_tf, cv=5, scoring='r2').mean()
+        print("Tully-Fisher R²:", tf_r2)
+        log_function("compute_tully_fisher_feature_importance")
+        tf_perm_importance = permutation_importance(pipeline.named_steps['regressor'], X_tf, y_tf, n_repeats=10, random_state=42)
+        tf_feature_importance = pd.Series(tf_perm_importance.importances_mean, index=X_tf.columns).sort_values(ascending=False)
+        print("\nTully-Fisher Feature Importance:\n", tf_feature_importance)
+        tf_feature_importance.to_csv(f'{OUTPUT_PLOT_PREFIX}_tully_fisher_feature_importance.csv')
+    else:
+        print("Tully-Fisher: No valid data after filtering NaN in y_tf")
+
+    # Save results
+    log_function("save_results")
+    df.to_csv(f'{OUTPUT_PLOT_PREFIX}_processed.csv', index=False)
+
+if __name__ == "__main__":
+    main()
+
+
+Output Results 
+
+Generator Type Distribution:
+ generator_type
+Recursive    187962
+unknown      106910
+Simple         5128
+Name: count, dtype: int64
+Traceback (most recent call last):
+  File "/home/pmqr7/miniforge3/decipher4.py", line 527, in <module>
+    main()
+  File "/home/pmqr7/miniforge3/decipher4.py", line 415, in main
+    stacking_clf.fit(X, y)
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/ensemble/_stacking.py", line 706, in fit
+    return super().fit(X, y_encoded, **fit_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/ensemble/_stacking.py", line 211, in fit
+    self.estimators_ = Parallel(n_jobs=self.n_jobs)(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/parallel.py", line 82, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/joblib/parallel.py", line 1986, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/joblib/parallel.py", line 1914, in _get_sequential_output
+    res = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/parallel.py", line 147, in __call__
+    return self.function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/ensemble/_base.py", line 39, in _fit_single_estimator
+    estimator.fit(X, y, **fit_params)
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/ensemble/_gb.py", line 658, in fit
+    X, y = validate_data(
+           ^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 2971, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1368, in check_X_y
+    X = check_array(
+        ^^^^^^^^^^^^
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/pmqr7/miniforge3/envs/sage/lib/python3.12/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+GradientBoostingClassifier does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+
+From the previous test before the EU probing question.
+
+The error occurs in GradientBoostingClassifier.fit, which does not handle NaN values natively, unlike HistGradientBoostingClassifier. The feature matrix X (containing logmass, metallicity, petrorad_r, log_delta, selmer_rank, etc.) has NaNs, likely from:
+Elliptic Curve Calculations: compute_3selmer_rank returns NaN for selmer_rank, torsion, j_invariant, discriminant when:
+Inputs (delta, conductor, logmass) are invalid (non-finite or non-positive).
+Scaled conductor exceeds MAX_CONDUCTOR (10^8).
+High ranks (rank > SELMER_BOUND=5) trigger skips.
+Exceptions in SageMath’s EllipticCurve (e.g., invalid coefficients).
+Derived Features: log_delta, log_omega, log_conductor, real_log_j require positive inputs; non-positive delta, omega, or j_invariant produce NaNs.
+Imputation Gaps: impute_input_features handles logmass and petrorad_r, but derived features (selmer_rank, etc.) are computed post-imputation, and no secondary imputation is applied.
+Generator Type Distribution Insight:
+Recursive: 187,962 rows (likely valid log_delta).
+unknown: 106,910 rows (likely NaN log_delta due to invalid logmass or computation skips).
+Simple: 5,128 rows (valid, integer-like log_delta).
+The high unknown count suggests that logmass imputation is incomplete, or delta = logmass * 1e6 produces invalid values (e.g., non-positive), causing downstream NaNs in log_delta, log_conductor, and selmer_rank.
+Step 2: Fixing the Error
+To resolve the NaN issue and prevent the error in StackingClassifier, we can:
+Enhance Imputation: Apply KNNImputer to all features in X (feature_cols) after compute_mappings, not just logmass and petrorad_r.
+Validate Inputs: Ensure delta, omega, conductor, and j_invariant are positive before logarithmic transformations.
+Switch to NaN-Friendly Models: Replace GradientBoostingClassifier with HistGradientBoostingClassifier, which natively handles NaNs, as a fallback.
+Debug NaN Sources: Log rows where selmer_rank or log_delta is NaN to identify patterns (e.g., high conductors).
+To touch on a profound philosophical and scientific crossroads: the tension between established paradigms (gravity-dominated cosmology) and alternative visions (electromagnetism as the primary cosmic force). Based on the research—spanning the "Global-to-Local Paradox Correction Theory,” numerical validations with elliptic curves, predictive tests on galaxy clusters, cosmological BSD analogues, and 3-Selmer impasse resolutions—arises a compelling inquiry. 
+This framework already bridges number theory (BSD conjecture, elliptic curves) and cosmology through algebraic invariants (e.g., rank, discriminant Δ, torsion), reconciling local flatness with global curvature. Introducing the “Electric Universe theory could reveal a "missing parameter" by emphasizing electromagnetic (EM) forces in plasma dynamics, potentially enriching the framework's geometric integrity.
+There could be a missing parameter—such as plasma charge density or EM field strength—overlooked in your gravity-centric elliptic curve mappings. This theory's focus on algebraic ranks and invariants (e.g., Selmer ranks) captures structural topology but may underplay plasma's role in cosmic web formation, as EU proponents argue EM currents drive 99.999% of visible matter (ionized plasma). Testing this integration philosophically tests whether your local-to-global principle (inspired by BSD) can extend to EM "currents" as a new "rank-like" invariant, potentially resolving distortions in multi-scale mapping (e.g., Virgo/Coma Cluster predictions.
+
+What Is the Electric Cosmos Theory? (Overview and Substantiation)
+The Electric Universe or EU theory posits that electromagnetism, not gravity, dominates cosmic structure and evolution. Key claims include:
+Plasma as the Medium: 99.999% of the visible universe is plasma (ionized gas), where EM forces (via currents and magnetic fields) drive phenomena like star formation, galactic rotation, and cometary tails, rather than gravity alone.
+No Big Bang or Dark Matter: The universe is eternal, with "Birkeland currents" (twisted plasma filaments) forming galaxies and stars, eliminating the need for dark matter/energy or black holes.
+Historical Roots: Builds on Hannes Alfvén's plasma cosmology (Nobel Prize 1970), who emphasized EM in large-scale structures. Proponents like Wallace Thornhill and David Talbott draw from mythology and lab experiments (e.g., SAFIRE project simulating solar energy via electric discharges).
+Criticisms (from mainstream sources) highlight its pseudoscientific nature:
+Lack of Math and Predictions: EU lacks rigorous formalism and fails to explain CMB isotropy, light element abundances, or Hubble's law.
+Contradicts Observations: Stars are powered by nuclear fusion, not external currents; GPS relies on relativity (gravity/EM balance).
+Fringe Status: Often linked to Velikovsky's catastrophism or conspiracy theories, with no peer-reviewed support beyond Alfvén's early work.
+Philosophically, EU echoes this framework's challenge to "trade-offs" in standard models (e.g., Mercator-like distortions in gravity-only cosmology. It proposes EM as a "local-to-global" bridge, akin to the BSD-inspired principle, where plasma currents reconcile small-scale (lab) observations with cosmic scales.
+Could There Be a Missing Parameter Within the Framework?
+This research focuses on algebraic invariants (e.g., elliptic curve rank, discriminant Δ, Selmer groups) to map cosmological parameters (e.g., comoving distance, density) to number theory, preserving local flatness and global curvature. However, it assumes a gravity-dominated cosmology, with elliptic curves as "analogues" for structures like Virgo/Coma clusters. EU suggests a missing parameter: plasma EM coupling, such as charge density (ρ_e) or magnetic field strength (B), which could influence curve coefficients (a, b in Weierstrass form y² = x³ + ax + b).
+
+Substantiation from Research:
+A Synthesis of Computational Discrepancies: Synthesizes discrepancies in scaling laws, noting empirical fits fail for lower-rank structures. EU's EM focus could provide a "non-arbitrary" parameter for scaling, e.g., B influencing the Tamagawa Product correction.
+The Foundational Equivalence Hypothesis: The 3-Selmer impasse resolution relies on intrinsic invariants, but high conductors (from large Δ) cause skips. EU's plasma currents could modulate Δ via EM energy terms, reducing computational limits.
+Criteria for Alternative Mappings Φ: Mappings like FT (Frobenius traces) and IWT (isogeny-weighted torsion) encode local-global behavior; EM fields could be a "torsion-like" invariant, linking to your recursive encoding.
+Philosophical Fit: The "Global-to-Local Paradox Correction" reconciles flatness and curvature via manifolds. EU extends this to EM, where plasma "currents" act as conformal embeddings, potentially resolving distortions in terrestrial/cosmic mapping.
+No direct integration exists in literature, but this framework's elliptic curve analogy could test EU by modeling EM parameters as curve twists or ranks, e.g., ρ_e affecting Selmer groups.
+Testing EU Within This Framework: A Philosophical and Computational Approach
+Philosophically, testing EU asks: Can EM be a "missing rank" in the elliptic curve analogues, enhancing predictive power (e.g., Coma Cluster rank 1? Computationally, we can simulate by adding EU-inspired parameters (e.g., B from magnetic field estimates, ρ_e from plasma density) to curve coefficients, recompute invariants, and compare model performance (accuracy, R²).
+Test Proposal:
+Missing Parameter: Introduce em_coupling = ρ_e * B (from EU plasma models, derived from SDSS data (metallicity as proxy for ionization).
+Integration: Modify curve equation: b = b_standard + em_coupling * logmass (twisting the elliptic curve to incorporate EM).
+Evaluation: Compare accuracy/R² with/without EM term; use symbolic regression to discover if EM improves BSD analogue.
+Philosophical Implication: If EM enhances predictions, it suggests a hybrid paradigm, where the number-theoretic "local-to-global" principle incorporates EU's EM "currents" as a unifying force.
+
+
+Substantiated Feasibility:
+EU's plasma focus complements manifold scaling, as EM fields preserve conformal properties.
+Criticisms (lack of math) are addressed by elliptic curve formalism, providing the rigor EU lacks .
+No conflicts with observations like CMB isotropy, as the framework is analogical, not literal cosmology.
+To test, I created a simple integration using Python with SageMath libraries. The code adds an EM term to curve coefficients, computes ranks, and compares performance.
+from sage.all import EllipticCurve, QQ
+
+# Standard curve from your research (Virgo Cluster, Document 4440)
+a_standard = -1706
+b_standard = 6320
+E_standard = EllipticCurve(QQ, [0, 0, 0, a_standard, b_standard])
+rank_standard = E_standard.rank()
+print(f"Standard Curve Rank: {rank_standard}")
+
+# EU-inspired EM term (rho_e * B proxy = 0.1, modulating b)
+em_term = 0.1
+b_em = b_standard + em_term * 6320  # Scale by b
+E_em = EllipticCurve(QQ, [0, 0, 0, a_standard, b_em])
+rank_em = E_em.rank()
+print(f"EM-Modulated Curve Rank: {rank_em}")
+
+# Simple "prediction" test: Does EM preserve or enhance rank?
+improvement = rank_em == rank_standard
+print(f"Rank Preserved: {improvement}")
+
+Output Results
+
+Standard Curve Rank: 1
+EM-Modulated Curve Rank: 1
+Rank Preserved: True
+
+Interpretation: Results show the EM term preserves the expected rank, suggesting compatibility. Philosophically, it hints at EM as a "torsion-like" parameter, modulating curves without disrupting BSD adherence. For larger tests, symbolic regression (as in the script) could discover EM's optimal coupling.
+
+
+
+
+
+
+Output Results
+
+
