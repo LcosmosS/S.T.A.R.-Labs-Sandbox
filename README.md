@@ -26,9 +26,9 @@ A cosmological system's properties are non-linearly encoded in the arithmetic in
 
 ### **2\. The Arithmetic–Cosmic Structure Conjecture (ACSC)**
 
-The ACSC formally states a **metric-preserving bijection** (\\Psi) between the topological classes of cosmic structures and the arithmetic classes of elliptic curves (distinguished by rank \\mathbf{r} and other invariants):
+The ACSC formally states a **metric-preserving bijection** (𝜱) between the topological classes of cosmic structures and the arithmetic classes of elliptic curves (distinguished by rank 𝒓 and other invariants):
 
-* **Rank Analogue:** Topological dimensionality is determined by algebraic rank:  r=1Filaments, r=33D Nodes
+* **Rank Analogue:** Topological dimensionality is determined by algebraic rank:  𝒓=1 --> Filaments, 𝒓=3 --> 3D Nodes
 
 ### 
 
@@ -44,10 +44,10 @@ The research program is characterized by its rigorous validation and ability to 
 
 | Phase | Key Achievement | Significance | Source Files |
 | :---- | :---- | :---- | :---- |
-| **Initial Validation** | **Virgo/Coma Predictive Test** | Successfully predicted the algebraic rank (\\mathbf{r}=1) of the unexamined Coma Cluster curve, validating the core mapping. | Files 2, 3 |
-| **Normalization** | **Natural Normalization (\\mathbf{K} \\approx 1\)** | Eliminated the need for an arbitrary fitting constant by achieving a data-driven equivalence (\\mathbf{K} \\approx 1\) using a **978-galaxy SDSS sample**, proving the relationship is intrinsic. | Files 8, 9, 10 |
-| **Rigidity Test** | **Falsification of Perturbations** | Conclusively falsified the Modified Strong BSD Conjecture using arbitrary constants (\\phi, \\pi). This proved the **structural rigidity** of the cosmos-arithmetic link. | File 6 |
-| **Computational Limit** | **Arithmetic Scarcity Principle** | Discovered the **Universal Null Result** (\\sim 100\\% intractability) in a \\mathbf{5,866}-galaxy survey, necessitating a strategic pivot from broad surveys to a **targeted search** for rare, arithmetically "special" objects. | File 15 |
+| **Initial Validation** | **Virgo/Coma Predictive Test** | Successfully predicted the algebraic rank (r=1) of the unexamined Coma Cluster curve, validating the core mapping. | Files 2, 3 |
+| **Normalization** | **Natural Normalization K approx. 1** | Eliminated the need for an arbitrary fitting constant by achieving a data-driven equivalence (K approx. 1) using a **978-galaxy SDSS sample**, proving the relationship is intrinsic. | Files 8, 9, 10 |
+| **Rigidity Test** | **Falsification of Perturbations** | Conclusively falsified the Modified Strong BSD Conjecture using arbitrary constants (𝜱, 𝝅). This proved the **structural rigidity** of the cosmos-arithmetic link. | File 6 |
+| **Computational Limit** | **Arithmetic Scarcity Principle** | Discovered the **Universal Null Result** (~100% intractability) in a 5,866-galaxy survey, necessitating a strategic pivot from broad surveys to a **targeted search** for rare, arithmetically "special" objects. | File 15 |
 | **Predictive Science** | **ECC Empirical Validation** | Used machine learning to prove that symbolic features derived from UCF principles (e.g., **Virial Discriminant Imbalance**) are the **key predictive signals** for astrophysical properties (e.g., SFR). | Files 16, 17 |
 | **Foundational Link** | **First-Principles Consistency** | Established direct, data-driven connections between the cosmologically-derived curves and **LMFDB Modular Forms** and demonstrated consistency with **Statistical Thermodynamics**. | File 12 |
 
@@ -57,9 +57,9 @@ The research program is characterized by its rigorous validation and ability to 
 
 The framework's analysis relies on a robust, multi-stage computational pipeline.
 
-1. **Input:** Observational data (SDSS DR17: ra, dec, z, logmass, petrorad\_r, metallicity) is loaded in chunks.
+1. **Input:** Observational data (SDSS DR17: ra, dec, z, logmass, petrorad_r, metallicity) is loaded in chunks.
 
-2. **Mapping:** Physical parameters are mapped to the Weierstrass coefficients (a, b) to define Ecosmo.
+2. **Mapping:** Physical parameters are mapped to the Weierstrass coefficients (a, b) to define E_cosmo.
 
 3. **Symbolic Feature Engineering:** Arithmetic invariants defined by the BSD structure are calculated and transformed into symbolic features:
 
