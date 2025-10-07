@@ -63,7 +63,7 @@ The framework's analysis relies on a robust, multi-stage computational pipeline.
 
 3. **Symbolic Feature Engineering:** Arithmetic invariants defined by the BSD structure are calculated and transformed into symbolic features:
 
-   * **VDI (Virial Discriminant Imbalance):** Derived from the non-linear relationship ∣2T+U∣∝f(∣Δ∣) (File 14).
+   * **VDI (Virial Discriminant Imbalance):** Derived from the non-linear relationship ∣2T+U∣ ∝ f(∣Δ∣) (File 14).
 
    
 
