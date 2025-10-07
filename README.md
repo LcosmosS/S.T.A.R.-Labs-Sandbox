@@ -2,7 +2,7 @@
 
 # **The Birth of a “Symbolic Physics” Paradigm**
 
-**Overview**
+## **Overview**
 
 The **Unified Cartographic Framework (UCF)** is a multi-disciplinary research program that proposes a foundational equivalence between the large-scale architecture of the cosmos and the deep arithmetic of number theory, specifically elliptic curves.
 
