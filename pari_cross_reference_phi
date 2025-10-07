@@ -1,0 +1,129 @@
+\\ Set desired precision
+\p 38;
+
+\\ Define constants
+phi = (1 + sqrt(5)) / 2;
+pi_val = Pi;
+
+\\ List of curves to analyze [a, b] for y^2 = x^3 + ax + b
+curves = [[1, 2], [2, 1], [3, 2], [5, 3], [-1706, 6320]];
+
+\\ --- Main Loop ---
+for(i = 1, length(curves),
+    a = curves[i][1];
+    b = curves[i][2];
+    print("--------------------------------------------------");
+    print("Curve: y^2 = x^3 + ", a, "x + ", b);
+    
+    \\ Initialize the elliptic curve
+    E = ellinit([0, 0, 0, a, b], 1);
+    
+    \\ Check for singularity
+    delta = E.disc;
+    print("Discriminant: ", delta);
+    if(delta == 0, 
+        print("Not an elliptic curve (singular). Skipping."); 
+        next
+    );
+    
+    conductor = ellglobalred(E)[1];
+    print("Conductor: ", conductor);
+    
+    \\ Torsion subgroup
+    tors = elltors(E);
+    tors_order = tors[1];
+    print("Torsion subgroup order: ", tors_order);
+    
+    \\ Algebraic Rank
+    rank_data = ellrank(E);
+    alg_rank = rank_data[1];
+    print("Algebraic rank: ", alg_rank);
+    
+    \\ --- Analytic Rank Calculation (BSD) ---
+    L0 = elllseries(E, 1);
+    if(abs(L0) > 1e-9,
+        analytic_rank = 0;
+        leading_coeff = L0,
+        \\ L(E, 1) is zero, check first derivative
+        L1 = elllseries(E, 1, 1);
+        if(abs(L1) > 1e-9,
+            analytic_rank = 1;
+            leading_coeff = L1,
+            \\ L'(E, 1) is zero, check second derivative
+            L2 = elllseries(E, 1, 2);
+            if(abs(L2) > 1e-9,
+                analytic_rank = 2;
+                leading_coeff = L2 / 2!, \\ Taylor series coeff is L^(r)/r!
+                \\ L''(E, 1) is zero, check third derivative
+                L3 = elllseries(E, 1, 3);
+                analytic_rank = 3;
+                leading_coeff = L3 / 6!
+            )
+        )
+    );
+    
+    print("Analytic rank: ", analytic_rank);
+    print("Leading coefficient L^(r)(E, 1)/r!: ", leading_coeff);
+    
+    \\ Verify Weak BSD
+    if(alg_rank == analytic_rank,
+        print("Weak BSD holds: Algebraic rank = Analytic rank"),
+        print("Weak BSD fails: Algebraic rank != Analytic rank")
+    );
+    
+    \\ --- p-adic L-function ---
+    p = 5;
+    iferr(
+        \\ Code to try
+        {
+            L_padic = ellpadiclseries(E, p, 10);
+            L_padic_val = subst(L_padic, 'x, 1);
+            print("p-adic L-function at s=1 (p=", p, "): ", L_padic_val);
+            if(abs(L_padic_val) < 1e-10,
+                print("p-adic L-function suggests higher rank"),
+                print("p-adic L-function suggests rank 0")
+            )
+        },
+        \\ Code to run on error
+        err,
+        print("Failed to compute p-adic L-function: ", err)
+    );
+    
+    \\ --- Strong BSD Components ---
+    omega = ellomega(E)[1];
+    omega_scaled = pi_val * omega;
+    
+    \\ Regulator Calculation
+    if(alg_rank > 0,
+        reg = ellreg(E),
+        reg = 1.0  \\ Regulator is 1 by convention if rank is 0
+    );
+    reg_scaled = phi * reg;
+    
+    \\ Product of Tamagawa Numbers
+    local_primes = factor(conductor)[,1];
+    tamagawa = prod(k=1, #local_primes, elllocalred(E, local_primes[k])[2]);
+    
+    \\ Assumed |Sha(E)| for the custom test
+    sha_order = 5; 
+    
+    \\ --- Custom "Modified" Strong BSD Test ---
+    rhs = (omega_scaled * reg_scaled * sha_order * tamagawa) / (tors_order^2);
+    
+    print("Scaled real period (Omega * pi): ", omega_scaled);
+    print("Scaled regulator (Reg * phi): ", reg_scaled);
+    print("Product of Tamagawa numbers: ", tamagawa);
+    print("Right-hand side of modified strong BSD: ", rhs);
+    
+    \\ Assumed modified leading coefficient for the custom test
+    modified_leading_coeff = 8;
+    print("Modified leading coefficient (F_6): ", modified_leading_coeff);
+    
+    if(abs(modified_leading_coeff - rhs) < 1e-5,
+        print("Modified strong BSD holds with Fibonacci, pi, and phi substitutions"),
+        print("Modified strong BSD fails with Fibonacci, pi, and phi substitutions");
+        adjusted_sha = (modified_leading_coeff * tors_order^2) / (omega_scaled * reg_scaled * tamagawa);
+        print("Adjusted |Sha(E)| to match: ", adjusted_sha)
+    );
+    
+    print(""); \\ Newline for next curve
