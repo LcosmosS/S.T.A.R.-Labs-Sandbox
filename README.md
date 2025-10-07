@@ -19,7 +19,7 @@ A cosmological system's properties are non-linearly encoded in the arithmetic in
 | Domain | Principle | Key Invariant |
 | :---- | :---- | :---- |
 | **Cosmology** | Global-to-Local Paradox Resolution | Conformal Embeddings, Manifold Scaling |
-| **Arithmetic** | Local-to-Global Principle | Birch and Swinnerton-Dyer (BSD) Conjecture |
+| **Arithmetic** | Local-to-Global Principle | Birch and Swinnerton-Dyer (BSD) Conjecture, Period–Torsion–Discriminant (PTD), Modularity–Conductor–j-invariant (MCJ), Frobenius Trace Spectrum (FT), Isogeny-Weighted Torsion (IWT) |
 | **Physical Law** | Energy-Geometry Correspondence | Virial Imbalance $ |
 
 ### 
