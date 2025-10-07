@@ -1,0 +1,27 @@
+# environment.yml
+name: ucf_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Core Python stack
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  # Specialized Mathematical Libraries
+  - cypari2 # Essential for elliptic curve arithmetic, often easier via conda
+  - gudhi   # Essential for Topological Data Analysis (TDA) and the ECC
+  # Astrophysical and Data Processing
+  - astropy
+  - catboost
+  - optuna
+  - pip
+  - pip:
+    # Libraries that may not be in conda-forge or are custom
+    # To install sagemath package run the following:
+    - conda install conda-forge::sagemath-bliss
+    - gplearn
+    - pysr # Symbolic Regression 
