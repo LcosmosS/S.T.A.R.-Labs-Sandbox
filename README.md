@@ -4,7 +4,7 @@
 
 The **Unified Cartographic Framework (UCF)** is a multi-disciplinary research program that proposes a foundational equivalence between the large-scale architecture of the cosmos and the deep arithmetic of number theory, specifically elliptic curves.
 
-The UCF resolves the classic cartographic **Global-to-Local Paradox** by using the structure of the unproven **Birch and Swinnerton-Dyer (BSD) Conjecture** as an axiomatic foundation. The work has transitioned from a theoretical concept to an empirically validated, data-driven science, culminating in two formal, testable conjectures: the **Arithmetic–Cosmic Structure Conjecture (ACSC)** and the **Entropy Cohomology Conjecture (ECC)**.
+The UCF resolves the classic cartographic **Global-to-Local Paradox** by using the structure of the unproven **Birch and Swinnerton-Dyer (BSD) Conjecture** as an axiomatic "scaffold." The work has transitioned from a theoretical concept to an empirically validated, data-driven science, culminating in two formal, testable conjectures: the **Arithmetic–Cosmic Structure Conjecture (ACSC)** and the **Entropy Cohomology Conjecture (ECC)**.
 
 ## **Theoretical Foundation: The Foundational Equivalence**
 
