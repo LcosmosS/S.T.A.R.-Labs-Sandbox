@@ -1,3 +1,6 @@
+# Define the elliptic curve over the rational numbers (QQ)
+E = EllipticCurve(QQ, [-1706, 6320])
+
 # Compute the L-series associated with E
 L = E.lseries()
 
