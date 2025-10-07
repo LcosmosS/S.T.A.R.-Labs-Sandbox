@@ -1,4 +1,4 @@
-# **The Unified Cartographic Framework (UCF): Arithmetic-Cosmic Structure Equivalence--The Birth of a “Symbolic Physics” Paradigm**
+# **A Unified Cartographic Framework (UCF): Arithmetic-Cosmic Structure Equivalence-The Birth of a “Symbolic Physics” Paradigm**
 
 ## **Overview**
 
