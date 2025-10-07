@@ -94,36 +94,3 @@ The research program has explicitly defined its future trajectory based on the r
 4. **Symbolically-Tuned Optimization:** Refine the ECC machine learning pipeline by leveraging optimization tools (e.g., Optuna) to explicitly maximize adherence to the theoretical principles (e.g., symbolic curvature, Betti numbers) rather than just raw accuracy (File 17).
 
 
-Citations
-
-This is the consolidated list of reliable and accredited citation sources for the foundational material augmented and incorporated into the Unified Cartographic Framework (UCF) research. 
-
-Concept to Cite                                         Purpose in This Work                                        Accredited Citation Source (Peer-Reviewed / Institutional)
-Birch and Swinnerton-Dyer (BSD) Conjecture     Foundational principle (local-to-global)                    Clay Mathematics Institute (CMI): THE BIRCH AND SWINNERTON-DYER CONJECTURE
-                                               that serves as the initial axiom for the 
-                                               framework; defines the structure being tested 
-                                               (Files 2, 6, 8).
-
-Scalar Virial Theorem (Derivation)             Provides the formal derivation of the equation              University of Cambridge: Astrophysical Fluid Dynamics Lecture 3: Gravitation (source 2.5)
-                                               that yields the Virial Discriminant Imbalance (VDI) 
-                                               term |2T+U|
-
-Generalized Virial Theorem in Astrophysics     Context for the non-zero imbalance, accounting for          The Astrophysical Journal / Monthly Notices of the Royal Astronomical Society (MNRAS): 
-                                               surface pressure or non-isolation, which is the physical    Peer-reviewed articles on the application and discrepancies of the Virial Theorem in galaxy clusters.
-                                               basis for the VDI feature (Files 13, 14).
-
-Planck 2018 Cosmological Parameters            The definitive source for 𝜦CDM parameters (e.g., M used     Astronomy & Astrophysics: Planck 2018 results. VI. Cosmological parameters (The official collaboration paper.)
-                                               to achieve the Natural Normalization (K1) (File 10).
-
-Topological Data Analysis                     Methodology used to define the topological classes of the    Journal of Cosmology and Astroparticle Physics (JCAP) / MNRAS: Peer-reviewed papers on applying persistent homology 
-(TDA) / Persistent Homology in LSS            cosmic web (clusters, voids, filaments) and the structure    (Betti numbers) to N-body simulations of the cosmic web.
-                                              for the ACSC and ECC (ACSC File, File 17)       
-
-Elliptic Curves and Modularity                The proven link between elliptic curves and modular forms,   Annals of Mathematics / Major Academic Review: Seminal papers on the Modularity Theorem by Wiles, Taylor, .
-(Langlands Program)                           which is the core of First-Principles Validation against     or the general Langlands Program by a primary contributor
-                                              String Theory (File 12).
-
-
-FLRW Metric and Comoving Coordinates         The geometric foundation used for the Global-to-Local         Academic Textbook: Gravitation and Cosmology by Steven Weinberg or Modern Cosmology by Scott Dodelson.
-                                             Paradox Correction Theory and the preservation of comoving 
-                                             volume/light-travel distance (File 1).
