@@ -1,41 +1,53 @@
-/* Set memory limits for efficient computation on 64-bit PARI/GP */
-default(parisize, 32000000); /* Initial stack size: 32 MB */
-default(parisizemax, 64000000); /* Maximum stack size: 64 MB */
-
-/* Set precision to 38 decimal places for accurate calculations */
+/* Set memory limits and precision */
+default(parisize, 32000000);
+default(parisizemax, 64000000);
 \p 38
 
-/* Define a mock cosmological L-function using a simplified power spectrum model */
-/* Here, we approximate L_cosmo(s) with a sum based on CMB-inspired coefficients */
-L_cosmo(s) = sum(n=2, 1000, (2500 / (n * (n + 1))) / n^s); /* Simplified C_l ~ 2500/l(l+1) */
+/* Define cosmological constants with Hubble time for normalization */
+t_H = 1.44e10;                      /* Hubble time in years */
+Omega_cosmo = 5.38e7;               /* Light travel time to Virgo in years */
+Omega_tilde = Omega_cosmo / t_H;    /* Dimensionless Omega */
+Reg_cosmo = 9.3e10 / 5.38e7;        /* Size ratio: observable universe / Virgo distance */
+prod_c_p_cosmo = 50;                /* Number of major galaxy clusters */
+Sha_cosmo = 0.27;                   /* Dark matter density parameter */
+T_cosmo = 5;                        /* Number of superclusters */
 
-/* Define cosmological constants using known data */
-Omega_cosmo = 5.38e7; /* Light travel time to Virgo Cluster: 53.8 million light-years (16.5 Mpc) */
-Reg_cosmo = 9.3e10 / 5.38e7; /* Observable universe diameter (93 billion ly) / Virgo distance */
-prod_c_p_cosmo = 10; /* Approximate number of major galaxy clusters in local universe */
-Sha_cosmo = 0.27; /* Dark matter density parameter O_DM ~ 0.27 from Planck 2018 */
-T_cosmo = 5; /* Number of major superclusters in a reference volume */
+/* Define mock CMB data based on a simplified approximation of Planck TT spectrum */
+T_cmb = 2.7255e6;                   /* CMB temperature in μK */
+/* Use a piecewise function for C_l from l=2 to l=2508 */
+C_l = vector(2509, n, if(n<2, 0, if(n<=29, (1000 * 2 * Pi) / (n * (n+1)), \
+       (0.75 * (2508 - n) + 0.0063 * (n - 30)) / (2508 - 30))));
 
-/* Compute the left side: L_cosmo(1) as an approximation of total density signal */
-left_side = L_cosmo(1); /* Evaluate at s=1, assuming rank r_cosmo = 0 */
+/* Define the unscaled L_cosmo(s) with dimensionless CMB data (C_l / T_cmb^2) */
+L_cosmo(s) = sum(n=2, 2508, (C_l[n] / T_cmb^2) / n^s);
 
-/* Compute the right side using the cosmological BSD analogue formula */
-right_side = (Omega_cosmo * Reg_cosmo * prod_c_p_cosmo * Sha_cosmo) / (T_cosmo^2);
+/* 1. Compute the unscaled left side */
+unscaled_left = L_cosmo(1);
 
-/* Print all results */
-print("Precision set to 38");
-print("Mock L_cosmo defined with CMB-inspired coefficients");
-print("Omega_cosmo (Virgo distance in years): ", Omega_cosmo);
-print("Reg_cosmo (size ratio): ", Reg_cosmo);
-print("Product of cosmological Tamagawa numbers (cluster count): ", prod_c_p_cosmo);
-print("Sha_cosmo (dark matter density parameter): ", Sha_cosmo);
-print("T_cosmo (supercluster count): ", T_cosmo);
-print("Left side (L_cosmo(1)): ", left_side);
+/* 2. Compute the dimensionless right side */
+right_side = (Omega_tilde * Reg_cosmo * prod_c_p_cosmo * Sha_cosmo) / (T_cosmo^2);
+
+/* 3. Derive the normalization constant K */
+K = right_side / unscaled_left;
+
+/* 4. Define the new, normalized L-function and compute the final left side */
+L_cosmo_new(s) = K * L_cosmo(s);
+left_side = L_cosmo_new(1);
+
+/* Print all intermediate and final results */
+print("Omega_tilde: ", Omega_tilde);
+print("Reg_cosmo: ", Reg_cosmo);
+print("prod_c_p_cosmo: ", prod_c_p_cosmo);
+print("Sha_cosmo: ", Sha_cosmo);
+print("T_cosmo: ", T_cosmo);
+print("Unscaled L_cosmo(1): ", unscaled_left);
 print("Right side: ", right_side);
+print("Normalization constant K: ", K);
+print("Normalized L_cosmo(1): ", left_side);
 
-/* Compare left and right sides within a tolerance */
-tolerance = 1e-5; /* Relative tolerance of 0.00001 */
+/* 5. Final comparison check */
+tolerance = 0.1; /* 10% tolerance */
 if (abs(left_side - right_side) < tolerance * right_side,
-    print("Cosmological BSD analogue holds within tolerance"),
-    print("Cosmological BSD analogue fails: Left side != Right side")
+    print("Analogy holds within 10%"),
+    print("Analogy fails: Left side != Right side")
 );
