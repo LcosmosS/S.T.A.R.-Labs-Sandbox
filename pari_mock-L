@@ -1,0 +1,41 @@
+/* Set memory limits for efficient computation on 64-bit PARI/GP */
+default(parisize, 32000000); /* Initial stack size: 32 MB */
+default(parisizemax, 64000000); /* Maximum stack size: 64 MB */
+
+/* Set precision to 38 decimal places for accurate calculations */
+\p 38
+
+/* Define a mock cosmological L-function using a simplified power spectrum model */
+/* Here, we approximate L_cosmo(s) with a sum based on CMB-inspired coefficients */
+L_cosmo(s) = sum(n=2, 1000, (2500 / (n * (n + 1))) / n^s); /* Simplified C_l ~ 2500/l(l+1) */
+
+/* Define cosmological constants using known data */
+Omega_cosmo = 5.38e7; /* Light travel time to Virgo Cluster: 53.8 million light-years (16.5 Mpc) */
+Reg_cosmo = 9.3e10 / 5.38e7; /* Observable universe diameter (93 billion ly) / Virgo distance */
+prod_c_p_cosmo = 10; /* Approximate number of major galaxy clusters in local universe */
+Sha_cosmo = 0.27; /* Dark matter density parameter O_DM ~ 0.27 from Planck 2018 */
+T_cosmo = 5; /* Number of major superclusters in a reference volume */
+
+/* Compute the left side: L_cosmo(1) as an approximation of total density signal */
+left_side = L_cosmo(1); /* Evaluate at s=1, assuming rank r_cosmo = 0 */
+
+/* Compute the right side using the cosmological BSD analogue formula */
+right_side = (Omega_cosmo * Reg_cosmo * prod_c_p_cosmo * Sha_cosmo) / (T_cosmo^2);
+
+/* Print all results */
+print("Precision set to 38");
+print("Mock L_cosmo defined with CMB-inspired coefficients");
+print("Omega_cosmo (Virgo distance in years): ", Omega_cosmo);
+print("Reg_cosmo (size ratio): ", Reg_cosmo);
+print("Product of cosmological Tamagawa numbers (cluster count): ", prod_c_p_cosmo);
+print("Sha_cosmo (dark matter density parameter): ", Sha_cosmo);
+print("T_cosmo (supercluster count): ", T_cosmo);
+print("Left side (L_cosmo(1)): ", left_side);
+print("Right side: ", right_side);
+
+/* Compare left and right sides within a tolerance */
+tolerance = 1e-5; /* Relative tolerance of 0.00001 */
+if (abs(left_side - right_side) < tolerance * right_side,
+    print("Cosmological BSD analogue holds within tolerance"),
+    print("Cosmological BSD analogue fails: Left side != Right side")
+);
