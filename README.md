@@ -1,4 +1,6 @@
 # **A Unified Cartographic Framework (UCF): Arithmetic-Cosmic Structure Equivalence and the Birth of a “Symbolic Physics” Paradigm**
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/LcosmosS/ACSC-GLMPCT/HEAD?urlpath=lab)
+This repository contains the research, computational scripts, and data for a novel framework in theoretical physics and cosmology, herein named Symbolic Physics.
 
 ## **Overview**
 
