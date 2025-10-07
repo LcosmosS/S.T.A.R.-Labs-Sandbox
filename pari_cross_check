@@ -1,0 +1,16 @@
+E = ellinit([-1706, 6320]);
+elltors(E);
+gr = ellglobalred(E);
+tamagawa = [[gr[4][i,1], gr[5][i][4]] | i<-[1..#gr[4][,1]]];
+prod([t[2] | t <- tamagawa]);
+[r, L1r] = ellanalyticrank(E);
+omega = if(E.disc>0, 2, 1) * E.omega[1];
+G = ellgenerators(E);
+reg = if(#G>0, matdet(ellheightmatrix(E, G)), 0);
+selmer = ellselmer(E, 2);
+
+print("Tamagawa product: ", prod([t[2] | t <- tamagawa]));
+print("Analytic rank: ", r, ", L'(E,1): ", L1r);
+print("Real period: ", omega);
+print("Regulator: ", reg);
+print("2-Selmer rank: ", #selmer);
