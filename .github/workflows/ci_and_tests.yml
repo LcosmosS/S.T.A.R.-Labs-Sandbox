@@ -1,0 +1,107 @@
+name: Unified Cartographic Framework CI/CD
+
+# 1. Trigger the Workflow
+# Run on every push to the main branch and on pull requests
+# targeting the main branch. Also allows manual running.
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# 2. Define Jobs (Computational Tasks)
+jobs:
+  # Job 1: Setup and Test the Foundational Arithmetic Core (SageMath/PARI/GP)
+  arithmetic_core_tests:
+    name: Test Arithmetic & Normalization
+    runs-on: ubuntu-latest
+    
+    # Use a Conda environment for complex scientific packages
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Conda Environment
+      # Using a setup-miniconda action for reliable dependency management
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: ucf_env
+        environment-file: environment.yml # Define dependencies in a separate file (see below)
+        auto-activate-base: false
+
+    - name: Run Natural Normalization Test (File 10 validation)
+      shell: bash
+      run: |
+        # Assume your normalization script is named 'natural_normalization.py'
+        # This script should check KAPPA ≈ 1 and its stability (File 10)
+        conda activate ucf_env
+        python src/tests/natural_normalization_test.py
+        
+    - name: Run Arithmetic Rigidity Test (File 6 validation)
+      shell: bash
+      run: |
+        # This script validates the non-arbitrary nature of the BSD link (File 6)
+        conda activate ucf_env
+        python src/tests/arithmetic_rigidity_test.py
+        
+    - name: Run Energy-Geometry Correspondence Check (File 14 validation)
+      shell: bash
+      run: |
+        # This script checks the non-linear relationship between |2T+U| and |Δ|
+        conda activate ucf_env
+        python src/tests/energy_correspondence_test.py
+
+  # Job 2: Test the Predictive Science Core (ECC, Machine Learning, TDA)
+  predictive_science_tests:
+    name: Test ECC & TDA Pipeline
+    runs-on: ubuntu-latest
+    needs: arithmetic_core_tests # Ensure arithmetic tests pass first
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Conda Environment
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: ucf_env
+        environment-file: environment.yml
+        auto-activate-base: false
+        
+    - name: Run ECC Predictive Test (File 17 validation)
+      shell: bash
+      run: |
+        # This runs the core ML pipeline to test feature importance and R^2 (File 17)
+        # Note: This may be computationally heavy and might need to run on a larger runner (e.g., self-hosted or a specific cloud VM) if the dataset is large.
+        conda activate ucf_env
+        python src/pipeline/ecc_predictive_test.py --sample_size 100000
+
+    - name: Run Topological Consistency Check (ACSC check)
+      shell: bash
+      run: |
+        # This checks Betti number consistency or Wasserstein distance (ACSC File)
+        conda activate ucf_env
+        python src/pipeline/acsc_topology_check.py
+
+  # Job 3 (Optional): Build and Deploy Documentation
+  build_documentation:
+    name: Build Papers and Documentation
+    runs-on: ubuntu-latest
+    needs: [arithmetic_core_tests, predictive_science_tests]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup LaTeX Environment
+      # If your papers are written in LaTeX, this step compiles them to PDF
+      uses: xu-cheng/latex-action@v2
+      with:
+        root_file: main_paper.tex
+        
+    - name: Commit Built PDFs (if applicable)
+      uses: actions/upload-artifact@v4
+      with:
+        name: ucf-papers
+        path: main_paper.pdf
