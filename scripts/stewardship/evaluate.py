@@ -202,6 +202,9 @@ def has_valid_steward_approval(*, author: str, head_sha: str,
             continue
         if latest_substantive_review[1] != "APPROVED" or latest_substantive_review[0] != event_order:
             continue
+        # An approval must explicitly apply to the exact head currently being evaluated.
+        if latest_substantive_review[2].get("commit_id") != head_sha:
+            continue
         if login.casefold() == author.casefold():
             continue
         permission = normalized_permissions.get(login.casefold(), normalized_permissions.get(steward))
