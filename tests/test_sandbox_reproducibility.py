@@ -5,7 +5,12 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.reproducibility import candidates as repro
+import importlib.util
+
+SOURCE = Path(__file__).resolve().parents[1] / "scripts/reproducibility/candidates.py"
+spec = importlib.util.spec_from_file_location("sandbox_repro_candidates", SOURCE)
+repro = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(repro)
 
 
 class ReproducibilityContractTests(unittest.TestCase):
