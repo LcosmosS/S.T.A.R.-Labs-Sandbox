@@ -27,7 +27,10 @@ The pinned [upstream reference manifest](upstream-reference.json) binds 24 files
 all 18 currently tracked workflow definitions plus README, contribution guide,
 Charter text, license, security guidance and ECC/RTCH recovery gate. Upstream
 scientific-status flags and record IDs are references only; none are imported
-as sandbox authority. Original sandbox licensing is unchanged.
+as sandbox authority. Their source bytes and hashes were read and checked during
+setup; routine CI verifies the local archive and metadata, not remote upstream
+files on every run. The reference manifest is steward-owned. Original sandbox
+licensing is unchanged.
 
 ## Live baseline inspection
 
@@ -129,6 +132,9 @@ does not exist in PR #2's base; the older base metadata validator still runs.
 Post-merge routing of extended CODEOWNERS paths, a real outsider merge with zero
 reviews, hostile-fork isolation and tag blocking have not been live-tested. No
 tag rules are installed by the files in this PR; GitHub administrators remain
-able to edit rules. Configuration readback is not an end-to-end merge test.
+able to edit rules. Configuration readback is not an end-to-end merge test. The proposed admission
+rule requires an up-to-date branch so an earlier successful check cannot remain
+valid after the base policy changes; this is an explicit departure from the
+supplied design's loose-check recommendation.
 
 Activation follows [SETTINGS.md](SETTINGS.md). The setup PR does not merge itself.
