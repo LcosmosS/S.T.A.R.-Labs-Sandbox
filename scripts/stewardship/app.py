@@ -20,7 +20,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
-from evaluate import classify_paths, evaluate, load_policy
+from evaluate import classify_paths, evaluate, load_policy, validate_policy
 
 API_BASE = "https://api.github.com"
 CHECK_NAME = "sandbox-stewardship"
@@ -325,40 +325,89 @@ class StewardshipService:
                  installation_id: int | None = None,
                  delivery_store: DeliveryStore | None = None) -> None:
         self.api = api
-        self.policy = policy or load_policy()
+        self.policy_error: str | None = None
+        try:
+            self.policy = load_policy() if policy is None else validate_policy(policy)
+        except Exception as exc:
+            # Keep the service available to publish explicit failure checks rather than
+            # crashing before any PR can receive a result.
+            self.policy = None
+            self.policy_error = f"{type(exc).__name__}: {exc}"
         self.repository_id = int(repository_id)
         self.repository_full_name = repository_full_name.casefold()
         self.installation_id = int(installation_id) if installation_id else None
         self.delivery_store = delivery_store
+        # One service process serializes reconciliation, webhook processing and publication.
         self._reconcile_lock = threading.Lock()
 
     def _check_pr(self, pr: dict[str, Any], token: str) -> tuple[str, str, str]:
         number = int(pr["number"])
-        head = pr.get("head", {}).get("sha")
-        author = pr.get("user", {}).get("login")
-        if not isinstance(head, str) or not head or not isinstance(author, str) or not author:
-            raise StewardshipError(f"PR #{number} metadata lacks author or head SHA")
+        head_data = pr.get("head")
+        base_data = pr.get("base")
+        user_data = pr.get("user")
+        if not isinstance(head_data, dict) or not isinstance(base_data, dict) or not isinstance(user_data, dict):
+            raise StewardshipError(f"PR #{number} metadata has malformed head, base, or author data")
+        head = head_data.get("sha")
+        base = base_data.get("sha")
+        author = user_data.get("login")
+        if not isinstance(head, str) or not head or not isinstance(base, str) or not base:
+            raise StewardshipError(f"PR #{number} metadata lacks head or base SHA")
+        if not isinstance(author, str) or not author:
+            raise StewardshipError(f"PR #{number} metadata lacks author")
+
+        if self.policy_error is not None or self.policy is None:
+            confirm = self.api.get_pull(number, token)
+            if (not isinstance(confirm, dict)
+                    or not isinstance(confirm.get("head"), dict)
+                    or not isinstance(confirm.get("base"), dict)
+                    or confirm["head"].get("sha") != head
+                    or confirm["base"].get("sha") != base):
+                raise StewardshipError(f"PR #{number} changed while policy failure was being published")
+            return head, "failure", (
+                f"PR #{number}: stewardship policy configuration invalid; fail closed. "
+                f"{self.policy_error or 'policy is unavailable'}"
+            )
+
+        # Changed files are PR-scoped mutable data rather than SHA-addressed.
+        # Capture head/base first, fetch all other inputs, then verify the snapshots.
+        files_head_sha = head
+        files_base_sha = base
         files = self.api.list_files(number, token)
         experiment_only, _ = classify_paths(files, complete=True, policy=self.policy)
+        reviews: list[dict[str, Any]] = []
+        permissions: dict[str, str] = {}
+        if not experiment_only:
+            reviews = self.api.list_reviews(number, token)
+            permissions = {
+                steward: self.api.get_permission(steward, token)
+                for steward in self.policy["stewards"]
+            }
+
+        confirm = self.api.get_pull(number, token)
+        if (not isinstance(confirm, dict)
+                or not isinstance(confirm.get("head"), dict)
+                or not isinstance(confirm.get("base"), dict)):
+            raise StewardshipError(f"PR #{number} metadata became malformed during evaluation")
+        if confirm.get("state") != "open":
+            raise StewardshipError(f"PR #{number} is no longer open; retry reconciliation")
+        if confirm["head"].get("sha") != files_head_sha:
+            raise StewardshipError(f"PR #{number} head changed while collecting stewardship inputs")
+        if confirm["base"].get("sha") != files_base_sha:
+            raise StewardshipError(f"PR #{number} base changed while collecting changed-file inputs")
+
         if experiment_only:
             return head, "success", (
                 f"PR #{number}: experiment-only paths; no stewardship approval required. "
                 "This result does not assess scientific validity."
             )
-        reviews = self.api.list_reviews(number, token)
-        permissions = {
-            steward: self.api.get_permission(steward, token)
-            for steward in self.policy["stewards"]
-        }
+
         result = evaluate(
-            author=author, head_sha=head, files=files, files_complete=True,
-            reviews=reviews, reviews_complete=True, permissions=permissions,
-            permissions_complete=True, policy=self.policy,
+            author=author, head_sha=head, files=files, files_head_sha=files_head_sha,
+            files_complete=True, reviews=reviews, reviews_complete=True,
+            permissions=permissions, permissions_complete=True, policy=self.policy,
         )
         message = [f"PR #{number}: {result['summary']}"]
         message.extend(f"- {reason}" for reason in result.get("reasons", []))
-        if result["conclusion"] == "failure" and not result.get("reasons"):
-            message.append("- No valid current-head non-author steward approval.")
         return head, result["conclusion"], "\n".join(message)
 
     def _reconcile_locked(self, installation_id: int | None = None) -> dict[str, Any]:
@@ -447,13 +496,20 @@ class StewardshipService:
         for sha in sorted(groups):
             rows = by_sha.get(sha, [])
             errors = evaluation_errors.get(sha, [])
-            success = bool(rows) and not errors and all(row[1] == "success" for row in rows)
+            # Check Runs are SHA-scoped, not PR-scoped. Distinct PRs sharing a
+            # SHA can have different base-relative file sets, so always fail closed.
+            shared_head = len(rows) > 1
+            success = len(rows) == 1 and not errors and rows[0][1] == "success"
             lines = [
                 f"Repository: {self.repository_full_name}",
                 "Decision: " + ("PASS" if success else "FAIL"),
                 "Engineering stewardship only; not scientific review.",
-                "Same-SHA safety: every open PR sharing this head SHA must pass.",
             ]
+            if shared_head:
+                lines.append(
+                    "FAIL CLOSED: multiple open PRs share this head SHA; a commit-scoped "
+                    "Check Run cannot distinguish their base-relative changed-file sets."
+                )
             lines.extend(row[2] for row in rows)
             lines.extend("- " + error for error in errors)
             pr_number = rows[0][0] if rows else next(
@@ -652,6 +708,26 @@ def create_server() -> ThreadingHTTPServer:
                 delivery_store.finish(item["delivery_id"], False)
 
     threading.Thread(target=queue_worker, name="stewardship-queue", daemon=True).start()
+
+    try:
+        reconcile_interval = max(60, int(os.environ.get("STEWARDSHIP_RECONCILE_INTERVAL_SECONDS", "300")))
+    except ValueError as exc:
+        raise RuntimeError("STEWARDSHIP_RECONCILE_INTERVAL_SECONDS must be an integer >= 60") from exc
+
+    def periodic_reconciler() -> None:
+        # Permission changes need not emit a PR/review webhook. Poll open PRs so
+        # losing steward access invalidates previously successful protected checks.
+        while True:
+            time.sleep(reconcile_interval)
+            try:
+                service.reconcile(installation_id)
+            except Exception as exc:
+                print(
+                    f"Periodic stewardship reconciliation failed: {type(exc).__name__}; next retry scheduled",
+                    flush=True,
+                )
+
+    threading.Thread(target=periodic_reconciler, name="stewardship-periodic-reconcile", daemon=True).start()
     return ThreadingHTTPServer(("0.0.0.0", int(os.environ.get("PORT", "8080"))), Handler)
 
 
