@@ -1,0 +1,34 @@
+name: Reproduction or refutation
+description: Attempt to reproduce a sandbox result or exhibit a counterexample
+title: "[SBX reproduction/refutation] "
+labels: ["scope:sandbox-only"]
+body:
+  - type: input
+    id: target
+    attributes:
+      label: Target SBX ID and commit
+      placeholder: "SBX-2026-0001 at <commit SHA>"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Attempt type
+      options:
+        - reproduce
+        - refute
+        - investigate-inconclusive
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Test method, inputs and parameters
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Observations, failures and limitations
+    validations:
+      required: true

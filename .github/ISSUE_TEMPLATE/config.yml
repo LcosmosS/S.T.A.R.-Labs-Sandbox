@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/security/advisories/new
+    about: Do not post vulnerabilities or secrets in public issues.

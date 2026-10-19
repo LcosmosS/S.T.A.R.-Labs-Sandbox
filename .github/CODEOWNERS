@@ -1,0 +1,15 @@
+# Governance boundary ownership; ordinary experiments intentionally have NO owner requirement.
+/.github/ @LcosmosS
+/README.md @LcosmosS
+/DISCLAIMER.md @LcosmosS
+/SANDBOX_POLICY.md @LcosmosS
+/CONTRIBUTING.md @LcosmosS
+/GOVERNANCE.md @LcosmosS
+/MODERATION.md @LcosmosS
+/SECURITY.md @LcosmosS
+/UPSTREAM.md @LcosmosS
+/NOTICE.md @LcosmosS
+/LICENSE @LcosmosS
+/schemas/ @LcosmosS
+/scripts/validate_sandbox.py @LcosmosS
+/tests/ @LcosmosS
