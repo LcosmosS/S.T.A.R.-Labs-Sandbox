@@ -9,3 +9,5 @@ Contributors must disclose invented and synthetic inputs and explicitly label in
 This sandbox is not a forum for false factual allegations about identifiable persons, dangerous health or civic misinformation, disclosure of private data or credentials, malware, or content violating applicable law or GitHub policies.
 
 The authoritative project and its separate gate requirements live at https://github.com/LcosmosS/S.T.A.R.-Labs. Nothing transfers automatically.
+
+**Explicit classification:** These materials are **not verified** by admission to this repository and do not possess **upstream** controlled-support status.

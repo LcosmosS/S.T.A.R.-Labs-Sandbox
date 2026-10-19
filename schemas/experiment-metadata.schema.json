@@ -49,10 +49,10 @@
       ],
       "properties": {
         "claim_of_truth": {
-          "type": "boolean"
+          "const": false
         },
         "independently_reviewed": {
-          "type": "boolean"
+          "const": false
         },
         "eligible_for_automatic_promotion": {
           "const": false

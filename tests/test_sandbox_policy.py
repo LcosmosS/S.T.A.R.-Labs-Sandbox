@@ -24,7 +24,7 @@ def baseline(root):
         "title": "Example",
         "status": "intentionally-false-control",
         "scope": "sandbox-only",
-        "epistemic_status": {"eligible_for_automatic_promotion": False},
+        "epistemic_status": {"claim_of_truth": False, "independently_reviewed": False, "eligible_for_automatic_promotion": False},
         "proposition": "Deliberately false universal assertion.",
         "falsifier": "Explicit integer counterexample.",
         "provenance": {"input_kind": "synthetic", "sources": []},
@@ -58,6 +58,17 @@ class PolicyTests(unittest.TestCase):
             meta["epistemic_status"]["eligible_for_automatic_promotion"] = True
             (exp / "metadata.json").write_text(json.dumps(meta), encoding="utf-8")
             self.assertTrue(any("promotion" in e for e in validator.inspect(root)))
+
+    def test_prevents_claim_of_truth_and_review_self_attestation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            exp, meta = baseline(root)
+            meta["epistemic_status"]["claim_of_truth"] = True
+            meta["epistemic_status"]["independently_reviewed"] = True
+            (exp / "metadata.json").write_text(json.dumps(meta), encoding="utf-8")
+            messages = validator.inspect(root)
+            self.assertTrue(any("claim_of_truth" in e for e in messages))
+            self.assertTrue(any("independently_reviewed" in e for e in messages))
 
     def test_missing_metadata_rejected(self):
         with tempfile.TemporaryDirectory() as d:
