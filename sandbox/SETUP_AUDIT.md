@@ -203,3 +203,22 @@ for each, compares Git blob IDs and modes with the original baseline, and
 retains the SHA-256, byte count and 24-file upstream-reference checks.
 No research bytes, executable modes, upstream artifacts, or scientific status
 records are changed as part of the folder reorganization.
+
+## Subsequent root organization: 29 additional historical files (2026-10-19)
+
+After the first 18 root artifacts were relocated, the user requested that **every
+other root-level file** except Markdown (`.md`), `.gitignore`, and `LICENSE` be
+placed in `historical/`. This move covers exactly 29 additional original
+baseline research files, making 47 relocations in total. The root `.gitignore`
+remains where Git can apply its patterns globally. Markdown governance and
+landing-page documentation plus `LICENSE` are also preserved at the root.
+
+The immutable baseline's `original_path`, Git object IDs, Git modes, SHA-256
+hashes, byte lengths, and entry count (221) remain unchanged. Only the 29
+approved `preserved_path` values were rebound from their old root path to
+`historical/<original_filename>`. The separate trusted-verifier PR explicitly
+pins all 29 names before the actual path-only move; runtime integrity checks
+require exactly one original or historical path per file and reject changed
+content, modes, unapproved paths, and missing or duplicate objects.
+
+Other nested files and upstream S.T.A.R.-Labs evidence remain unchanged.

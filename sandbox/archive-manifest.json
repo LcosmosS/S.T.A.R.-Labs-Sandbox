@@ -4,7 +4,7 @@
   "files": [
     {
       "original_path": "1-A Unified Framework for Multi-Scale Cartography",
-      "preserved_path": "1-A Unified Framework for Multi-Scale Cartography",
+      "preserved_path": "historical/1-A Unified Framework for Multi-Scale Cartography",
       "git_mode": "100644",
       "git_blob": "3d3dca265000a5ab85486f78f0e1a5b626d98c16",
       "size_bytes": 26516,
@@ -12,7 +12,7 @@
     },
     {
       "original_path": "10-Natural Normalization of the Cosmological BSD Analogue",
-      "preserved_path": "10-Natural Normalization of the Cosmological BSD Analogue",
+      "preserved_path": "historical/10-Natural Normalization of the Cosmological BSD Analogue",
       "git_mode": "100644",
       "git_blob": "418f26e53c71bee39b8c24888dd06eb80b69cf13",
       "size_bytes": 15556,
@@ -20,7 +20,7 @@
     },
     {
       "original_path": "11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
-      "preserved_path": "11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
+      "preserved_path": "historical/11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
       "git_mode": "100644",
       "git_blob": "64aa632d67d0fa1aed95f817d69abc16b9907d30",
       "size_bytes": 16479,
@@ -28,7 +28,7 @@
     },
     {
       "original_path": "12-First-Principles Validation of the Unified Cartographic Framework",
-      "preserved_path": "12-First-Principles Validation of the Unified Cartographic Framework",
+      "preserved_path": "historical/12-First-Principles Validation of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "aa017d6be35f04d444522243dd4d463585df0d5f",
       "size_bytes": 15887,
@@ -36,7 +36,7 @@
     },
     {
       "original_path": "13-The Foundational Equivalence Hypothesis",
-      "preserved_path": "13-The Foundational Equivalence Hypothesis",
+      "preserved_path": "historical/13-The Foundational Equivalence Hypothesis",
       "git_mode": "100644",
       "git_blob": "7e99538b5defd9cd601853f9ace73c9b42732fd6",
       "size_bytes": 17643,
@@ -44,7 +44,7 @@
     },
     {
       "original_path": "14-Mapping the Energy-Geometry Correspondence",
-      "preserved_path": "14-Mapping the Energy-Geometry Correspondence",
+      "preserved_path": "historical/14-Mapping the Energy-Geometry Correspondence",
       "git_mode": "100644",
       "git_blob": "ff2eea842f4cc1f442528cf4ffc9ddd073091023",
       "size_bytes": 18250,
@@ -52,7 +52,7 @@
     },
     {
       "original_path": "15-The Intractability Frontier",
-      "preserved_path": "15-The Intractability Frontier",
+      "preserved_path": "historical/15-The Intractability Frontier",
       "git_mode": "100644",
       "git_blob": "29278d04e48e7583220c1b54d942e7dad2dcf922",
       "size_bytes": 15216,
@@ -60,7 +60,7 @@
     },
     {
       "original_path": "16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
-      "preserved_path": "16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
+      "preserved_path": "historical/16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "dd7644347d22f208c57590553cc8db4bd1e1f653",
       "size_bytes": 23355,
@@ -68,7 +68,7 @@
     },
     {
       "original_path": "17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
-      "preserved_path": "17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
+      "preserved_path": "historical/17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
       "git_mode": "100644",
       "git_blob": "e728d806a612bf70dfdb3d16a3163b92c3d69864",
       "size_bytes": 16217,
@@ -76,7 +76,7 @@
     },
     {
       "original_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
-      "preserved_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
+      "preserved_path": "historical/2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
       "git_mode": "100644",
       "git_blob": "6548573803693cab5670162b8f81c20632e32886",
       "size_bytes": 13164,
@@ -84,7 +84,7 @@
     },
     {
       "original_path": "3-A Predictive Test of the Unified Cartographic Framework",
-      "preserved_path": "3-A Predictive Test of the Unified Cartographic Framework",
+      "preserved_path": "historical/3-A Predictive Test of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "7a202924286701a07677f17e496bed3c84fe54b2",
       "size_bytes": 13315,
@@ -92,7 +92,7 @@
     },
     {
       "original_path": "4-Iterative Refinement and Validation of the Unified Cartographic Framework",
-      "preserved_path": "4-Iterative Refinement and Validation of the Unified Cartographic Framework",
+      "preserved_path": "historical/4-Iterative Refinement and Validation of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "a644c3d743b207f24d65ea65fe51372cd2671459",
       "size_bytes": 23158,
@@ -100,7 +100,7 @@
     },
     {
       "original_path": "5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
-      "preserved_path": "5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
+      "preserved_path": "historical/5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
       "git_mode": "100644",
       "git_blob": "d609968fbe130bd182dc8cc114ec720f913dfb21",
       "size_bytes": 18094,
@@ -108,7 +108,7 @@
     },
     {
       "original_path": "6-Perturbation Analysis of the Unified Cartographic Framework",
-      "preserved_path": "6-Perturbation Analysis of the Unified Cartographic Framework",
+      "preserved_path": "historical/6-Perturbation Analysis of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "41783640935cff16f76c4e895c19dcb47ed1c2e0",
       "size_bytes": 14287,
@@ -116,7 +116,7 @@
     },
     {
       "original_path": "7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
-      "preserved_path": "7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
+      "preserved_path": "historical/7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
       "git_mode": "100644",
       "git_blob": "c1d918fd2b370eec30b68778bab4f527c873d938",
       "size_bytes": 17310,
@@ -124,7 +124,7 @@
     },
     {
       "original_path": "8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
-      "preserved_path": "8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
+      "preserved_path": "historical/8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "58711d10787e24c0a6758b89e570fd7d84e02d84",
       "size_bytes": 17332,
@@ -132,7 +132,7 @@
     },
     {
       "original_path": "9-Data-Driven Validation of the Cosmological BSD Analogue",
-      "preserved_path": "9-Data-Driven Validation of the Cosmological BSD Analogue",
+      "preserved_path": "historical/9-Data-Driven Validation of the Cosmological BSD Analogue",
       "git_mode": "100644",
       "git_blob": "8bd6b6a9b4dc0c6478be4a04580e966c7e257f43",
       "size_bytes": 19583,
@@ -140,7 +140,7 @@
     },
     {
       "original_path": "A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
-      "preserved_path": "A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+      "preserved_path": "historical/A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "ed371966c09e22e64016dad156e1fe131c187a89",
       "size_bytes": 23238,
@@ -156,7 +156,7 @@
     },
     {
       "original_path": "Appendices.txt",
-      "preserved_path": "Appendices.txt",
+      "preserved_path": "historical/Appendices.txt",
       "git_mode": "100644",
       "git_blob": "5ab014457f9e168c8c907397d77cc4c08a7d9ac3",
       "size_bytes": 325861,
@@ -172,7 +172,7 @@
     },
     {
       "original_path": "Criteria for Alternative Mapping 𝜱",
-      "preserved_path": "Criteria for Alternative Mapping 𝜱",
+      "preserved_path": "historical/Criteria for Alternative Mapping 𝜱",
       "git_mode": "100644",
       "git_blob": "9626ea3995fc2cbb9f11d96ebb6416bca2209e1b",
       "size_bytes": 16525,
@@ -196,7 +196,7 @@
     },
     {
       "original_path": "Packages in Local Sagemath Environment",
-      "preserved_path": "Packages in Local Sagemath Environment",
+      "preserved_path": "historical/Packages in Local Sagemath Environment",
       "git_mode": "100644",
       "git_blob": "82e5cda066433897586998bbb92235cc361fce4a",
       "size_bytes": 54821,
@@ -828,7 +828,7 @@
     },
     {
       "original_path": "environment.yml",
-      "preserved_path": "environment.yml",
+      "preserved_path": "historical/environment.yml",
       "git_mode": "100644",
       "git_blob": "5d6d53a7987943dd43bd2020ff158b21a2954701",
       "size_bytes": 678,
@@ -860,7 +860,7 @@
     },
     {
       "original_path": "interweb_plot.png",
-      "preserved_path": "interweb_plot.png",
+      "preserved_path": "historical/interweb_plot.png",
       "git_mode": "100644",
       "git_blob": "96b88f8f544c631a1c2f6728d51e1bd3014aea92",
       "size_bytes": 278428,
@@ -892,7 +892,7 @@
     },
     {
       "original_path": "pari_cross_check",
-      "preserved_path": "pari_cross_check",
+      "preserved_path": "historical/pari_cross_check",
       "git_mode": "100644",
       "git_blob": "f29faad4ce8b2bf50b035920fdd6c80280b1d553",
       "size_bytes": 525,
@@ -900,7 +900,7 @@
     },
     {
       "original_path": "pari_cross_reference_phi",
-      "preserved_path": "pari_cross_reference_phi",
+      "preserved_path": "historical/pari_cross_reference_phi",
       "git_mode": "100644",
       "git_blob": "5c145cf4fe02d02c59cf0973619879e90f91c2ff",
       "size_bytes": 4182,
@@ -908,7 +908,7 @@
     },
     {
       "original_path": "pari_mock-L",
-      "preserved_path": "pari_mock-L",
+      "preserved_path": "historical/pari_mock-L",
       "git_mode": "100644",
       "git_blob": "23e2f46144556764f25408b2d2e66022e208c234",
       "size_bytes": 2200,
@@ -916,7 +916,7 @@
     },
     {
       "original_path": "pari_natural_normalization",
-      "preserved_path": "pari_natural_normalization",
+      "preserved_path": "historical/pari_natural_normalization",
       "git_mode": "100644",
       "git_blob": "5342c8a5ee2c8f5a2b00fde2d4c2c1e631b806b5",
       "size_bytes": 3880,
@@ -924,7 +924,7 @@
     },
     {
       "original_path": "pari_normalization_validation",
-      "preserved_path": "pari_normalization_validation",
+      "preserved_path": "historical/pari_normalization_validation",
       "git_mode": "100644",
       "git_blob": "80ebb590dae5c145e5f3a7afe8c7325bb685b045",
       "size_bytes": 2487,
@@ -1764,7 +1764,7 @@
     },
     {
       "original_path": "unique_curves.txt",
-      "preserved_path": "unique_curves.txt",
+      "preserved_path": "historical/unique_curves.txt",
       "git_mode": "100644",
       "git_blob": "1fb395e9047aa471dbef2619ab8213f1c1cedbe3",
       "size_bytes": 2237,
