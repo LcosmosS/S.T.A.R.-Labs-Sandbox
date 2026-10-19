@@ -28,9 +28,11 @@ all 18 currently tracked workflow definitions plus README, contribution guide,
 Charter text, license, security guidance and ECC/RTCH recovery gate. Upstream
 scientific-status flags and record IDs are references only; none are imported
 as sandbox authority. Their source bytes and hashes were read and checked during
-setup; routine CI verifies the local archive and metadata, not remote upstream
-files on every run. The reference manifest is steward-owned. Original sandbox
-licensing is unchanged.
+setup. **Current routine CI also checks all 24 reference files against a
+separate read-only checkout at the exact pinned upstream commit**, as well as
+checking local archive integrity and sandbox metadata; it does not contact
+mutable upstream `main`. The reference manifest is steward-owned. Original
+sandbox licensing is unchanged.
 
 ## Live baseline inspection
 

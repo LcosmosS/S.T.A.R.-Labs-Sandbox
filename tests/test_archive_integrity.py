@@ -15,6 +15,7 @@ spec.loader.exec_module(checker)
 
 class ArchiveTests(unittest.TestCase):
     def test_inventory_cannot_be_rebound_to_changed_bytes(self):
+        """Reject altered archived content despite a rewritten SHA-256 manifest."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'sandbox').mkdir()
@@ -40,6 +41,7 @@ class ArchiveTests(unittest.TestCase):
                     checker.check_archive(root)
 
     def test_missing_traversal_absolute_and_symlink_paths(self):
+        """Reject unsafe or nonexistent archive file paths."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'link').symlink_to('/etc/passwd')
@@ -48,6 +50,7 @@ class ArchiveTests(unittest.TestCase):
                     checker.safe_file(root, path)
 
     def test_new_research_cannot_bypass_experiment_intake(self):
+        """Reject unclassified research outside the sandbox experiment namespace."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for path in ['new_research.py', 'R&D/new.pdf', 'release_packages/result.json',
@@ -59,6 +62,7 @@ class ArchiveTests(unittest.TestCase):
                         checker.check_layout(root)
 
     def test_duplicate_inventory_keys_rejected(self):
+        """Reject conflicting duplicate keys in the archival manifest."""
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'bad.json'
             path.write_text('{"baseline_commit":"a","baseline_commit":"b"}')
@@ -68,6 +72,7 @@ class ArchiveTests(unittest.TestCase):
 
 
     def test_reference_verifies_original_bytes_and_detects_rebinding(self):
+        """Detect altered reference hashes and modified upstream source bytes."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             upstream = root / "upstream"
@@ -100,6 +105,7 @@ class ArchiveTests(unittest.TestCase):
                     checker.check_upstream_reference(root, upstream)
 
     def test_reference_rejects_wrong_checkout_revision(self):
+        """Reject an upstream checkout whose Git HEAD is not the pinned commit."""
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             upstream = root / "upstream"

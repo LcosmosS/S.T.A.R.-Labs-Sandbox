@@ -18,7 +18,9 @@ ID_PATTERN = re.compile(r"^(SBX-\d{4}-\d{4})(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$")
 
 
 def load_metadata(path):
+    """Read experiment JSON and reject duplicate keys."""
     def unique(pairs):
+        """Build a mapping without permitting repeated JSON keys."""
         result = {}
         for key, value in pairs:
             if key in result:

@@ -11,16 +11,47 @@ UPSTREAM_REPOSITORY = "LcosmosS/S.T.A.R.-Labs"
 UPSTREAM_COMMIT = "51927a9b396cdfa880f3128440db4715acdec8dc"
 ROOT = Path(__file__).resolve().parents[1]
 
+# Frozen reference scope, independently of the proposal's mutable manifest.
+EXPECTED_UPSTREAM_PATHS = frozenset({
+    ".github/workflows/a01-activation-preflight.yml",
+    ".github/workflows/a01_primary_evidence.yml",
+    ".github/workflows/a01_release_package.yml",
+    ".github/workflows/a03_preexecution_release_review.yml",
+    ".github/workflows/a03_preexecution_verification.yml",
+    ".github/workflows/build-image.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/codeql.yml",
+    ".github/workflows/independent_dataset_verification.yml",
+    ".github/workflows/main.yml",
+    ".github/workflows/notebooks.yml",
+    ".github/workflows/observational_dataset_intake.yml",
+    ".github/workflows/recovered-intake.yml",
+    ".github/workflows/sciserver-approval-offline.yml",
+    ".github/workflows/sciserver-v02-policy.yml",
+    ".github/workflows/sky_surveys.yml",
+    ".github/workflows/starmap.yml",
+    ".github/workflows/test.yml",
+    "README.md",
+    "Contributing.md",
+    "charter/RESEARCH_CHARTER_v0.2.md",
+    "LICENSE",
+    "SECURITY.md",
+    "research/gates/ECC_RTCH_RECOVERY.md",
+})
+
 def require(condition, message):
+    """Raise a descriptive validation error when a condition is false."""
     if not condition:
         raise ValueError(message)
 
 
 def text(value):
+    """Check that a value is nonempty textual input."""
     return isinstance(value, str) and bool(value.strip())
 
 
 def safe_file(root, relative):
+    """Resolve a repository-relative regular file without traversal or symlinks."""
     require(text(relative), "missing relative path")
     path = PurePosixPath(relative)
     require(
@@ -39,7 +70,9 @@ def safe_file(root, relative):
 
 
 def load(path):
+    """Parse a JSON file while rejecting duplicate object keys."""
     def unique(pairs):
+        """Build a mapping without permitting repeated JSON keys."""
         result = {}
         for key, value in pairs:
             require(key not in result, f"duplicate JSON key: {key}")
@@ -49,6 +82,7 @@ def load(path):
 
 
 def git_tree(root, revision):
+    """Read the tracked blob modes and object IDs from a Git revision."""
     output = subprocess.run(
         ["git", "ls-tree", "-r", "-z", revision], cwd=root,
         check=True, capture_output=True,
@@ -65,9 +99,11 @@ def git_tree(root, revision):
 
 
 def check_archive(root):
+    """Match every preserved archive entry to baseline and proposed Git objects."""
     manifest = load(safe_file(root, "sandbox/archive-manifest.json"))
     require(manifest["baseline_commit"] == BASELINE, "archival baseline must not change")
     tree = git_tree(root, BASELINE)
+    proposed_tree = git_tree(root, "HEAD")
     entries = manifest["files"]
     require(len(entries) == len(tree), "archive inventory count mismatch")
     seen = set()
@@ -79,6 +115,12 @@ def check_archive(root):
         require((entry["git_mode"], entry["git_blob"]) == (mode, oid), f"Git binding changed: {path}")
         preserved = "archive/README.pre-sandbox.md" if path == "README.md" else path
         require(entry["preserved_path"] == preserved, f"unexpected relocation: {path}")
+        # Original README is retained at archive/README.pre-sandbox.md;
+        # the new README.md is intentionally allowed to change.
+        require(preserved in proposed_tree, f"archival Git path missing in proposal: {preserved}")
+        proposed_mode, proposed_oid = proposed_tree[preserved]
+        require(proposed_mode == mode, f"archival Git mode changed: {preserved}")
+        require(proposed_oid == oid, f"archival Git object changed: {preserved}")
         data = safe_file(root, preserved).read_bytes()
         require(len(data) == entry["size_bytes"], f"archival size mismatch: {path}")
         require(hashlib.sha256(data).hexdigest() == entry["sha256"], f"archival digest mismatch: {path}")
@@ -102,7 +144,11 @@ def check_upstream_reference(root, upstream):
     require(manifest.get("commit") == UPSTREAM_COMMIT, "upstream pinned commit changed")
     require(manifest.get("authority") == "reference_only", "upstream authority is not reference_only")
     entries = manifest.get("files")
-    require(isinstance(entries, list) and bool(entries), "missing upstream reference files")
+    require(isinstance(entries, list) and len(entries) == len(EXPECTED_UPSTREAM_PATHS),
+            "upstream reference inventory count mismatch")
+    actual_paths = {entry.get("path") for entry in entries if isinstance(entry, dict)}
+    require(actual_paths == EXPECTED_UPSTREAM_PATHS,
+            "upstream reference inventory missing or unexpected paths")
     require(upstream.is_dir() and not upstream.is_symlink(), "invalid upstream checkout")
     revision = subprocess.run(
         ["git", "rev-parse", "HEAD"], cwd=upstream, check=True,
@@ -139,6 +185,7 @@ AUDIT_FILES = {"archive-manifest.json", "upstream-reference.json", "SETTINGS.md"
                "admission-ruleset.proposed.json", "governance-ruleset.proposed.json"}
 
 def check_layout(root):
+    """Reject research files introduced outside the permitted intake layout."""
     original = git_tree(root, BASELINE)
     paths = subprocess.run(
         ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
@@ -155,6 +202,7 @@ def check_layout(root):
         safe_file(root, path)
 
 def check_all(root, upstream):
+    """Run ancestry, preservation, layout, and upstream-reference verification."""
     subprocess.run(["git", "merge-base", "--is-ancestor", BASELINE, "HEAD"],
                    cwd=root, check=True, capture_output=True)
     count = check_archive(root)
