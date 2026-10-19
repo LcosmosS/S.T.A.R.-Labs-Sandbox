@@ -187,3 +187,19 @@ request form** if GitHub private vulnerability reporting is unavailable. The
 form is only for requesting a confidential route; it is not itself a private
 reporting channel and must contain no sensitive report content. No contact
 address was invented.
+
+## Root research-file organization (2026-10-19; staged PR)
+
+The initial setup snapshot above accurately describes the original root paths
+**at the time of setup**. A subsequent, explicitly authorized organization
+change relocates exactly **18** root-level files (4 PDFs, 13 Python, 1 CSV) into
+`historical/`. The original repository snapshot remains reachable through
+Git history; `sandbox/archive-manifest.json` retains every `original_path`
+and binds each moved item's `preserved_path` to `historical/<filename>`.
+
+A separate owner-reviewed verifier change must merge first. It pins the exact
+18 relocation names in its own code, verifies **exactly one** of old/new paths
+for each, compares Git blob IDs and modes with the original baseline, and
+retains the SHA-256, byte count and 24-file upstream-reference checks.
+No research bytes, executable modes, upstream artifacts, or scientific status
+records are changed as part of the folder reorganization.

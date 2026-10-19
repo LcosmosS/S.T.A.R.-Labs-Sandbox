@@ -75,8 +75,8 @@
       "sha256": "cdc89187a0b2a8fbf55265e06fcb09ee5a059d0e556d8725d7938a6cf39550ed"
     },
     {
-      "original_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography\u201d",
-      "preserved_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography\u201d",
+      "original_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
+      "preserved_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
       "git_mode": "100644",
       "git_blob": "6548573803693cab5670162b8f81c20632e32886",
       "size_bytes": 13164,
@@ -139,8 +139,8 @@
       "sha256": "77c1560c097d445377180ef4bf655c0ebaa110a38e5cdaf555ba6ebb04d35b8e"
     },
     {
-      "original_path": "A Proof Sketch of the Arithmetic\u2013Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
-      "preserved_path": "A Proof Sketch of the Arithmetic\u2013Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+      "original_path": "A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+      "preserved_path": "A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
       "git_mode": "100644",
       "git_blob": "ed371966c09e22e64016dad156e1fe131c187a89",
       "size_bytes": 23238,
@@ -148,7 +148,7 @@
     },
     {
       "original_path": "Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
-      "preserved_path": "Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+      "preserved_path": "historical/Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
       "git_mode": "100644",
       "git_blob": "366475a46934e4ec6a7803414f484c4d21363f73",
       "size_bytes": 6735877,
@@ -164,15 +164,15 @@
     },
     {
       "original_path": "Citations.pdf",
-      "preserved_path": "Citations.pdf",
+      "preserved_path": "historical/Citations.pdf",
       "git_mode": "100644",
       "git_blob": "50d4c824a99d6d55d78eb7a71b132fc72fcb4564",
       "size_bytes": 128589,
       "sha256": "45c3f109aae459a321f3f08676e105afc8cccf84b93e011e1795592e95d0fac7"
     },
     {
-      "original_path": "Criteria for Alternative Mapping \ud835\udf31",
-      "preserved_path": "Criteria for Alternative Mapping \ud835\udf31",
+      "original_path": "Criteria for Alternative Mapping 𝜱",
+      "preserved_path": "Criteria for Alternative Mapping 𝜱",
       "git_mode": "100644",
       "git_blob": "9626ea3995fc2cbb9f11d96ebb6416bca2209e1b",
       "size_bytes": 16525,
@@ -188,7 +188,7 @@
     },
     {
       "original_path": "MyTable_Bigsby.csv",
-      "preserved_path": "MyTable_Bigsby.csv",
+      "preserved_path": "historical/MyTable_Bigsby.csv",
       "git_mode": "100644",
       "git_blob": "3e32ac168870a303df94cc2a6d3e734e856bd5e6",
       "size_bytes": 59603,
@@ -331,8 +331,8 @@
       "sha256": "bcf5677e4d3a943f5d467805abbe09513fd33522d67e7837525d9c32c2470007"
     },
     {
-      "original_path": "R&D/Criteria for Alternative Mappings \u03a6.pdf",
-      "preserved_path": "R&D/Criteria for Alternative Mappings \u03a6.pdf",
+      "original_path": "R&D/Criteria for Alternative Mappings Φ.pdf",
+      "preserved_path": "R&D/Criteria for Alternative Mappings Φ.pdf",
       "git_mode": "100644",
       "git_blob": "8896f24de787efd743ff414d45afa016885025b9",
       "size_bytes": 317523,
@@ -771,8 +771,8 @@
       "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
     },
     {
-      "original_path": "The Arithmetic\u2013Cosmic Structure Conjecture (ACSC) (1).pdf",
-      "preserved_path": "The Arithmetic\u2013Cosmic Structure Conjecture (ACSC) (1).pdf",
+      "original_path": "The Arithmetic–Cosmic Structure Conjecture (ACSC) (1).pdf",
+      "preserved_path": "historical/The Arithmetic–Cosmic Structure Conjecture (ACSC) (1).pdf",
       "git_mode": "100644",
       "git_blob": "549918c1490b6f2ae26f20b74967793360631990",
       "size_bytes": 1198019,
@@ -780,7 +780,7 @@
     },
     {
       "original_path": "The Entropy Cohomology Conjecture (ECC).pdf",
-      "preserved_path": "The Entropy Cohomology Conjecture (ECC).pdf",
+      "preserved_path": "historical/The Entropy Cohomology Conjecture (ECC).pdf",
       "git_mode": "100644",
       "git_blob": "a406e66981788fcfbfdfa1cff2f587c01845745b",
       "size_bytes": 1698038,
@@ -788,7 +788,7 @@
     },
     {
       "original_path": "analyze_coma.py",
-      "preserved_path": "analyze_coma.py",
+      "preserved_path": "historical/analyze_coma.py",
       "git_mode": "100644",
       "git_blob": "470f1d5db6c4d0a58746be0584c4fa898f35c39f",
       "size_bytes": 9163,
@@ -796,7 +796,7 @@
     },
     {
       "original_path": "analyze_phi.py",
-      "preserved_path": "analyze_phi.py",
+      "preserved_path": "historical/analyze_phi.py",
       "git_mode": "100644",
       "git_blob": "c41539e24d7ec6d21983ae4d483cb6d5762d62dc",
       "size_bytes": 9336,
@@ -804,7 +804,7 @@
     },
     {
       "original_path": "compute_virgo.py",
-      "preserved_path": "compute_virgo.py",
+      "preserved_path": "historical/compute_virgo.py",
       "git_mode": "100644",
       "git_blob": "e7971e63c00d053332dabdf3c0d8b5ee7be53be2",
       "size_bytes": 7916,
@@ -812,7 +812,7 @@
     },
     {
       "original_path": "cosmo_scale.py",
-      "preserved_path": "cosmo_scale.py",
+      "preserved_path": "historical/cosmo_scale.py",
       "git_mode": "100644",
       "git_blob": "4cfe96f253f67eba898f21f7f80fe6bf32b3fe3a",
       "size_bytes": 7039,
@@ -820,7 +820,7 @@
     },
     {
       "original_path": "entropy_cohomology.py",
-      "preserved_path": "entropy_cohomology.py",
+      "preserved_path": "historical/entropy_cohomology.py",
       "git_mode": "100644",
       "git_blob": "71ca7088e895d55eb669299fa554fd0343e15ea2",
       "size_bytes": 62022,
@@ -836,7 +836,7 @@
     },
     {
       "original_path": "fibonacci.py",
-      "preserved_path": "fibonacci.py",
+      "preserved_path": "historical/fibonacci.py",
       "git_mode": "100644",
       "git_blob": "91ac6299ee87db4cd7f8d98692ac166a46974d77",
       "size_bytes": 3338,
@@ -844,7 +844,7 @@
     },
     {
       "original_path": "first_principals.py",
-      "preserved_path": "first_principals.py",
+      "preserved_path": "historical/first_principals.py",
       "git_mode": "100644",
       "git_blob": "2f2ea731986dc3991ba28883328cf633f2d2ab78",
       "size_bytes": 11043,
@@ -852,7 +852,7 @@
     },
     {
       "original_path": "foundational_equivalence.py",
-      "preserved_path": "foundational_equivalence.py",
+      "preserved_path": "historical/foundational_equivalence.py",
       "git_mode": "100644",
       "git_blob": "577b02eca59c4e69651d062fd4bb2d7b632482b9",
       "size_bytes": 4028,
@@ -868,7 +868,7 @@
     },
     {
       "original_path": "iterative_refinement.py",
-      "preserved_path": "iterative_refinement.py",
+      "preserved_path": "historical/iterative_refinement.py",
       "git_mode": "100644",
       "git_blob": "3b22acede35de3d107a0c417f315bc9c59ec681d",
       "size_bytes": 7324,
@@ -876,7 +876,7 @@
     },
     {
       "original_path": "lmfdb_crosscheck.py",
-      "preserved_path": "lmfdb_crosscheck.py",
+      "preserved_path": "historical/lmfdb_crosscheck.py",
       "git_mode": "100644",
       "git_blob": "b16d8b1dd0ef5902051f6acc1c05f1a000e7f9b3",
       "size_bytes": 5544,
@@ -884,7 +884,7 @@
     },
     {
       "original_path": "normalization_validation2.py",
-      "preserved_path": "normalization_validation2.py",
+      "preserved_path": "historical/normalization_validation2.py",
       "git_mode": "100644",
       "git_blob": "7463b8b413ded9466d5dcb8e746ef2027f45a86b",
       "size_bytes": 4668,
@@ -932,7 +932,7 @@
     },
     {
       "original_path": "predict_coma.py",
-      "preserved_path": "predict_coma.py",
+      "preserved_path": "historical/predict_coma.py",
       "git_mode": "100644",
       "git_blob": "787caa4c316718c969ffcb1aaf4cc3bb11456495",
       "size_bytes": 407,
@@ -1756,7 +1756,7 @@
     },
     {
       "original_path": "recursive.py",
-      "preserved_path": "recursive.py",
+      "preserved_path": "historical/recursive.py",
       "git_mode": "100644",
       "git_blob": "1538db9a8da0861d7705b522e805dcc43946006d",
       "size_bytes": 755,

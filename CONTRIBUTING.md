@@ -26,7 +26,7 @@ Do not place secrets, personal data, or exploitable vulnerability details in pub
 
 Changes to `README.md`, policy, license, `.github/`, validation code, and schemas are **governance/security boundary changes**; submit them separately and request owner review. The technical enforcement of owner approval depends on repository rulesets being configured by an administrator. An experiment PR must not simultaneously weaken the policy checker.
 
-Historical `R&D/` and original root documents are preserved in place and are not retroactively converted.
+The original `R&D/` materials and unaffected root documents remain in place. Eighteen legacy root-level `.pdf`, `.py`, and `.csv` files were relocated byte-for-byte into [`historical/`](historical/) under an explicit, owner-reviewed archive mapping. They remain legacy research, not newly certified experiments; their original paths are retained in the archive inventory.
 
 To run the complete archive and pinned-upstream verification locally, obtain
 the public upstream repository at the **exact pinned commit** (the code is

@@ -15,7 +15,7 @@ The [main S.T.A.R.-Labs research repository](https://github.com/LcosmosS/S.T.A.R
 
 ## Existing historical research is preserved
 
-The existing root-level research notes, calculations, scripts, PDFs, and [R&D/](R%26D/) archive predate this governance framework. They remain **legacy historical material, not retrospectively certified findings**. No new metadata schema is imposed on those files. Their previous filenames or uses of words such as “proof” or “validation” do not imply that the sandbox has certified those assertions.
+The existing research notes and [R&D/](R%26D/) archive predate this governance framework. The original root-level `.pdf`, `.py`, and `.csv` research files have been **moved without content or Git-mode changes** to [historical/](historical/), with original-path mappings and fixed digests preserved in the archive inventory. Other historical root files remain in place. These are **legacy historical materials, not retrospectively certified findings**. No new experiment metadata schema is imposed on them; historical uses of “proof” or “validation” do not establish scientific acceptance.
 
 ## Start a new experiment
 
