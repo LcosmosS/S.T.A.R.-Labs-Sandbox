@@ -76,8 +76,15 @@ def inspect(root: Path) -> list[str]:
         if data.get("scope") != "sandbox-only":
             errors.append(f"{folder.name}: scope must equal sandbox-only")
         epistemic = data.get("epistemic_status")
-        if not isinstance(epistemic, dict) or epistemic.get("eligible_for_automatic_promotion") is not False:
-            errors.append(f"{folder.name}: automatic promotion must explicitly equal false")
+        if not isinstance(epistemic, dict):
+            errors.append(f"{folder.name}: epistemic_status object is required")
+        else:
+            if epistemic.get("eligible_for_automatic_promotion") is not False:
+                errors.append(f"{folder.name}: automatic promotion must explicitly equal false")
+            if epistemic.get("claim_of_truth") is not False:
+                errors.append(f"{folder.name}: claim_of_truth must equal false in sandbox")
+            if epistemic.get("independently_reviewed") is not False:
+                errors.append(f"{folder.name}: independently_reviewed must equal false for sandbox admission")
         for field in ("proposition", "falsifier"):
             if not isinstance(data.get(field), str) or not data[field].strip():
                 errors.append(f"{folder.name}: nonempty {field} required")
