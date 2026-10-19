@@ -188,7 +188,7 @@ class GitHubApi:
 
     def publish_check(self, *, head_sha: str, conclusion: str, summary: str,
                       details_url: str, token: str) -> None:
-        checks_path = f"/repos/{self.repository_full_name}/commits/{head_sha}/check-runs"
+        checks_path = f"/repos/{self.repository_full_name}/check-runs"
         existing = self.list_check_runs(head_sha, token)
         own_run = next(
             (item for item in reversed(existing)
