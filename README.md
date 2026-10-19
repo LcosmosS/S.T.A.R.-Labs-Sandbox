@@ -1,4 +1,4 @@
-# S.T.A.R. Labs Sandbox
+# *S.T.A.R. Labs Sandbox*
 
 > [!CAUTION]
 > **SANDBOX / UNVERIFIED**
