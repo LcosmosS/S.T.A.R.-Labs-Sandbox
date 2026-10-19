@@ -144,6 +144,103 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  upstream-sciserver-offline:
+    name: upstream-sciserver-offline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            integrations/sciserver/
+            verification/datasets/casjobs/
+            tests/integrations/
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install offline SQL, receipt and identifier test dependencies
+        run: |
+          python3 -m pip install pytest==9.0.3 cryptography==46.0.3 \
+            pandas==2.2.2
+      - name: Exercise SciServer SQL allowlist, local receipt, fake-client and signature negatives
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          python3 -B -m pytest -q \
+            tests/integrations/test_sciserver_policy.py \
+            tests/integrations/test_sciserver_approval.py \
+            tests/integrations/test_sciserver_identifier.py \
+            tests/integrations/test_sciserver_runtime.py
+          echo 'SciServer tests use offline stubs and synthetic signing keys; no credentials, actual approvals, CasJobs SQL execution or dataset downloads.' >> "$GITHUB_STEP_SUMMARY"
+
+  upstream-saved-packages:
+    name: upstream-saved-packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            release_packages/EXP-MAP-A01-primary-execution-v0.1/
+            release_packages/EXP-MAP-A03-preexecution-verification-v0.1/
+            scripts/validate_a03_preexecution_release.py
+            tests/test_a03_review_release.py
+            controlled_execution/
+            src/
+            registry/
+            preregistrations/
+            charter/
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Verify original saved A01 and A03 bytes and negative-control receipts
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          mkdir -p ../results
+          python3 -B release_packages/EXP-MAP-A01-primary-execution-v0.1/verify_package.py > ../results/a01-saved-package.json
+          python3 -B - <<'PY'
+          from pathlib import Path
+          import json
+          stored = json.loads(Path("release_packages/EXP-MAP-A01-primary-execution-v0.1/verification.json").read_text())
+          current = json.loads(Path("../results/a01-saved-package.json").read_text())
+          if current != stored:
+              raise SystemExit("A01 saved-package inspection differs from immutable receipt")
+          PY
+          python3 -B scripts/validate_a03_preexecution_release.py --verify-origin > ../results/a03-archive-integrity.json
+          python3 -B -m unittest discover -s tests -p test_a03_review_release.py -v
+          echo 'A01/A03 saved source and package integrity checked; no inference, activation, independent approval or scientific promotion.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pinned-upstream-saved-packages
+          path: |
+            results/a01-saved-package.json
+            results/a03-archive-integrity.json
+          if-no-files-found: error
+          retention-days: 30
+
   pinned-arithmetic-source:
     name: pinned-arithmetic-source
     runs-on: ubuntu-24.04
