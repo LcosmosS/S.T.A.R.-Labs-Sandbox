@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "experiment_id": "SBX-2026-0004",
+  "status": "exploratory",
+  "study_type": "arithmetic_only_diagnostic_not_observational",
+  "first_principles": {
+    "objects": "38 actual elliptic curves E/Q in general Weierstrass form and isogeny labels supplied by a pinned ecdata release; conductor N, rank r and torsion size T are source attributes, and discriminant Delta and j are derived exactly from five integer a-invariants before float coordinate conversion.",
+    "domain_and_assumptions": "All Weierstrass coefficients are integers; Delta is nonzero. Isogeny rank invariance is known. Class labels are arithmetic source identifiers, not observed cosmological classifications. Exact source lines are frozen before inference.",
+    "coordinate_rules": "ACSC-like: [ln|Delta|/ln(10^30), ln N/ln(10^9), (200 m*r)/(200 m)]; comparison MCJ-inspired BSD-independent: [ln N/ln(10^9), asinh(j/1728)/40, ln(1+T)/ln(13)]; j=c4^3/Delta. Deliberate MCJ modification avoids undefined ln(j) at j=0 and degenerate imaginary coordinate for rational j.",
+    "dimensional_analysis": "Every coordinate and Euclidean comparison is dimensionless; rank altitude 200 m is canceled by 200 m, and neither map gives celestial coordinates, curvature, measured SFR or cosmological distance.",
+    "known_no_go": "Conductor is invariant under Q-isogeny and rank is explicitly an ACSC coordinate; comparing class labels without conditioning on conductor AND rank is circular. Conditional shuffles mitigate but do not prove a nontrivial correspondence. Coordinate scale choices remain conventional.",
+    "nonclaims": "No observational, physical ACSC, ECC, GLMPCT, RTCH, BSD, bijection, or theorem support. A p-value is not a mechanism."
+  },
+  "cohort_rule": "Exactly the 38 source rows declared by 1-based source_line in curves.csv: the 38 explicitly listed records from conductors 26,37,38,50,54,57,58 as specified there; no post-result replacements, row dropping, imputation or duplicates; cohort is intentionally selective, not random.",
+  "input_source": {
+    "repo": "JohnCremona/ecdata",
+    "commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+    "relative_path": "allcurves/allcurves.00000-09999",
+    "sha256": "259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968",
+    "full_rows": 64687,
+    "frozen_subset": "curves.csv"
+  },
+  "primary_endpoint": {
+    "definition": "T = average_by_conductor(mean_distance_between_classes - mean_distance_within_class) for ACSC, minus the identical quantity for modified MCJ; Euclidean metric on stated coordinates",
+    "tail": "one_sided_greater_or_equal",
+    "null": "999 Fisher-Yates shuffles of isogeny labels ONLY within each (conductor, rank) stratum; observations and feature vectors held fixed; complete observed class multiplicities in each conditional block preserved. Conditioning on rank is required because rank appears in ACSC coordinates.",
+    "seed": 20261019,
+    "draws": 999,
+    "p_value": "(1 + number_of_null_T_ge_observed_T_minus_1e-14)/1000",
+    "alpha": 0.05,
+    "preregistered": false,
+    "notes": "Protocol frozen as part of the same exploratory result commit, not prospectively preregistered. A conductor-only shuffle initially produced p=0.005; after examining that result, the null was amended to condition on rank because rank is a direct ACSC coordinate. Both values are preserved; neither is confirmatory."
+  },
+  "controls": [
+    "Recompute j and Delta from general Weierstrass integer invariants; reject singular curves and mismatched pinned source rows.",
+    "Hold N and rank fixed in each label permutation to avoid tautological rank or conductor gains.",
+    "Compare a BSD-independent alternative map; no analytic ranks or BSD values computed.",
+    "Ablation of distance scaling, cohort enlargement and observational nulls remain not executed and are listed as discrepancies."
+  ],
+  "falsifiers": [
+    "A conditional random label permutation has T >= observed T (no exceptional geometry).",
+    "The analysis collapses after a defensible coordinate-scale change or conductor/cohort resampling.",
+    "Source lines or arithmetic identities fail independent verification."
+  ],
+  "numerical_uncertainty": "Monte Carlo standard error of the empirical tail proportion is stored in result.json; only 999 random shuffles. Float rounding 12 decimals is display-only; comparisons use unrounded double floats with documented 1e-14 tie tolerance. Scaling robustness is unresolved.",
+  "unresolved_discrepancies": [
+    "Mapping-coordinate rescaling and sensitivity to j outliers are not evaluated.",
+    "Only 38 purposively selected low-conductor curves, with no held-out source bands or new observations.",
+    "Isogeny labels and features are both arithmetic: conditional association is not independent physical evidence.",
+    "No independently reproduced output or Sage/eclib invariant cross-check."
+  ],
+  "observational_stage": {
+    "status": "not_started",
+    "separate_future_study": "Use SDSS DR18/MaNGA/GAMA pinned data; construct a justified physical observable, survey selection and redshift map; ensure train/validation cohort separation; compare controlled arithmetic/astronomical and spatially constrained nulls; require no Sandbox scientific-status promotion.",
+    "cosmic_observations_used": 0
+  },
+  "frozen_output": "result.json",
+  "automatic_promotion": false,
+  "independent_scientific_review": false
+}

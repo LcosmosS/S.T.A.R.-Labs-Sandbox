@@ -1,0 +1,54 @@
+{
+  "artifacts": [
+    {
+      "columns": [
+        "source_line",
+        "conductor",
+        "isogeny",
+        "number",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a6",
+        "rank",
+        "torsion_order"
+      ],
+      "format": "csv",
+      "path": "curves.csv",
+      "rows": 38,
+      "sha256": "651db40360657efdf5a4dd531438cd06a6e55db5da97abb71fbe65060173d49e",
+      "size_bytes": 1146,
+      "source": "Frozen ecdata subset (original source line numbers and pinned commit)",
+      "source_commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f"
+    },
+    {
+      "columns": null,
+      "format": "json",
+      "path": "study_protocol.json",
+      "rows": null,
+      "sha256": "e01fc67685c1871345d37834207108a737ac87af9d5d3b7052bec98275c14860",
+      "size_bytes": 5430,
+      "source": "Locally declared frozen protocol",
+      "source_commit": null
+    },
+    {
+      "columns": null,
+      "format": "json",
+      "path": "result.json",
+      "rows": null,
+      "sha256": "8a86eef940dd0815f0040f867431ed3a53f6e7b339250f7ceb396e9bcee0c9a3",
+      "size_bytes": 2496,
+      "source": "Deterministic read-only arithmetic pilot output",
+      "source_commit": null
+    }
+  ],
+  "automatic_promotion": false,
+  "experiment_id": "SBX-2026-0004",
+  "independently_reviewed": false,
+  "schema_version": 1,
+  "scientific_claim": false,
+  "scope": "sandbox-only",
+  "source_kind": "publisher",
+  "status": "exploratory"
+}
