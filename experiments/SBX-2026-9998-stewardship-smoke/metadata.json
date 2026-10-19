@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-9998",
+  "title": "Stewardship Approval-Free Path Verification",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "A pull request changing only files inside a valid SBX experiment directory passes the sandbox-stewardship check without independent human approval.",
+  "falsifier": "The stewardship check fails solely because independent approval is absent, despite every changed file remaining inside the permitted experiment directory.",
+  "provenance": {
+    "input_kind": "none",
+    "sources": [],
+    "upstream_commit": null
+  },
+  "limitations": [
+    "Synthetic engineering verification only; no scientific findings are asserted.",
+    "Passing stewardship does not imply passing other repository checks.",
+    "This temporary pull request must not be merged or promoted upstream."
+  ]
+}
