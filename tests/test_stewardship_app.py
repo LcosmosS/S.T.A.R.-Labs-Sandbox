@@ -1,3 +1,4 @@
+import copy
 import sys
 import tempfile
 import unittest
@@ -15,14 +16,15 @@ REPO_ID = 1069114334
 
 
 def review(login="LibertySquared", state="APPROVED", commit=HEAD,
-           date="2026-10-19T00:00:00Z"):
-    return {"user": {"login": login}, "state": state,
+           date="2026-10-19T00:00:00Z", review_id=10):
+    return {"id": review_id, "user": {"login": login}, "state": state,
             "commit_id": commit, "submitted_at": date}
 
 
-def pr(number=1, sha=HEAD, author="contributor"):
+def pr(number=1, sha=HEAD, author="contributor", base="c" * 40):
     return {"number": number, "state": "open", "user": {"login": author},
-            "head": {"sha": sha}, "html_url": f"https://github.com/{REPO}/pull/{number}"}
+            "head": {"sha": sha}, "base": {"sha": base},
+            "html_url": f"https://github.com/{REPO}/pull/{number}"}
 
 
 class FakeGitHub:
@@ -36,18 +38,22 @@ class FakeGitHub:
         self.published = []
         self.review_reads = []
         self.permission_reads = []
+        self.mutate_after_files = {}
 
     def installation_token(self, installation_id):
         return "test-installation-token"
 
     def list_open_pulls(self, token):
-        return list(self.prs.values())
+        return [copy.deepcopy(item) for item in self.prs.values()]
 
     def get_pull(self, number, token):
-        return self.prs[number]
+        return copy.deepcopy(self.prs[number])
 
     def list_files(self, number, token):
-        return self.files[number]
+        result = copy.deepcopy(self.files[number])
+        if number in self.mutate_after_files:
+            self.prs[number] = copy.deepcopy(self.mutate_after_files.pop(number))
+        return result
 
     def list_reviews(self, number, token):
         self.review_reads.append(number)
@@ -64,10 +70,10 @@ class FakeGitHub:
 
 
 class AppIntegrationTests(unittest.TestCase):
-    def service(self, api):
+    def service(self, api, policy=None):
         return StewardshipService(
-            api=api, policy=load_policy(), repository_id=REPO_ID,
-            repository_full_name=REPO, installation_id=7,
+            api=api, policy=load_policy() if policy is None else policy,
+            repository_id=REPO_ID, repository_full_name=REPO, installation_id=7,
         )
 
     def test_dismissed_approval_fails_protected_pr(self):
@@ -176,6 +182,62 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(calls[1][1], "POST")
         self.assertEqual(calls[1][2]["name"], "sandbox-stewardship")
         self.assertEqual(calls[1][2]["conclusion"], "failure")
+
+
+    def test_shared_head_sha_fails_closed_even_when_both_prs_are_experiment_only(self):
+        api = FakeGitHub(
+            [pr(1, HEAD, base="c" * 40), pr(2, HEAD, base="d" * 40)],
+            {
+                1: [{"filename": "experiments/SBX-2026-0001-demo/out.json"}],
+                2: [{"filename": "experiments/SBX-2026-0002-demo/out.json"}],
+            },
+        )
+        result = self.service(api).reconcile()
+        self.assertEqual(len(result["published_checks"]), 1)
+        self.assertEqual(result["published_checks"][0]["conclusion"], "failure")
+        self.assertEqual(set(result["published_checks"][0]["pull_requests"]), {1, 2})
+        self.assertIn("cannot distinguish", api.published[0]["summary"])
+
+    def test_head_change_after_file_listing_fails_closed(self):
+        api = FakeGitHub(
+            [pr()], {1: [{"filename": "experiments/SBX-2026-0001-demo/out.json"}]},
+        )
+        api.mutate_after_files[1] = pr(1, OTHER_SHA)
+        result = self.service(api).reconcile()
+        self.assertTrue(result["published_checks"])
+        self.assertTrue(all(item["conclusion"] == "failure" for item in result["published_checks"]))
+
+    def test_periodic_reconciliation_catches_permission_revocation(self):
+        api = FakeGitHub(
+            [pr()], {1: [{"filename": "scripts/tool.py"}]},
+            reviews={1: [review(state="APPROVED", commit=HEAD)]},
+        )
+        service = self.service(api)
+        first = service.reconcile()
+        self.assertEqual(first["published_checks"][0]["conclusion"], "success")
+        api.permissions["LibertySquared"] = "read"
+        second = service.reconcile()
+        self.assertEqual(second["published_checks"][0]["conclusion"], "failure")
+
+    def test_invalid_deployed_policy_publishes_failure_instead_of_crashing(self):
+        api = FakeGitHub([pr()], {1: [{"filename": "scripts/tool.py"}]})
+        bad_policy = load_policy()
+        bad_policy["approval_free_path_pattern"] = "["
+        service = self.service(api, policy=bad_policy)
+        result = service.reconcile()
+        self.assertEqual(result["published_checks"][0]["conclusion"], "failure")
+        self.assertIn("policy configuration invalid", api.published[0]["summary"])
+
+    def test_malformed_file_and_review_rows_publish_failure(self):
+        file_api = FakeGitHub([pr()], {1: [None]})
+        file_result = self.service(file_api).reconcile()
+        self.assertEqual(file_result["published_checks"][0]["conclusion"], "failure")
+
+        review_api = FakeGitHub(
+            [pr()], {1: [{"filename": "scripts/tool.py"}]}, reviews={1: [None]}
+        )
+        review_result = self.service(review_api).reconcile()
+        self.assertEqual(review_result["published_checks"][0]["conclusion"], "failure")
 
 if __name__ == "__main__":
     unittest.main()
