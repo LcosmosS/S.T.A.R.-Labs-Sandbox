@@ -7,6 +7,8 @@ import subprocess
 import sys
 
 BASELINE = "a48ee3c41d17305530d65616c16c158f04e502d8"
+UPSTREAM_REPOSITORY = "LcosmosS/S.T.A.R.-Labs"
+UPSTREAM_COMMIT = "51927a9b396cdfa880f3128440db4715acdec8dc"
 ROOT = Path(__file__).resolve().parents[1]
 
 def require(condition, message):
@@ -85,6 +87,51 @@ def check_archive(root):
     return len(entries)
 
 
+
+def check_upstream_reference(root, upstream):
+    """Verify each manifest binding against a checkout at a pinned upstream commit.
+
+    The checkout is supplied by CI; no network operation or source execution
+    occurs inside this validator.
+    """
+    manifest = load(safe_file(root, "sandbox/upstream-reference.json"))
+    require(isinstance(manifest, dict), "invalid upstream reference manifest")
+    require(type(manifest.get("schema_version")) is int
+            and manifest["schema_version"] == 1, "upstream schema version changed")
+    require(manifest.get("repository") == UPSTREAM_REPOSITORY, "upstream repository changed")
+    require(manifest.get("commit") == UPSTREAM_COMMIT, "upstream pinned commit changed")
+    require(manifest.get("authority") == "reference_only", "upstream authority is not reference_only")
+    entries = manifest.get("files")
+    require(isinstance(entries, list) and bool(entries), "missing upstream reference files")
+    require(upstream.is_dir() and not upstream.is_symlink(), "invalid upstream checkout")
+    revision = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=upstream, check=True,
+        capture_output=True, text=True,
+    ).stdout.strip()
+    require(revision == UPSTREAM_COMMIT, "upstream checkout is not at pinned commit")
+    seen = set()
+    for entry in entries:
+        require(isinstance(entry, dict)
+                and set(entry) == {"path", "sha256", "url"},
+                "invalid upstream reference entry fields")
+        relative = entry["path"]
+        require(text(relative) and relative not in seen,
+                "duplicate or empty upstream reference path")
+        seen.add(relative)
+        claimed = entry["sha256"]
+        require(isinstance(claimed, str) and len(claimed) == 64
+                and all(c in "0123456789abcdef" for c in claimed),
+                f"invalid upstream SHA-256: {relative}")
+        expected_url = (
+            f"https://github.com/{UPSTREAM_REPOSITORY}/blob/{UPSTREAM_COMMIT}/{relative}"
+        )
+        require(entry["url"] == expected_url, f"upstream URL mismatch: {relative}")
+        contents = safe_file(upstream, relative).read_bytes()
+        require(hashlib.sha256(contents).hexdigest() == claimed,
+                f"upstream reference SHA-256 mismatch at pinned commit: {relative}")
+    return len(entries)
+
+
 ROOT_FILES = {"README.md", "DISCLAIMER.md", "CONTRIBUTING.md", "GOVERNANCE.md",
               "MODERATION.md", "SECURITY.md", "NOTICE.md", "SANDBOX_POLICY.md",
               "UPSTREAM.md", ".gitignore"}
@@ -107,20 +154,24 @@ def check_layout(root):
         require(allowed, f"new artifact outside experiments/governance paths: {path}")
         safe_file(root, path)
 
-def check_all(root):
+def check_all(root, upstream):
     subprocess.run(["git", "merge-base", "--is-ancestor", BASELINE, "HEAD"],
                    cwd=root, check=True, capture_output=True)
     count = check_archive(root)
     check_layout(root)
-    return {"archive_files": count, "research_executed": False,
-            "result": "archive_integrity_and_layout_only"}
+    references = check_upstream_reference(root, upstream)
+    return {"archive_files": count, "upstream_reference_files": references,
+            "research_executed": False,
+            "result": "archive_integrity_layout_and_upstream_reference_only"}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--upstream", type=Path, required=True,
+                        help="Read-only checkout of pinned upstream commit")
     args = parser.parse_args()
     try:
-        print(json.dumps(check_all(args.root.resolve()), sort_keys=True))
+        print(json.dumps(check_all(args.root.resolve(), args.upstream.resolve()), sort_keys=True))
     except (ValueError, KeyError, TypeError, OSError, subprocess.CalledProcessError) as error:
         print(f"Archive check failed: {error}", file=sys.stderr)
         sys.exit(1)

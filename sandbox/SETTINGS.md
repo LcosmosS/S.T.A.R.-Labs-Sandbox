@@ -8,10 +8,15 @@ existing default branch and leave experimental branches unrestricted.
 
 [Sandbox Rules #25371960](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/rules/25371960)
 appeared during setup, created at **00:15:30 America/New_York on 2026-10-19**.
-It targets all branches, blocks force pushes/deletion, requires linear history,
-CodeQL and code quality (`all`), and enables Copilot review. It has **no PR rule,
-no code-owner rule, and an empty named status-check list**. Deploy keys, the
-administrator role and three integrations have always-bypass entries.
+**Current live readback (2026-10-19, after owner changes):** It targets
+**all branches**, blocks force pushes/deletion, requires linear history,
+CodeQL and code quality (`all`), and enables Copilot review. It **now requires
+PRs**, zero general approving reviews, CODEOWNERS approval, conversation
+resolution, and stale-review dismissal. There are **no bypass actors**.
+Its named required-status-check list is **empty**, despite strict-check policy
+being enabled. The PR requirement applies to experiment branches too and may
+prevent ordinary contributor pushes to those branches. The earlier setup
+audit describes a superseded snapshot.
 
 This PR does not overwrite that newly changed live configuration. The following
 is a concrete **proposed replacement**, not active protection: replace that rule
@@ -20,6 +25,13 @@ with [admission-ruleset.proposed.json](admission-ruleset.proposed.json) and add
 status source is GitHub Actions app `15368`, verified from an actual check run.
 Do not merely add these alongside the all-branches scanning rule and assume the
 extra scanning requirements disappeared: applicable rules combine.
+
+**Required administrator follow-up:** enforce the GitHub Actions
+`sandbox-policy` check (integration 15368) on `main`. Strict check policy
+with an **empty** required-check list is not an effective merge gate.
+Prefer default-branch-only rules rather than blocking pushes to all experiment
+branches. Verify ordinary writer direct-push denial and ordinary experiment
+branch update/merge behavior after any ruleset change.
 
 ## Admission ruleset: default branch only
 
@@ -57,8 +69,11 @@ configuration readback is not an end-to-end merge test.
 - Default workflow permissions: read; Actions PR approval: disabled.
 - Workflow: `pull_request`, default-branch `push`, manual dispatch; `contents: read`.
 - Checkout is pinned by commit, credentials are not retained, submodules/LFS off.
-- The PR base validator checks submitted metadata; the archive checker binds the historical bytes.
-  The archive checker is new in this PR; its one-time bootstrap requires maintainer inspection.
+- The PR base validator checks submitted metadata; the archive checker binds
+  historical bytes and checks **all 24 upstream-reference paths and SHA-256s**
+  against a separate, sparse, read-only checkout at the exact pinned upstream
+  commit. No upstream code runs. The checker is new in this PR; its bootstrap
+  requires maintainer inspection.
 - No scientific dependency install, archived test discovery, experiment execution,
   secrets reference, write token, upstream API write, release or deployment job.
 - No Pages site or production environment is created. Wiki remains disabled;

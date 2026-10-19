@@ -66,5 +66,59 @@ class ArchiveTests(unittest.TestCase):
                 checker.load(path)
 
 
+
+    def test_reference_verifies_original_bytes_and_detects_rebinding(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream = root / "upstream"
+            (root / "sandbox").mkdir()
+            (upstream / ".github/workflows").mkdir(parents=True)
+            source_path = ".github/workflows/example.yml"
+            contents = b"name: pinned\n"
+            (upstream / source_path).write_bytes(contents)
+            source_url = (f"https://github.com/{checker.UPSTREAM_REPOSITORY}/"
+                          f"blob/{checker.UPSTREAM_COMMIT}/{source_path}")
+            item = {"path": source_path, "sha256": hashlib.sha256(contents).hexdigest(),
+                    "url": source_url}
+            manifest = {"schema_version": 1, "repository": checker.UPSTREAM_REPOSITORY,
+                        "commit": checker.UPSTREAM_COMMIT, "authority": "reference_only",
+                        "files": [item]}
+            target = root / "sandbox/upstream-reference.json"
+            target.write_text(json.dumps(manifest))
+            from unittest.mock import Mock
+            with patch.object(checker.subprocess, "run",
+                              return_value=Mock(stdout=checker.UPSTREAM_COMMIT + "\n")):
+                self.assertEqual(checker.check_upstream_reference(root, upstream), 1)
+                item["sha256"] = "0" * 64
+                target.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):
+                    checker.check_upstream_reference(root, upstream)
+                item["sha256"] = hashlib.sha256(contents).hexdigest()
+                (upstream / source_path).write_bytes(b"tampered")
+                target.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):
+                    checker.check_upstream_reference(root, upstream)
+
+    def test_reference_rejects_wrong_checkout_revision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream = root / "upstream"
+            (root / "sandbox").mkdir()
+            upstream.mkdir()
+            source_path = "README.md"
+            target = root / "sandbox/upstream-reference.json"
+            target.write_text(json.dumps({
+                "schema_version": 1, "repository": checker.UPSTREAM_REPOSITORY,
+                "commit": checker.UPSTREAM_COMMIT, "authority": "reference_only",
+                "files": [{"path": source_path, "sha256": "0" * 64,
+                           "url": (f"https://github.com/{checker.UPSTREAM_REPOSITORY}/"
+                                   f"blob/{checker.UPSTREAM_COMMIT}/{source_path}")}]
+            }))
+            from unittest.mock import Mock
+            with patch.object(checker.subprocess, "run",
+                              return_value=Mock(stdout="f" * 40 + "\n")):
+                with self.assertRaisesRegex(ValueError, "pinned commit"):
+                    checker.check_upstream_reference(root, upstream)
+
 if __name__ == '__main__':
     unittest.main()

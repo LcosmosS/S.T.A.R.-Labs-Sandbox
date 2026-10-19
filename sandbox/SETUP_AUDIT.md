@@ -138,3 +138,20 @@ valid after the base policy changes; this is an explicit departure from the
 supplied design's loose-check recommendation.
 
 Activation follows [SETTINGS.md](SETTINGS.md). The setup PR does not merge itself.
+
+## Post-review ruleset readback and reference-check extension (2026-10-19)
+
+The audit above is a dated setup snapshot, not the current rule state. The owner
+subsequently activated PR-required and CODEOWNERS review in Sandbox Rules
+#25371960 and removed bypass actors. Strict status checking is set, but the
+required-check list is **empty**, so a green `sandbox-policy` is not a merge
+requirement yet. The rule still covers **all branches**; to allow rapid
+experimentation it should target `main` only, with an explicitly required
+`sandbox-policy` check. Changes to live settings require repository admin
+access and must be tested, not inferred from policy files.
+
+The improved validator in this PR verifies every upstream reference entry's
+path, canonical URL, and SHA-256 against a sparse read-only checkout of
+`LcosmosS/S.T.A.R.-Labs` at commit `51927a9b396cdfa880f3128440db4715acdec8dc`. It rejects mismatched hashes,
+missing files and incorrect checkout revisions. It neither follows mutable
+`main` nor executes upstream source code.
