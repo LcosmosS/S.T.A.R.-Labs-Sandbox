@@ -199,12 +199,17 @@ class GitHubApi:
             None,
         )
         now = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+        started_at = (
+            own_run.get("started_at")
+            if own_run and isinstance(own_run.get("started_at"), str)
+            else now
+        )
         body = {
             "name": CHECK_NAME,
             "head_sha": head_sha,
             "status": "completed",
             "conclusion": conclusion,
-            "started_at": now,
+            "started_at": started_at,
             "completed_at": now,
             "details_url": details_url,
             "output": {
@@ -212,7 +217,7 @@ class GitHubApi:
                 "summary": summary[:60000],
             },
         }
-        if own_run and own_run.get("status") in {"queued", "in_progress"}:
+        if own_run:
             self.request(
                 f"/repos/{self.repository_full_name}/check-runs/{own_run['id']}",
                 token, method="PATCH", body=body,
