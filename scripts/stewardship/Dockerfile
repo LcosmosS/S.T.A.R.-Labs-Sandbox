@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir --requirement requirements.txt \
     && mkdir -p /data \
     && chown appuser:appuser /data
 COPY scripts/stewardship/ ./
+RUN chmod -R a+rX /app
 USER 10001:10001
 EXPOSE 8080
 CMD ["python", "app.py"]
