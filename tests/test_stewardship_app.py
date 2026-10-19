@@ -181,9 +181,45 @@ class AppIntegrationTests(unittest.TestCase):
                           details_url=f"https://github.com/{REPO}/pull/1",
                           token="test-token")
         self.assertEqual(calls[0][0], f"/repos/{REPO}/commits/{HEAD}/check-runs")
+        self.assertEqual(calls[0][1], "GET")
+        self.assertEqual(calls[1][0], f"/repos/{REPO}/check-runs")
         self.assertEqual(calls[1][1], "POST")
         self.assertEqual(calls[1][2]["name"], "sandbox-stewardship")
         self.assertEqual(calls[1][2]["conclusion"], "failure")
+
+
+    def test_check_publisher_reuses_owned_completed_run(self):
+        api = GitHubApi(app_id="123", private_key="unused")
+        started_at = "2026-10-19T00:00:00Z"
+        existing_run = {
+            "id": 42,
+            "name": "sandbox-stewardship",
+            "head_sha": HEAD,
+            "status": "completed",
+            "started_at": started_at,
+            "app": {"id": 123},
+        }
+        calls = []
+
+        def fake_request(path, token, *, method="GET", body=None, query=None):
+            calls.append((path, method, body, query))
+            if method == "GET":
+                return {"total_count": 1, "check_runs": [existing_run]}
+            return {"id": 42}
+
+        api.request = fake_request
+        api.publish_check(head_sha=HEAD, conclusion="success",
+                          summary="Stewardship requirements satisfied",
+                          details_url=f"https://github.com/{REPO}/pull/1",
+                          token="test-token")
+
+        self.assertEqual(calls[0][0], f"/repos/{REPO}/commits/{HEAD}/check-runs")
+        self.assertEqual(calls[0][1], "GET")
+        self.assertEqual(calls[1][0], f"/repos/{REPO}/check-runs/42")
+        self.assertEqual(calls[1][1], "PATCH")
+        self.assertEqual(calls[1][2]["conclusion"], "success")
+        self.assertEqual(calls[1][2]["started_at"], started_at)
+        self.assertEqual(len(calls), 2)
 
 
     def test_shared_head_sha_fails_closed_even_when_both_prs_are_experiment_only(self):
