@@ -1,0 +1,1774 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "a48ee3c41d17305530d65616c16c158f04e502d8",
+  "files": [
+    {
+      "original_path": "1-A Unified Framework for Multi-Scale Cartography",
+      "preserved_path": "1-A Unified Framework for Multi-Scale Cartography",
+      "git_mode": "100644",
+      "git_blob": "3d3dca265000a5ab85486f78f0e1a5b626d98c16",
+      "size_bytes": 26516,
+      "sha256": "50f379c7b64e9fc5b6addd4dc1c2141682299ade35fd2a37fd59eac122f66730"
+    },
+    {
+      "original_path": "10-Natural Normalization of the Cosmological BSD Analogue",
+      "preserved_path": "10-Natural Normalization of the Cosmological BSD Analogue",
+      "git_mode": "100644",
+      "git_blob": "418f26e53c71bee39b8c24888dd06eb80b69cf13",
+      "size_bytes": 15556,
+      "sha256": "337f30ba39ed3953ac8975b352d4018bf1252cae9d96e74af417ca632ec9bda7"
+    },
+    {
+      "original_path": "11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
+      "preserved_path": "11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
+      "git_mode": "100644",
+      "git_blob": "64aa632d67d0fa1aed95f817d69abc16b9907d30",
+      "size_bytes": 16479,
+      "sha256": "bc7f29612944685bff9809167c75b7dc49dbe152be10bca766d8257a806f391d"
+    },
+    {
+      "original_path": "12-First-Principles Validation of the Unified Cartographic Framework",
+      "preserved_path": "12-First-Principles Validation of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "aa017d6be35f04d444522243dd4d463585df0d5f",
+      "size_bytes": 15887,
+      "sha256": "929a55f949e4e59faa221cfe6af2da9ffb8d41d76979913108164ca018845b28"
+    },
+    {
+      "original_path": "13-The Foundational Equivalence Hypothesis",
+      "preserved_path": "13-The Foundational Equivalence Hypothesis",
+      "git_mode": "100644",
+      "git_blob": "7e99538b5defd9cd601853f9ace73c9b42732fd6",
+      "size_bytes": 17643,
+      "sha256": "0e8208a129d8678e998a212296022307091eff5ceaf84076ab1209583f0caa89"
+    },
+    {
+      "original_path": "14-Mapping the Energy-Geometry Correspondence",
+      "preserved_path": "14-Mapping the Energy-Geometry Correspondence",
+      "git_mode": "100644",
+      "git_blob": "ff2eea842f4cc1f442528cf4ffc9ddd073091023",
+      "size_bytes": 18250,
+      "sha256": "555243799512480f17744c5098945a3d631a61ce54725a092822d525bc77d533"
+    },
+    {
+      "original_path": "15-The Intractability Frontier",
+      "preserved_path": "15-The Intractability Frontier",
+      "git_mode": "100644",
+      "git_blob": "29278d04e48e7583220c1b54d942e7dad2dcf922",
+      "size_bytes": 15216,
+      "sha256": "4212ca0180eb63d7b8b33921af2753dae736290ca7f4b6729181a366f163bf80"
+    },
+    {
+      "original_path": "16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
+      "preserved_path": "16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "dd7644347d22f208c57590553cc8db4bd1e1f653",
+      "size_bytes": 23355,
+      "sha256": "45c5af374d5d177ea940fed71a97f511b7bbfe7ea36774941fac193e1a9eb96e"
+    },
+    {
+      "original_path": "17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
+      "preserved_path": "17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
+      "git_mode": "100644",
+      "git_blob": "e728d806a612bf70dfdb3d16a3163b92c3d69864",
+      "size_bytes": 16217,
+      "sha256": "cdc89187a0b2a8fbf55265e06fcb09ee5a059d0e556d8725d7938a6cf39550ed"
+    },
+    {
+      "original_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography\u201d",
+      "preserved_path": "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography\u201d",
+      "git_mode": "100644",
+      "git_blob": "6548573803693cab5670162b8f81c20632e32886",
+      "size_bytes": 13164,
+      "sha256": "85741bac63efcbda807587bcfc7fc7c3484039e0582b562683cce7ff51795a28"
+    },
+    {
+      "original_path": "3-A Predictive Test of the Unified Cartographic Framework",
+      "preserved_path": "3-A Predictive Test of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "7a202924286701a07677f17e496bed3c84fe54b2",
+      "size_bytes": 13315,
+      "sha256": "5611568436c20597c711170e6c4b4cc2302246a9ad4a9696c459edded4b8a107"
+    },
+    {
+      "original_path": "4-Iterative Refinement and Validation of the Unified Cartographic Framework",
+      "preserved_path": "4-Iterative Refinement and Validation of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "a644c3d743b207f24d65ea65fe51372cd2671459",
+      "size_bytes": 23158,
+      "sha256": "45421da3642a7e32e31ff243bb24d75f83ca25b2b9fc3d2ec95d1fdc1cbcecf6"
+    },
+    {
+      "original_path": "5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
+      "preserved_path": "5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
+      "git_mode": "100644",
+      "git_blob": "d609968fbe130bd182dc8cc114ec720f913dfb21",
+      "size_bytes": 18094,
+      "sha256": "d3243a75a285d622e5b041f3c79f01a067840816c0a2c4c22a0f13060995ea88"
+    },
+    {
+      "original_path": "6-Perturbation Analysis of the Unified Cartographic Framework",
+      "preserved_path": "6-Perturbation Analysis of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "41783640935cff16f76c4e895c19dcb47ed1c2e0",
+      "size_bytes": 14287,
+      "sha256": "6c5b44217d2bed3a958ff320bd478a066292c935e0eee4c745cd5ad3ab34737f"
+    },
+    {
+      "original_path": "7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
+      "preserved_path": "7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
+      "git_mode": "100644",
+      "git_blob": "c1d918fd2b370eec30b68778bab4f527c873d938",
+      "size_bytes": 17310,
+      "sha256": "74a0b74f860f3f81bb629b2df7506bc809b1b7f53ea3c1bce2041269c7cf1961"
+    },
+    {
+      "original_path": "8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
+      "preserved_path": "8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "58711d10787e24c0a6758b89e570fd7d84e02d84",
+      "size_bytes": 17332,
+      "sha256": "265740f0b00b4dcc2ec813fbc138cc4d0f438f56a0f57c8e5b859f9c7231829f"
+    },
+    {
+      "original_path": "9-Data-Driven Validation of the Cosmological BSD Analogue",
+      "preserved_path": "9-Data-Driven Validation of the Cosmological BSD Analogue",
+      "git_mode": "100644",
+      "git_blob": "8bd6b6a9b4dc0c6478be4a04580e966c7e257f43",
+      "size_bytes": 19583,
+      "sha256": "77c1560c097d445377180ef4bf655c0ebaa110a38e5cdaf555ba6ebb04d35b8e"
+    },
+    {
+      "original_path": "A Proof Sketch of the Arithmetic\u2013Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+      "preserved_path": "A Proof Sketch of the Arithmetic\u2013Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+      "git_mode": "100644",
+      "git_blob": "ed371966c09e22e64016dad156e1fe131c187a89",
+      "size_bytes": 23238,
+      "sha256": "a0cd5d20667addd39d400c4eb3116187d2235e231b54ccf3ab2d09ef6e8f0302"
+    },
+    {
+      "original_path": "Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+      "preserved_path": "Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+      "git_mode": "100644",
+      "git_blob": "366475a46934e4ec6a7803414f484c4d21363f73",
+      "size_bytes": 6735877,
+      "sha256": "37ed9125c602cfede9fa14f301dc8601c505dd70820dbdf2d198e73b7df996da"
+    },
+    {
+      "original_path": "Appendices.txt",
+      "preserved_path": "Appendices.txt",
+      "git_mode": "100644",
+      "git_blob": "5ab014457f9e168c8c907397d77cc4c08a7d9ac3",
+      "size_bytes": 325861,
+      "sha256": "bb8e706aaf1122dd50f422498252b3493e30946f090e1dee0b60ac02e02c38ef"
+    },
+    {
+      "original_path": "Citations.pdf",
+      "preserved_path": "Citations.pdf",
+      "git_mode": "100644",
+      "git_blob": "50d4c824a99d6d55d78eb7a71b132fc72fcb4564",
+      "size_bytes": 128589,
+      "sha256": "45c3f109aae459a321f3f08676e105afc8cccf84b93e011e1795592e95d0fac7"
+    },
+    {
+      "original_path": "Criteria for Alternative Mapping \ud835\udf31",
+      "preserved_path": "Criteria for Alternative Mapping \ud835\udf31",
+      "git_mode": "100644",
+      "git_blob": "9626ea3995fc2cbb9f11d96ebb6416bca2209e1b",
+      "size_bytes": 16525,
+      "sha256": "fd8c2dd3789684f8d0381c61b6e0dfba7a087f90a7a92ba840dd9e240ef18e19"
+    },
+    {
+      "original_path": "LICENSE",
+      "preserved_path": "LICENSE",
+      "git_mode": "100644",
+      "git_blob": "5bafe1c4bc986ca76c96d64a107f878e3571de0d",
+      "size_bytes": 1076,
+      "sha256": "b1f9805f0d313ff553fd84edc285788df1e49364b2b200def94185ec51bacf82"
+    },
+    {
+      "original_path": "MyTable_Bigsby.csv",
+      "preserved_path": "MyTable_Bigsby.csv",
+      "git_mode": "100644",
+      "git_blob": "3e32ac168870a303df94cc2a6d3e734e856bd5e6",
+      "size_bytes": 59603,
+      "sha256": "1c067805137b44f0fdfff35cb3bb08784ef8b5c6e51a16e1fbcff4ea7491d059"
+    },
+    {
+      "original_path": "Packages in Local Sagemath Environment",
+      "preserved_path": "Packages in Local Sagemath Environment",
+      "git_mode": "100644",
+      "git_blob": "82e5cda066433897586998bbb92235cc361fce4a",
+      "size_bytes": 54821,
+      "sha256": "f8994e7725e24caea07def64d82a81a3d64c9ecc73c6055a901dc4e335262050"
+    },
+    {
+      "original_path": "R&D/5 Fold Validation.pdf",
+      "preserved_path": "R&D/5 Fold Validation.pdf",
+      "git_mode": "100644",
+      "git_blob": "4a40eb38b546ecaaea09b0e627a5471757e43028",
+      "size_bytes": 3691139,
+      "sha256": "3bb9c7f64ae1e5b0914de246f4fdc5e3e4a9a6a489402f6087e80cbb1b18d89f"
+    },
+    {
+      "original_path": "R&D/A Comprehensive Analysis_ Linking the Birch and Swinnerton-Dyer Conjecture to Cosmology via Galaxy Stellar Mass Distributions and a 3D Universe Map.pdf",
+      "preserved_path": "R&D/A Comprehensive Analysis_ Linking the Birch and Swinnerton-Dyer Conjecture to Cosmology via Galaxy Stellar Mass Distributions and a 3D Universe Map.pdf",
+      "git_mode": "100644",
+      "git_blob": "be7077159a53baa4fb6d4d6f1d55dbd2e3b7192d",
+      "size_bytes": 1606204,
+      "sha256": "e9729b52dfe23f652fb6a294c88c45af4229767eb049f2042598e3fbd88ed8b9"
+    },
+    {
+      "original_path": "R&D/A Mathematical Research Analysis.pdf",
+      "preserved_path": "R&D/A Mathematical Research Analysis.pdf",
+      "git_mode": "100644",
+      "git_blob": "94bb1b71ea8875f02f24a63e2b03a9013b532dbb",
+      "size_bytes": 123642,
+      "sha256": "d0229e5c5e95cc3a263e4758ac6711c04a575435b82736b2d154ce6b434bbf53"
+    },
+    {
+      "original_path": "R&D/A__S.T.A.R._is_Born.pdf",
+      "preserved_path": "R&D/A__S.T.A.R._is_Born.pdf",
+      "git_mode": "100644",
+      "git_blob": "b2a47810eff762a69c21603aa6def99c904c96d6",
+      "size_bytes": 1710146,
+      "sha256": "13b79cbbef0fb1c3f40f1546fb00101384f77b6fff85d29fbb873e6a3fafeffa"
+    },
+    {
+      "original_path": "R&D/Addition of Stellar Masses Lambdar and MagPhys Lambdar Datasets.pdf",
+      "preserved_path": "R&D/Addition of Stellar Masses Lambdar and MagPhys Lambdar Datasets.pdf",
+      "git_mode": "100644",
+      "git_blob": "9fba51fbc7db68021e46a12b4a31947fa22eced4",
+      "size_bytes": 154935,
+      "sha256": "a1c33dcb30456e5cef71d7801e7acf9d15a1aaf3462c19ba0b702e16896f4f74"
+    },
+    {
+      "original_path": "R&D/Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+      "preserved_path": "R&D/Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+      "git_mode": "100644",
+      "git_blob": "366475a46934e4ec6a7803414f484c4d21363f73",
+      "size_bytes": 6735877,
+      "sha256": "37ed9125c602cfede9fa14f301dc8601c505dd70820dbdf2d198e73b7df996da"
+    },
+    {
+      "original_path": "R&D/BSD_Cosmology_Verification.pdf",
+      "preserved_path": "R&D/BSD_Cosmology_Verification.pdf",
+      "git_mode": "100644",
+      "git_blob": "47ca737fe870339f846a1bf0aab5bb4604e87db6",
+      "size_bytes": 1259701,
+      "sha256": "c072d204058c9c65352400cfc34c56bfc6fe44492bb511a8dc8025da2a3acbda"
+    },
+    {
+      "original_path": "R&D/CSV_Data_Extraction+Pari_gp_Formatting.pdf",
+      "preserved_path": "R&D/CSV_Data_Extraction+Pari_gp_Formatting.pdf",
+      "git_mode": "100644",
+      "git_blob": "cf38fd9ad3f0eb82b99ac4a050103dc5b280ea72",
+      "size_bytes": 6648295,
+      "sha256": "d22a2aa3dc206917307b28a9d0782e8094f9c14d60bec9489847243fdc3f1221"
+    },
+    {
+      "original_path": "R&D/CSV_Data_Extraction+Pari_gp_Formatting_pt.2.pdf",
+      "preserved_path": "R&D/CSV_Data_Extraction+Pari_gp_Formatting_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "ab14231a272c7e0587918e4b223b644a6ade7d6a",
+      "size_bytes": 6939796,
+      "sha256": "139dcb764d841e3df8f7bd7adb4659435274b5b8211238ee1f31467558ff0272"
+    },
+    {
+      "original_path": "R&D/Comprehensive Report on _S.T.A.R..pdf",
+      "preserved_path": "R&D/Comprehensive Report on _S.T.A.R..pdf",
+      "git_mode": "100644",
+      "git_blob": "d97086f2c40924c0e1080b93744c2051c4d4a9c9",
+      "size_bytes": 85059,
+      "sha256": "461ae0c3942e666e99e31f021c0bfedd6d401b91d49bc73804e8c1a8404a4d30"
+    },
+    {
+      "original_path": "R&D/Connecting_BSD+Cosmology_via_Galaxy_Maps.pdf",
+      "preserved_path": "R&D/Connecting_BSD+Cosmology_via_Galaxy_Maps.pdf",
+      "git_mode": "100644",
+      "git_blob": "f1e2820f85157f951f5d87f13222fba2afdffa2a",
+      "size_bytes": 4443996,
+      "sha256": "3686b1368e18a797190263d03e13b12faa3febae35626dfa7dc78a936c0c27b8"
+    },
+    {
+      "original_path": "R&D/Cosmological_BSD_Script_Refinment.pdf",
+      "preserved_path": "R&D/Cosmological_BSD_Script_Refinment.pdf",
+      "git_mode": "100644",
+      "git_blob": "970e658adf62fec7baa0106fe2035737b70bbf96",
+      "size_bytes": 1158069,
+      "sha256": "184d958d8ea0614c164c95aba7a4ef56f00a6ffddaf1ed7d1ab2b4806107c0be"
+    },
+    {
+      "original_path": "R&D/Cosmological_Calculations_Pari_gp.pdf",
+      "preserved_path": "R&D/Cosmological_Calculations_Pari_gp.pdf",
+      "git_mode": "100644",
+      "git_blob": "9e9b7957765054792a76384f39d7fc10b76e8d96",
+      "size_bytes": 6602595,
+      "sha256": "02e9d45c694cdbdfc8c55cd23e3e1f21cb716e3aa8cdd61f69ad8276b21c7caf"
+    },
+    {
+      "original_path": "R&D/Cosmological_Calculations_Ubuntu+Python3.pdf",
+      "preserved_path": "R&D/Cosmological_Calculations_Ubuntu+Python3.pdf",
+      "git_mode": "100644",
+      "git_blob": "efb34cd85377e4009bf523cac6e614aff1370242",
+      "size_bytes": 3587646,
+      "sha256": "4e1aeb9944dedcf8c2c64d007e012752e703ae706ffe5bc5a346ba015209ff2e"
+    },
+    {
+      "original_path": "R&D/Cosmological_Feature_Selection.pdf",
+      "preserved_path": "R&D/Cosmological_Feature_Selection.pdf",
+      "git_mode": "100644",
+      "git_blob": "75595df1cd63839683ac859ddd03c221a50a7535",
+      "size_bytes": 2576863,
+      "sha256": "947f02bfe98bb21618ad193cf8b1a7313081ae1e718211324c3b3c8a6e6575a8"
+    },
+    {
+      "original_path": "R&D/Cosmological_L-function+Galaxy_Mass_Distribution.pdf",
+      "preserved_path": "R&D/Cosmological_L-function+Galaxy_Mass_Distribution.pdf",
+      "git_mode": "100644",
+      "git_blob": "2a228648dd50270c5def0413acb5998dcba947f1",
+      "size_bytes": 6056065,
+      "sha256": "bcf5677e4d3a943f5d467805abbe09513fd33522d67e7837525d9c32c2470007"
+    },
+    {
+      "original_path": "R&D/Criteria for Alternative Mappings \u03a6.pdf",
+      "preserved_path": "R&D/Criteria for Alternative Mappings \u03a6.pdf",
+      "git_mode": "100644",
+      "git_blob": "8896f24de787efd743ff414d45afa016885025b9",
+      "size_bytes": 317523,
+      "sha256": "f51d2eff9827dd76000ee7d990ce8affc127aedb4b8a3708a69d53a60684edea"
+    },
+    {
+      "original_path": "R&D/Cross_Referencing_Galaxies.pdf",
+      "preserved_path": "R&D/Cross_Referencing_Galaxies.pdf",
+      "git_mode": "100644",
+      "git_blob": "f190703507fe78198df4772109443315f907b2a1",
+      "size_bytes": 5391792,
+      "sha256": "cf2e12ee3b2421535146296d58a692564387c29f57b8550f83389e8b0a60589d"
+    },
+    {
+      "original_path": "R&D/Data_Analysis__Log_Mass_Conversion.pdf",
+      "preserved_path": "R&D/Data_Analysis__Log_Mass_Conversion.pdf",
+      "git_mode": "100644",
+      "git_blob": "27898180fe0d820fe55723f4552851b59fe3c157",
+      "size_bytes": 7011595,
+      "sha256": "2091beebea59ebd6af37fa46470b78bffb2f4612c035301aaad0f1f3f8cf6300"
+    },
+    {
+      "original_path": "R&D/Deriving_Normalization_Constant.pdf",
+      "preserved_path": "R&D/Deriving_Normalization_Constant.pdf",
+      "git_mode": "100644",
+      "git_blob": "4a4cfb4eb158437c6298afefe494a530da37b3ff",
+      "size_bytes": 2447784,
+      "sha256": "1750dedf27a4a812c5eee71db1c13532da4c9db7e31e2babeace81e38b697cae"
+    },
+    {
+      "original_path": "R&D/Gaussian_Mixture_Models.pdf",
+      "preserved_path": "R&D/Gaussian_Mixture_Models.pdf",
+      "git_mode": "100644",
+      "git_blob": "c03e9e3dc7e6a96909ca15ff1e01c6658f2eea0d",
+      "size_bytes": 4642996,
+      "sha256": "b31ee3dbba0eee1bb7a91870f9ba4122b49a59a07647a4e8a27a6b5b393a6400"
+    },
+    {
+      "original_path": "R&D/Improving_Mock(L).pdf",
+      "preserved_path": "R&D/Improving_Mock(L).pdf",
+      "git_mode": "100644",
+      "git_blob": "ce7bda9ac10dbdbe438122bc2cd5ec60a21eecf4",
+      "size_bytes": 2360993,
+      "sha256": "af9521df7f7497e9e3d09c2be3a1bfb800477760a393aacf5f38a082d76e8f3f"
+    },
+    {
+      "original_path": "R&D/Initial_Summery+Model_Refinement.pdf",
+      "preserved_path": "R&D/Initial_Summery+Model_Refinement.pdf",
+      "git_mode": "100644",
+      "git_blob": "323d7dc0c2baa00ad579c4f11b592525fb0b87a7",
+      "size_bytes": 4157164,
+      "sha256": "b89a37d3b9dd7d57f6cd9a38030cb5849bba27cc73a5afce010fa1f66dd7ac29"
+    },
+    {
+      "original_path": "R&D/KDE_Based_L-function.pdf",
+      "preserved_path": "R&D/KDE_Based_L-function.pdf",
+      "git_mode": "100644",
+      "git_blob": "047044b7f73c826fade27df168f053ef612c55dd",
+      "size_bytes": 3787298,
+      "sha256": "32744471423785345362f8c19fe5c485f1232d6dd226d02dbffd1e5d31a81009"
+    },
+    {
+      "original_path": "R&D/Large-Scale Structure of the Universe.pdf",
+      "preserved_path": "R&D/Large-Scale Structure of the Universe.pdf",
+      "git_mode": "100644",
+      "git_blob": "1195355843f4768d4b8912c7d0337388f90e959e",
+      "size_bytes": 1352933,
+      "sha256": "96c743bf31084fefa2deba9ced7e53e3d0b22f66c886665dd8b064decae201b9"
+    },
+    {
+      "original_path": "R&D/Linking_BSD+Cosmology_Cont.d.pdf",
+      "preserved_path": "R&D/Linking_BSD+Cosmology_Cont.d.pdf",
+      "git_mode": "100644",
+      "git_blob": "7318f5a4e5321e36db08a5050912d60031e28de1",
+      "size_bytes": 6533357,
+      "sha256": "05cddc6446de9b5ede55da328db3f56cf6dd9860a4710f1b9760a0b6b40cf9bc"
+    },
+    {
+      "original_path": "R&D/Linking_BSD+Cosmology_Cont.d_pt.2.pdf",
+      "preserved_path": "R&D/Linking_BSD+Cosmology_Cont.d_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "370e97f1dd36142b31196afab00ed6fcd977db8f",
+      "size_bytes": 4011023,
+      "sha256": "d8a8b0e46af830baeedc417721faee05eac80045e9228b62e238c0d3d44119f6"
+    },
+    {
+      "original_path": "R&D/Linking_BSD+Cosmology_via_Galaxy_Maps_pt.2.pdf",
+      "preserved_path": "R&D/Linking_BSD+Cosmology_via_Galaxy_Maps_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "5d082c317736f4585614988b913d90f693e25f04",
+      "size_bytes": 5671031,
+      "sha256": "928895e410e4fe2f13742e221eff4c2f6967d1cb8c5deb29805413edc0f5614d"
+    },
+    {
+      "original_path": "R&D/Linking_BSD+Cosmology_via_Galaxy_Maps_pt.3.pdf",
+      "preserved_path": "R&D/Linking_BSD+Cosmology_via_Galaxy_Maps_pt.3.pdf",
+      "git_mode": "100644",
+      "git_blob": "a12aea794e8aa3cca8e81b7c58298210395278ed",
+      "size_bytes": 319847,
+      "sha256": "ffbbe7dd613a35411ef86d9d96dbf2eddd6bbe9dd691ae5498f944663a8f297c"
+    },
+    {
+      "original_path": "R&D/Logarithmic_Stellar_Masses_Dataset.pdf",
+      "preserved_path": "R&D/Logarithmic_Stellar_Masses_Dataset.pdf",
+      "git_mode": "100644",
+      "git_blob": "5c1a9ce07b3436f472eea0ae22064f9b51344e07",
+      "size_bytes": 880985,
+      "sha256": "fd43ec25cf199c8ed72e176b8440fedca7e208ead09cc7e74f1766fc66594ec6"
+    },
+    {
+      "original_path": "R&D/Mock-L+L-cosmo(s)-Creation.pdf",
+      "preserved_path": "R&D/Mock-L+L-cosmo(s)-Creation.pdf",
+      "git_mode": "100644",
+      "git_blob": "8e9e6a9c1c89ce1d964b4017e8f352fe8deb32f5",
+      "size_bytes": 1516650,
+      "sha256": "6498fbec637e39d06ed2a49f966b0fe4406cd74b04191d6564d20435fe78a872"
+    },
+    {
+      "original_path": "R&D/Model Layout.pdf",
+      "preserved_path": "R&D/Model Layout.pdf",
+      "git_mode": "100644",
+      "git_blob": "aa91bb7294a24b3c72996afc715f94def1082249",
+      "size_bytes": 35368,
+      "sha256": "831afab0b2c9a1f23e61cb2e726dfc28b736e4e065cdb9c5eed418a6d1310b4e"
+    },
+    {
+      "original_path": "R&D/Model18.pdf",
+      "preserved_path": "R&D/Model18.pdf",
+      "git_mode": "100644",
+      "git_blob": "1020142f3256c92a32041186bc3524601d1346a6",
+      "size_bytes": 80712,
+      "sha256": "95016701de632a5c548a112ea80643c26f3a12f6731c3ca2301480e5d4452986"
+    },
+    {
+      "original_path": "R&D/Origins.pdf",
+      "preserved_path": "R&D/Origins.pdf",
+      "git_mode": "100644",
+      "git_blob": "8c6ea120d042cfabe8806d87d2866ce4e96b09b2",
+      "size_bytes": 1091587,
+      "sha256": "7f86f77f5adff5369b54540a17fd055e94506d5bf72c3f6bf9fdb84c6a4b718e"
+    },
+    {
+      "original_path": "R&D/Reasarch-Analysis+Testing_pt.3.5.pdf",
+      "preserved_path": "R&D/Reasarch-Analysis+Testing_pt.3.5.pdf",
+      "git_mode": "100644",
+      "git_blob": "940e85918866422ebbce24e99cc211ccdf75f81a",
+      "size_bytes": 6003081,
+      "sha256": "257df967287544320c8021c5a2c0f0d2cf85a9a06a40f23dffd28528916f0987"
+    },
+    {
+      "original_path": "R&D/Refining_BSD_Analogy+Confirming_( K ).pdf",
+      "preserved_path": "R&D/Refining_BSD_Analogy+Confirming_( K ).pdf",
+      "git_mode": "100644",
+      "git_blob": "3c64ceab5ad3b01bb00ae6c0de3fe2849a7acb4a",
+      "size_bytes": 3137286,
+      "sha256": "d81a4b7e0e18b6950c639edfccf3f0a321ef8fee80f8858fad6c981284153eb5"
+    },
+    {
+      "original_path": "R&D/Research Packet #5.pdf",
+      "preserved_path": "R&D/Research Packet #5.pdf",
+      "git_mode": "100644",
+      "git_blob": "178967a1e95c47062992b5e213a11b6f99843f41",
+      "size_bytes": 5233403,
+      "sha256": "8e59d68f038a5d11cc0a4affb60de5091bd968614daae7f00bd7d5bd95caf7c7"
+    },
+    {
+      "original_path": "R&D/Research comp models 12 - 14.pdf",
+      "preserved_path": "R&D/Research comp models 12 - 14.pdf",
+      "git_mode": "100644",
+      "git_blob": "1bd9ee6e900a3f9fc4e7f125044dc71d1a218211",
+      "size_bytes": 1049228,
+      "sha256": "6197b3cf8ddeee6174ba3c57f51f1b781be6479a3604ef004daf857e3728bd1a"
+    },
+    {
+      "original_path": "R&D/Research comp. Model 12-14 pt.2.pdf",
+      "preserved_path": "R&D/Research comp. Model 12-14 pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "b151b09ae197d850f2be3a4ceb28dbc8f9c11e31",
+      "size_bytes": 353945,
+      "sha256": "32a105fba1f528e76bd42f1f7cd61a75c0fbcdb3fd2f38be6de56c74dabe6d36"
+    },
+    {
+      "original_path": "R&D/Research+Analysis-Errors+corrections_pt.5.pdf",
+      "preserved_path": "R&D/Research+Analysis-Errors+corrections_pt.5.pdf",
+      "git_mode": "100644",
+      "git_blob": "ac5a20b303352fd310397f14112da9c3e6b191a7",
+      "size_bytes": 1563425,
+      "sha256": "e32a3b7b295a49e25050ab36c53813554b90b9e237cb89ee61d570cf503aa964"
+    },
+    {
+      "original_path": "R&D/Research-Analysis+Testing.pdf",
+      "preserved_path": "R&D/Research-Analysis+Testing.pdf",
+      "git_mode": "100644",
+      "git_blob": "91024ca9ac76204bf71bc73325fcb0ddd99f1949",
+      "size_bytes": 1411073,
+      "sha256": "09a16809de1d8b8722d92156d0a4b4a0164245daad078da95956b9f677842b52"
+    },
+    {
+      "original_path": "R&D/Research-Analysis+Testing_pt.2.pdf",
+      "preserved_path": "R&D/Research-Analysis+Testing_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "eceab12dbe85cfdc87ccb04fe9f22b78c05dd5ff",
+      "size_bytes": 1386634,
+      "sha256": "cff359503d2d6cf65c808b625f921ee82a42ccb478067c3d6570fac00172d789"
+    },
+    {
+      "original_path": "R&D/Research-Analysis+Testing_pt.3.pdf",
+      "preserved_path": "R&D/Research-Analysis+Testing_pt.3.pdf",
+      "git_mode": "100644",
+      "git_blob": "161743829b34ce20431f22816feab70d52c4e828",
+      "size_bytes": 1934198,
+      "sha256": "00068b40570bf22a00a913f1828c9415557257aaf3c22e1585d6de20c1cfe079"
+    },
+    {
+      "original_path": "R&D/Research-Analysis+Testing_pt.4.pdf",
+      "preserved_path": "R&D/Research-Analysis+Testing_pt.4.pdf",
+      "git_mode": "100644",
+      "git_blob": "56df5b44eee5eda62f53e25306c4825cebd42c2a",
+      "size_bytes": 6097653,
+      "sha256": "853b81f98e1420511c7fcb1d6e04bb6d19cb504f3a1fbd3d4c95a75ddea0c97a"
+    },
+    {
+      "original_path": "R&D/SFR_Prediction_Model_Refinement.pdf",
+      "preserved_path": "R&D/SFR_Prediction_Model_Refinement.pdf",
+      "git_mode": "100644",
+      "git_blob": "345989333ee03b39090156d62a5cda18e141a1bc",
+      "size_bytes": 5156909,
+      "sha256": "237190962f5a242def58afc5bd5f0007ab00085ec1f3b1f0f8ce16f9fe8061ba"
+    },
+    {
+      "original_path": "R&D/STAR11.pdf",
+      "preserved_path": "R&D/STAR11.pdf",
+      "git_mode": "100644",
+      "git_blob": "b744396573af76d61f5dee8cc59fc50c7af0c2c4",
+      "size_bytes": 265502,
+      "sha256": "d9caf3edcd3dd16be0acf309caf7dff2860b1f4caad45e77e51af662b7d46321"
+    },
+    {
+      "original_path": "R&D/Snippet Appendices",
+      "preserved_path": "R&D/Snippet Appendices",
+      "git_mode": "100644",
+      "git_blob": "f1653581a2b26e111fdaaaa88da58bef8ca17bd2",
+      "size_bytes": 119912,
+      "sha256": "5f3df4262d95b3cda82563b49e3a6ab19b1d9790861205feeb7d1172dcaf68c3"
+    },
+    {
+      "original_path": "R&D/Testing .pdf",
+      "preserved_path": "R&D/Testing .pdf",
+      "git_mode": "100644",
+      "git_blob": "095b4a78be3e7f6ae60e3872240bafc6a66c113a",
+      "size_bytes": 437864,
+      "sha256": "562bdd74bf03cf769f62110ee01bbb41487e284725da9515056ced64c04f6462"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Cont.d.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Cont.d.pdf",
+      "git_mode": "100644",
+      "git_blob": "60fcbb8510b0ef60c68262ae5de3f66f8d89a3d0",
+      "size_bytes": 1327292,
+      "sha256": "61580214b08e917f7b641b25110e777094a646cd99cb24cd5c520e036acca288"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Cont.d_pt.3.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Cont.d_pt.3.pdf",
+      "git_mode": "100644",
+      "git_blob": "d306ba013fccdbfbd5f934d1497e8bcf31f3a251",
+      "size_bytes": 2023454,
+      "sha256": "ae7b30e90db683ba289a9531c11e4c97c3a9172cfadd2c05aed1d7ca11268f60"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Cont.d_pt.4.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Cont.d_pt.4.pdf",
+      "git_mode": "100644",
+      "git_blob": "13a9417af26f4405d5eeb64e0f5b1ad5a61483da",
+      "size_bytes": 1527731,
+      "sha256": "d0ddff6d5929ba583e7ee7280cd0c68a165911642d3f47f91da88b417b3ad11c"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Cont.d_pt.5.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Cont.d_pt.5.pdf",
+      "git_mode": "100644",
+      "git_blob": "f43da36d3484e6bca4d0659ea43caf6cf79a79b8",
+      "size_bytes": 2272112,
+      "sha256": "e9ca14c87b816610db1221a9d48587d4e2cfb23bbc15a2ff98cd16e5fc6f5c7f"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Cont.d_pt.6.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Cont.d_pt.6.pdf",
+      "git_mode": "100644",
+      "git_blob": "78b8b3efce65e3e3aafc68ad6fd76a3c33b4b612",
+      "size_bytes": 2132605,
+      "sha256": "0b10310619925d0616bef31fd5abea3b19fa0a7959fb7ff03ab26944a0c4a821"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Errors+Corrections.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Errors+Corrections.pdf",
+      "git_mode": "100644",
+      "git_blob": "76a0224ec98eb740d9644b3c9f0a2505050632ae",
+      "size_bytes": 1339615,
+      "sha256": "3505001a2aae10d0b9a4eefb5b302ad7ced1a0d661f291f9c3710d940b2a09c4"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Errors+Corrections_pt.2.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Errors+Corrections_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "8ef8e9520f3913068af59842f6c637279da4486d",
+      "size_bytes": 1325324,
+      "sha256": "7d99de902ad5516eb1c89f1fadd8499cba82f466d0f5a277d6ff507002faef01"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Errors+Corrections_pt.3.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Errors+Corrections_pt.3.pdf",
+      "git_mode": "100644",
+      "git_blob": "171cef699b1e950d4698d33091c6ef7a567292ff",
+      "size_bytes": 1251923,
+      "sha256": "aad8eda55e18654ce6c4d183509bb8b893ca5775ae40d68d7722993041366dca"
+    },
+    {
+      "original_path": "R&D/Testing+Analysis-Errors+Corrections_pt.4.pdf",
+      "preserved_path": "R&D/Testing+Analysis-Errors+Corrections_pt.4.pdf",
+      "git_mode": "100644",
+      "git_blob": "5e86f78da50134d097c968a98898bdd156552658",
+      "size_bytes": 1563424,
+      "sha256": "61a075c826fa82b9e968a32ff7c42f7bb59b35b1c79871900fe3083e9320e32f"
+    },
+    {
+      "original_path": "R&D/The _S.T.A.R. Program.pdf",
+      "preserved_path": "R&D/The _S.T.A.R. Program.pdf",
+      "git_mode": "100644",
+      "git_blob": "fb2e0c329a1dff0c04a561d1a905eca9801a89f0",
+      "size_bytes": 203916,
+      "sha256": "f7b10fd771525b08197bdf13812031865d9cdbf9ee29396f357fe30fa2806a00"
+    },
+    {
+      "original_path": "R&D/The_STAR.pdf",
+      "preserved_path": "R&D/The_STAR.pdf",
+      "git_mode": "100644",
+      "git_blob": "1df6d0fae8b438fdc293bcb0e210cdb7c0b8f8ad",
+      "size_bytes": 293138,
+      "sha256": "4686b1474da579785bd4237171fe2d795d4069f35510481367b20a3ffaa385a3"
+    },
+    {
+      "original_path": "R&D/Theoretical_Black_Hole_Mapping.pdf",
+      "preserved_path": "R&D/Theoretical_Black_Hole_Mapping.pdf",
+      "git_mode": "100644",
+      "git_blob": "ba333ea34bba3606139dbe26080f77a95b263dc9",
+      "size_bytes": 2917134,
+      "sha256": "6b47e4ce1011ae96872a7aefdfec8295829160946c485a5e6fcab0aa444158a9"
+    },
+    {
+      "original_path": "R&D/Theroetical_Black_Hole_Mapping_pt.2.pdf",
+      "preserved_path": "R&D/Theroetical_Black_Hole_Mapping_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "6475325f815bde5c432411398c15901808df1ab7",
+      "size_bytes": 3564726,
+      "sha256": "753c15ad04cb2ec27fa4be5e516debc7e352b3bc09918d21e19b9db1d8e77791"
+    },
+    {
+      "original_path": "R&D/Truncation_Handling_CSV_Files.pdf",
+      "preserved_path": "R&D/Truncation_Handling_CSV_Files.pdf",
+      "git_mode": "100644",
+      "git_blob": "21a872dc7f68bd5bd3fc50d170940683f349f2dd",
+      "size_bytes": 3341440,
+      "sha256": "24d93a7a3cbccc36b612b27a935fab61297b9840fc9ff8977b34a7391791c23a"
+    },
+    {
+      "original_path": "R&D/Untitled document.pdf",
+      "preserved_path": "R&D/Untitled document.pdf",
+      "git_mode": "100644",
+      "git_blob": "69b3b84eb5b9fe06fecdc5cbb57494f0e56b43d0",
+      "size_bytes": 123627,
+      "sha256": "3a0c998dec064727737fb463efd95c65da5097ab33548665de5e20de3d2b09df"
+    },
+    {
+      "original_path": "R&D/_S.T.A.R. Goal.pdf",
+      "preserved_path": "R&D/_S.T.A.R. Goal.pdf",
+      "git_mode": "100644",
+      "git_blob": "6aa5a830c49a955796ec75eca8fafa073031d32a",
+      "size_bytes": 83337,
+      "sha256": "b82ba453fbb4fa17bf035f7ade74b109f5634241d67996b4f412dccc19aeaddc"
+    },
+    {
+      "original_path": "R&D/_S.T.A.R. Model.pdf",
+      "preserved_path": "R&D/_S.T.A.R. Model.pdf",
+      "git_mode": "100644",
+      "git_blob": "36fa342a57f3b977aeb21aadcea509ced6f1204a",
+      "size_bytes": 171564,
+      "sha256": "2496c3fc356fb33cf6922ba2877655301cee5b7988beeed73c25f0f0f18af713"
+    },
+    {
+      "original_path": "R&D/model roots.pdf",
+      "preserved_path": "R&D/model roots.pdf",
+      "git_mode": "100644",
+      "git_blob": "f0f498d0b6f1e5746a03caead6b6855fa330302c",
+      "size_bytes": 420895,
+      "sha256": "8e671756b3adf166c394c1f65198770bec0de68bba9061e7126d5cadb249e7ae"
+    },
+    {
+      "original_path": "R&D/proof+validation_steps.pdf",
+      "preserved_path": "R&D/proof+validation_steps.pdf",
+      "git_mode": "100644",
+      "git_blob": "e667ccc63266cce892fe53fdfa63d54ab09a19d3",
+      "size_bytes": 108446,
+      "sha256": "57131e4a1880abc984e332adfa8fa958cbe2da88cdd80b43e4cfa49d46ea8040"
+    },
+    {
+      "original_path": "R&D/research compilation10.pdf",
+      "preserved_path": "R&D/research compilation10.pdf",
+      "git_mode": "100644",
+      "git_blob": "b8ca9cf46946d32f92e7e132e430f3e68cac7e07",
+      "size_bytes": 1938380,
+      "sha256": "17c534c6bc3cabc06c8dc6b02b7703d53e033786918d90770fcd93e668a342d6"
+    },
+    {
+      "original_path": "R&D/testing continued.pdf",
+      "preserved_path": "R&D/testing continued.pdf",
+      "git_mode": "100644",
+      "git_blob": "af9344c0011916e1a9089a02f70d30c0512650f8",
+      "size_bytes": 900291,
+      "sha256": "615365f123d1b96979e9e0536b28623646e792d8ae32ce4e0fa4b55280c25f6a"
+    },
+    {
+      "original_path": "R&D/testing+Analysis-Cont.d_pt.2.pdf",
+      "preserved_path": "R&D/testing+Analysis-Cont.d_pt.2.pdf",
+      "git_mode": "100644",
+      "git_blob": "3ca093cbbb69f23b5b08f6bbe0cc5c733215c7f4",
+      "size_bytes": 838504,
+      "sha256": "4d1ad3d022d34dccfe231ede605d201341cff90a673560201bd6d2ff993743a9"
+    },
+    {
+      "original_path": "README.md",
+      "preserved_path": "archive/README.pre-sandbox.md",
+      "git_mode": "100644",
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "original_path": "The Arithmetic\u2013Cosmic Structure Conjecture (ACSC) (1).pdf",
+      "preserved_path": "The Arithmetic\u2013Cosmic Structure Conjecture (ACSC) (1).pdf",
+      "git_mode": "100644",
+      "git_blob": "549918c1490b6f2ae26f20b74967793360631990",
+      "size_bytes": 1198019,
+      "sha256": "816f20daad6b57596e32c355bf77950de60d528890364a4518de26579a3e89e4"
+    },
+    {
+      "original_path": "The Entropy Cohomology Conjecture (ECC).pdf",
+      "preserved_path": "The Entropy Cohomology Conjecture (ECC).pdf",
+      "git_mode": "100644",
+      "git_blob": "a406e66981788fcfbfdfa1cff2f587c01845745b",
+      "size_bytes": 1698038,
+      "sha256": "adcdf6f086f4b8ccfc7b46b7a105ed233db4a10fc3187ffd3a7ec2087f90b079"
+    },
+    {
+      "original_path": "analyze_coma.py",
+      "preserved_path": "analyze_coma.py",
+      "git_mode": "100644",
+      "git_blob": "470f1d5db6c4d0a58746be0584c4fa898f35c39f",
+      "size_bytes": 9163,
+      "sha256": "ccc2c824eac10392aa647ba6684ae6541e239cf8e2c1bf211978249043f078f2"
+    },
+    {
+      "original_path": "analyze_phi.py",
+      "preserved_path": "analyze_phi.py",
+      "git_mode": "100644",
+      "git_blob": "c41539e24d7ec6d21983ae4d483cb6d5762d62dc",
+      "size_bytes": 9336,
+      "sha256": "562004d2a8bf6d8ab0496f55a925fa08fff5d9386f9fac264b00f9fef2b1c241"
+    },
+    {
+      "original_path": "compute_virgo.py",
+      "preserved_path": "compute_virgo.py",
+      "git_mode": "100644",
+      "git_blob": "e7971e63c00d053332dabdf3c0d8b5ee7be53be2",
+      "size_bytes": 7916,
+      "sha256": "505ce08871131ce9d9985f354b27540bd109a5cb110cdee17dea74be2e231005"
+    },
+    {
+      "original_path": "cosmo_scale.py",
+      "preserved_path": "cosmo_scale.py",
+      "git_mode": "100644",
+      "git_blob": "4cfe96f253f67eba898f21f7f80fe6bf32b3fe3a",
+      "size_bytes": 7039,
+      "sha256": "e65772814c1d0f5e5a99fb59077cccdca91dcbc08f78a7a0cecf78634b707b0b"
+    },
+    {
+      "original_path": "entropy_cohomology.py",
+      "preserved_path": "entropy_cohomology.py",
+      "git_mode": "100644",
+      "git_blob": "71ca7088e895d55eb669299fa554fd0343e15ea2",
+      "size_bytes": 62022,
+      "sha256": "e22d9424e2230f1bdc66289f872e396e2c9c788ac6378780673fe154d947b341"
+    },
+    {
+      "original_path": "environment.yml",
+      "preserved_path": "environment.yml",
+      "git_mode": "100644",
+      "git_blob": "5d6d53a7987943dd43bd2020ff158b21a2954701",
+      "size_bytes": 678,
+      "sha256": "48d344e232e5b0b493cd5515fa538da873346c8bf50335c26dbc81721e844614"
+    },
+    {
+      "original_path": "fibonacci.py",
+      "preserved_path": "fibonacci.py",
+      "git_mode": "100644",
+      "git_blob": "91ac6299ee87db4cd7f8d98692ac166a46974d77",
+      "size_bytes": 3338,
+      "sha256": "75171700aa27812c1ea351288df50f658b397e4df0e75c3175d83177a4e1a914"
+    },
+    {
+      "original_path": "first_principals.py",
+      "preserved_path": "first_principals.py",
+      "git_mode": "100644",
+      "git_blob": "2f2ea731986dc3991ba28883328cf633f2d2ab78",
+      "size_bytes": 11043,
+      "sha256": "82956137faec35937c1913df305df6ed62502e3ce0eb23284ee5b97a64add9c7"
+    },
+    {
+      "original_path": "foundational_equivalence.py",
+      "preserved_path": "foundational_equivalence.py",
+      "git_mode": "100644",
+      "git_blob": "577b02eca59c4e69651d062fd4bb2d7b632482b9",
+      "size_bytes": 4028,
+      "sha256": "6acfe4f3f9ffab48423839319be28011667b753d1a11593ad101d9327386df6d"
+    },
+    {
+      "original_path": "interweb_plot.png",
+      "preserved_path": "interweb_plot.png",
+      "git_mode": "100644",
+      "git_blob": "96b88f8f544c631a1c2f6728d51e1bd3014aea92",
+      "size_bytes": 278428,
+      "sha256": "90cea75ed527caad9bf662627590ea9f1ac6380b6578228b759a6f3630cfce78"
+    },
+    {
+      "original_path": "iterative_refinement.py",
+      "preserved_path": "iterative_refinement.py",
+      "git_mode": "100644",
+      "git_blob": "3b22acede35de3d107a0c417f315bc9c59ec681d",
+      "size_bytes": 7324,
+      "sha256": "56f3c83e6bb4ec2916e1cb6552ee87f7ae6e44f36a45da4305f3d18cb9452e28"
+    },
+    {
+      "original_path": "lmfdb_crosscheck.py",
+      "preserved_path": "lmfdb_crosscheck.py",
+      "git_mode": "100644",
+      "git_blob": "b16d8b1dd0ef5902051f6acc1c05f1a000e7f9b3",
+      "size_bytes": 5544,
+      "sha256": "223e69c930f88b4549018a67220b6901e10fc3d4d76b65646932d28b886530f7"
+    },
+    {
+      "original_path": "normalization_validation2.py",
+      "preserved_path": "normalization_validation2.py",
+      "git_mode": "100644",
+      "git_blob": "7463b8b413ded9466d5dcb8e746ef2027f45a86b",
+      "size_bytes": 4668,
+      "sha256": "f594129a8ffa107c07aeddd3a43c976186187f303f3c1f781cd8421808572595"
+    },
+    {
+      "original_path": "pari_cross_check",
+      "preserved_path": "pari_cross_check",
+      "git_mode": "100644",
+      "git_blob": "f29faad4ce8b2bf50b035920fdd6c80280b1d553",
+      "size_bytes": 525,
+      "sha256": "388d5f606140dabf5d1bcc8d4b4d897195dbe43e183f35b783f0f218cbd8b98b"
+    },
+    {
+      "original_path": "pari_cross_reference_phi",
+      "preserved_path": "pari_cross_reference_phi",
+      "git_mode": "100644",
+      "git_blob": "5c145cf4fe02d02c59cf0973619879e90f91c2ff",
+      "size_bytes": 4182,
+      "sha256": "f8540c7d8edd138588cc41d52a1a8dde88a00d08e7b114123cbd865040f4d290"
+    },
+    {
+      "original_path": "pari_mock-L",
+      "preserved_path": "pari_mock-L",
+      "git_mode": "100644",
+      "git_blob": "23e2f46144556764f25408b2d2e66022e208c234",
+      "size_bytes": 2200,
+      "sha256": "2a1012d1fb60fb8b59cd0237793ce24b0d1d66bf50f2a9e3bf5da87f519c8bc3"
+    },
+    {
+      "original_path": "pari_natural_normalization",
+      "preserved_path": "pari_natural_normalization",
+      "git_mode": "100644",
+      "git_blob": "5342c8a5ee2c8f5a2b00fde2d4c2c1e631b806b5",
+      "size_bytes": 3880,
+      "sha256": "8938682a17137f11b0f4f7ef6ab3be4ed664879b0062616385ad54631394fcdc"
+    },
+    {
+      "original_path": "pari_normalization_validation",
+      "preserved_path": "pari_normalization_validation",
+      "git_mode": "100644",
+      "git_blob": "80ebb590dae5c145e5f3a7afe8c7325bb685b045",
+      "size_bytes": 2487,
+      "sha256": "881634d8518dc3befb747b0c88fa1b5b74530c48c611fd26bfce0dc5962b6d9f"
+    },
+    {
+      "original_path": "predict_coma.py",
+      "preserved_path": "predict_coma.py",
+      "git_mode": "100644",
+      "git_blob": "787caa4c316718c969ffcb1aaf4cc3bb11456495",
+      "size_bytes": 407,
+      "sha256": "d67fa27844057b3273be6e01c350625a2fd102f5bf9686890910001748abc20d"
+    },
+    {
+      "original_path": "python/Fibo.py",
+      "preserved_path": "python/Fibo.py",
+      "git_mode": "100644",
+      "git_blob": "c0446a91a2f3bb947c19407280f1cc46ee1090b7",
+      "size_bytes": 2054,
+      "sha256": "f5689dadb3af4af76b3c146c676051f71c6387a593e5fa1ec55c507aea588ace"
+    },
+    {
+      "original_path": "python/decipher.py",
+      "preserved_path": "python/decipher.py",
+      "git_mode": "100644",
+      "git_blob": "fb88c727c35d0bc0cd995470109c9e29aab5dc66",
+      "size_bytes": 10691,
+      "sha256": "6356a15f60115b9065c9bba652c2e15242a4c4cf48137d0afb990eef3757b544"
+    },
+    {
+      "original_path": "python/decipher2.py",
+      "preserved_path": "python/decipher2.py",
+      "git_mode": "100644",
+      "git_blob": "4ccb6dbaa142ac893238b6cc10fb07062096fa9a",
+      "size_bytes": 15511,
+      "sha256": "c9f9f21dbbb20cc8f5670b28b871f8df04b693b4c3398a2cb28371c33594067f"
+    },
+    {
+      "original_path": "python/decipher3.py",
+      "preserved_path": "python/decipher3.py",
+      "git_mode": "100644",
+      "git_blob": "3a68c31fc34ae937a139662035255dcc540ff9f7",
+      "size_bytes": 18441,
+      "sha256": "9142aa8a10a47b076ed2e692bb43e37af24d79a509516e0998c8ebbddd1886d3"
+    },
+    {
+      "original_path": "python/decipher4.py",
+      "preserved_path": "python/decipher4.py",
+      "git_mode": "100644",
+      "git_blob": "e270a597fe91d45166d084d3f75ab58158253f44",
+      "size_bytes": 25474,
+      "sha256": "1b3dc8355c1ee95e7fcee71092de2be156d9965fcc4678cdef8cc3dfc2b6c351"
+    },
+    {
+      "original_path": "python/em.py",
+      "preserved_path": "python/em.py",
+      "git_mode": "100644",
+      "git_blob": "ecbeafbab484524d706f4b868bbed75039618c50",
+      "size_bytes": 695,
+      "sha256": "f0c72e19d6c2be3456de324894176cc3dabbd0125b2d6efa1470144d4ddb76c3"
+    },
+    {
+      "original_path": "python/entropy.py",
+      "preserved_path": "python/entropy.py",
+      "git_mode": "100644",
+      "git_blob": "e3871d7569419e23dfa24e9a040386bac5408f9e",
+      "size_bytes": 26424,
+      "sha256": "0fcf8b63860c831186dce1d9f6dc84a55b84b2641787318bd9085e29a4d4d7b8"
+    },
+    {
+      "original_path": "python/entropy2.py",
+      "preserved_path": "python/entropy2.py",
+      "git_mode": "100644",
+      "git_blob": "41f4cadcd9209f17a6c7795bec3b7197cd05e642",
+      "size_bytes": 35899,
+      "sha256": "ee6bb6dcadf47db5c23e9ddb9643abdccf3df447ef8d2c755797f0132dab624c"
+    },
+    {
+      "original_path": "python/entropy3.py",
+      "preserved_path": "python/entropy3.py",
+      "git_mode": "100644",
+      "git_blob": "5d9ef255cda00505cbed6e1e0c87dd91ccc296dc",
+      "size_bytes": 38933,
+      "sha256": "435626630795d01cddaef185e4abe4e6f8c7cb1e45a862b065aea955e1ac6991"
+    },
+    {
+      "original_path": "python/entropy4.py",
+      "preserved_path": "python/entropy4.py",
+      "git_mode": "100644",
+      "git_blob": "ee6b88a9991c74df132e19d44fdf592dc1b3f6a1",
+      "size_bytes": 42362,
+      "sha256": "789ae1b62af27392f57b971f52f04c1db74dca36865f205488fd30cea522c6cd"
+    },
+    {
+      "original_path": "python/entropy5.py",
+      "preserved_path": "python/entropy5.py",
+      "git_mode": "100644",
+      "git_blob": "6f56be1d7ff89c9b2b5d34622da2135d9c5608be",
+      "size_bytes": 46299,
+      "sha256": "010301ed9b7ca09d4abb38056e688aaf5537b64b91e9d040b2c4d359efa37bb0"
+    },
+    {
+      "original_path": "python/entropy6.py",
+      "preserved_path": "python/entropy6.py",
+      "git_mode": "100644",
+      "git_blob": "96c5ec7c5c601ed5273c4a5dec4068452ab07882",
+      "size_bytes": 49372,
+      "sha256": "ba29d47ed2d3715a0ab76200dcad5a02c034c0ec5cf388e30053052a114794f5"
+    },
+    {
+      "original_path": "python/entropy7.py",
+      "preserved_path": "python/entropy7.py",
+      "git_mode": "100644",
+      "git_blob": "3ea5a3b830fa6644af4a9fc9b0da7dcd4216f952",
+      "size_bytes": 60554,
+      "sha256": "014f4dacb5306fa14fed33556d2497508dc1900e6f3c7a41b12dd8da6605667a"
+    },
+    {
+      "original_path": "python/estimated (1).py",
+      "preserved_path": "python/estimated (1).py",
+      "git_mode": "100644",
+      "git_blob": "2d925b3650dc1c29f5880290e3411f5f21578978",
+      "size_bytes": 17234,
+      "sha256": "18993907310c789a7359585ddee8bafe5bac320be0c4a54323f52611122e8285"
+    },
+    {
+      "original_path": "python/estimated.py",
+      "preserved_path": "python/estimated.py",
+      "git_mode": "100644",
+      "git_blob": "2d925b3650dc1c29f5880290e3411f5f21578978",
+      "size_bytes": 17234,
+      "sha256": "18993907310c789a7359585ddee8bafe5bac320be0c4a54323f52611122e8285"
+    },
+    {
+      "original_path": "python/fibo2.py",
+      "preserved_path": "python/fibo2.py",
+      "git_mode": "100644",
+      "git_blob": "2d90ff2bb637c0a7132e5060162176af01122bc0",
+      "size_bytes": 1975,
+      "sha256": "c6e2c86d8f52a0e8d0cb18a9766e45eb9b3442e70b05974f7d16e40e41b87238"
+    },
+    {
+      "original_path": "python/fibo3.py",
+      "preserved_path": "python/fibo3.py",
+      "git_mode": "100644",
+      "git_blob": "2d90ff2bb637c0a7132e5060162176af01122bc0",
+      "size_bytes": 1975,
+      "sha256": "c6e2c86d8f52a0e8d0cb18a9766e45eb9b3442e70b05974f7d16e40e41b87238"
+    },
+    {
+      "original_path": "python/generate.py",
+      "preserved_path": "python/generate.py",
+      "git_mode": "100644",
+      "git_blob": "60f0a65176eb91fd05e7e900c299dd638ac5b72c",
+      "size_bytes": 7083,
+      "sha256": "a41a36e301fe43eb5c4717973f07fa4bbfcac68b1d98791c52b317d67530c674"
+    },
+    {
+      "original_path": "python/learn.py",
+      "preserved_path": "python/learn.py",
+      "git_mode": "100644",
+      "git_blob": "1ca0dc78ae94dbd75f7bf5e114dbf86a625031fc",
+      "size_bytes": 8937,
+      "sha256": "5e8d0b82832bf3023ee2ae9c7969b1f6703f7b7858a9d73fe1f40f1741573102"
+    },
+    {
+      "original_path": "python/learn10.py",
+      "preserved_path": "python/learn10.py",
+      "git_mode": "100644",
+      "git_blob": "9b0b91da38f552fa16830f5de8af1d4ec7c90d20",
+      "size_bytes": 14292,
+      "sha256": "9b66481f4e94b7788e01f58a548b3d2faf6d8d219a585c3bff95bef5ae84c87c"
+    },
+    {
+      "original_path": "python/learn12.py",
+      "preserved_path": "python/learn12.py",
+      "git_mode": "100644",
+      "git_blob": "767ef761942aec66992e247f0dc1392777664f71",
+      "size_bytes": 14004,
+      "sha256": "3b6b8ac67ffd82fb5564b114853a11e257e53736cc99dbb0d0f63bfc4d67ad25"
+    },
+    {
+      "original_path": "python/learn2.py",
+      "preserved_path": "python/learn2.py",
+      "git_mode": "100644",
+      "git_blob": "2d22f46e91debae4b05d50d9e816150e1308d831",
+      "size_bytes": 8975,
+      "sha256": "822dcc9238871dac591f937cf2e444a4f3127ec823bc18032455a38d77ab5658"
+    },
+    {
+      "original_path": "python/learn3.py",
+      "preserved_path": "python/learn3.py",
+      "git_mode": "100644",
+      "git_blob": "d43ca48bb7cae640effa48e5da02e6751ed48768",
+      "size_bytes": 10025,
+      "sha256": "6c33672c0fe849cac0e8ec7836adcbd30bf046cd217fb714b1e9688202ba71e2"
+    },
+    {
+      "original_path": "python/learn4.py",
+      "preserved_path": "python/learn4.py",
+      "git_mode": "100644",
+      "git_blob": "db04759379d0735fceb70d70e65e7d4159b52ced",
+      "size_bytes": 10780,
+      "sha256": "90788cf77359879580a68e4a1ef074eea7fdd77317c94fe2c3cd7da46bd211ce"
+    },
+    {
+      "original_path": "python/learn7.py",
+      "preserved_path": "python/learn7.py",
+      "git_mode": "100644",
+      "git_blob": "0dd17dcb754c009e3c8d51a7c14d6d352e0732a7",
+      "size_bytes": 10824,
+      "sha256": "f322513a55b706d3ad96a15878ca4724c114fd2849eb8d2fad2fac5c6c7dd683"
+    },
+    {
+      "original_path": "python/learn8.py",
+      "preserved_path": "python/learn8.py",
+      "git_mode": "100644",
+      "git_blob": "ad3228f9c8ec043f8f76f37861e03c3c20b30272",
+      "size_bytes": 12031,
+      "sha256": "22e7f8dfc74d62e2c7cff137a74d0087b9368d65a0decd40f3d0b5a97d03fb1d"
+    },
+    {
+      "original_path": "python/learn9.py",
+      "preserved_path": "python/learn9.py",
+      "git_mode": "100644",
+      "git_blob": "c0abcafc9d668ed2dced063ddb0e8fc120605ae9",
+      "size_bytes": 13762,
+      "sha256": "748cfb0a8d4c39b6f17c8ef09cbbe8ceb50e16039414b404b8636af64e7cf57f"
+    },
+    {
+      "original_path": "python/learning.py",
+      "preserved_path": "python/learning.py",
+      "git_mode": "100644",
+      "git_blob": "a207d58c4f65f4d0ef493df8ae264f39198167af",
+      "size_bytes": 14660,
+      "sha256": "e4c2bb94ff41f965eb6a5896571f773d7ceb688e18468447a940116fc8265b2d"
+    },
+    {
+      "original_path": "python/learning10.py",
+      "preserved_path": "python/learning10.py",
+      "git_mode": "100644",
+      "git_blob": "1b8d4256f3fd591114cdc303e73884e81bb42646",
+      "size_bytes": 19225,
+      "sha256": "e5c1d9d38b52a7d6d6aa762db56460b5911e7249f6c080b5145c1a5c775f4cf3"
+    },
+    {
+      "original_path": "python/learning2.py",
+      "preserved_path": "python/learning2.py",
+      "git_mode": "100644",
+      "git_blob": "06075875849155fb669efb95a8c6fa2281ed7d8e",
+      "size_bytes": 15925,
+      "sha256": "17dc95305595e4b228a4e177e666617097ecea2cf84ba78ca5fd4decb42dcebf"
+    },
+    {
+      "original_path": "python/learning3.py",
+      "preserved_path": "python/learning3.py",
+      "git_mode": "100644",
+      "git_blob": "6f8e07f2774f2e41862e1305a141e81ddc3ae020",
+      "size_bytes": 16336,
+      "sha256": "b976354cd323af3b8ec30bd07f4d8de0a6164cdb1008ceecd5cd76cd9e4d9f1e"
+    },
+    {
+      "original_path": "python/learning4.py",
+      "preserved_path": "python/learning4.py",
+      "git_mode": "100644",
+      "git_blob": "f537ef508f747a89fd16857dfe635b631426e5e0",
+      "size_bytes": 16271,
+      "sha256": "da05f721165cfae6ed5faae3f77e239bed043af44a9f42475e10d370412f652b"
+    },
+    {
+      "original_path": "python/learning6.py",
+      "preserved_path": "python/learning6.py",
+      "git_mode": "100644",
+      "git_blob": "09ddc8ad0e9c94c67980f4b68e6f97cf8eb2508b",
+      "size_bytes": 17762,
+      "sha256": "bf6aa13ad56d3ad86e2c8101a56350c0ef63d305bd93ec73a9e63edda3b00658"
+    },
+    {
+      "original_path": "python/learning8.py",
+      "preserved_path": "python/learning8.py",
+      "git_mode": "100644",
+      "git_blob": "f2aa0e24662fd7cacdbeb2c3b5f664f5957973b1",
+      "size_bytes": 18553,
+      "sha256": "cee843c6eefa3017b38ab7dd5f7d970007778d8ceaa48962f08b4ecb44250489"
+    },
+    {
+      "original_path": "python/learning9.py",
+      "preserved_path": "python/learning9.py",
+      "git_mode": "100644",
+      "git_blob": "50301637a863d3be4d95526a5b915a6d3573d6c2",
+      "size_bytes": 18719,
+      "sha256": "4c59d03d1031d813299e088b26184da2ae958da2f5ef1c1252cb2be62c4a4562"
+    },
+    {
+      "original_path": "python/machine (1).py",
+      "preserved_path": "python/machine (1).py",
+      "git_mode": "100644",
+      "git_blob": "4ff04457c0499f0a1247c789c288e58636f1473a",
+      "size_bytes": 7793,
+      "sha256": "7680a76582926faa3f7fcb3326eadbaa386bd02b052a04f453833a8de2a359d7"
+    },
+    {
+      "original_path": "python/machine.py",
+      "preserved_path": "python/machine.py",
+      "git_mode": "100644",
+      "git_blob": "4ff04457c0499f0a1247c789c288e58636f1473a",
+      "size_bytes": 7793,
+      "sha256": "7680a76582926faa3f7fcb3326eadbaa386bd02b052a04f453833a8de2a359d7"
+    },
+    {
+      "original_path": "python/machine2.py",
+      "preserved_path": "python/machine2.py",
+      "git_mode": "100644",
+      "git_blob": "a397941e17aee4fa3cd12613b3f8d9abfbaef8a1",
+      "size_bytes": 8459,
+      "sha256": "736c76c7b97306c0ecfe6b028145927facfa6e3a7a962ce0461d0675d1a7cfdf"
+    },
+    {
+      "original_path": "python/machine3.py",
+      "preserved_path": "python/machine3.py",
+      "git_mode": "100644",
+      "git_blob": "597c0a5e1185921e3326a72e591802c8e98212bd",
+      "size_bytes": 5227,
+      "sha256": "a4a24e94c5db86691c2b65c32d10bf6cf63b3876c064489800ee1d87a1266e43"
+    },
+    {
+      "original_path": "python/machine4.py",
+      "preserved_path": "python/machine4.py",
+      "git_mode": "100644",
+      "git_blob": "6e840ed2f5b2d806ced7451a871b5cd881367632",
+      "size_bytes": 5652,
+      "sha256": "3df10ec5ceaf68b9802fb093011217a103691801c01436294780821b8d26a892"
+    },
+    {
+      "original_path": "python/machine5.py",
+      "preserved_path": "python/machine5.py",
+      "git_mode": "100644",
+      "git_blob": "b312177e25ed7de489ee408331e21c9d66dc42ff",
+      "size_bytes": 6291,
+      "sha256": "8b18cc6efb6c6bbdf871978aac360728f3524516249d4670cdd73309085838b6"
+    },
+    {
+      "original_path": "python/machine6.py",
+      "preserved_path": "python/machine6.py",
+      "git_mode": "100644",
+      "git_blob": "f8caa6cc9a56b705a924f6ad83b53676303623e4",
+      "size_bytes": 6900,
+      "sha256": "ebfc1ef3342118a9d283cb3560c9b7cb7e3f929ec69c2803a367f889def9288e"
+    },
+    {
+      "original_path": "python/machine7.py",
+      "preserved_path": "python/machine7.py",
+      "git_mode": "100644",
+      "git_blob": "94dd66034b44f27dad924ff3fb80743537aa2aa6",
+      "size_bytes": 7127,
+      "sha256": "2345e3a2b1dc780279c7a1d7f8ee0dc436b44ee0ab4aea7b3061845913dfb6b2"
+    },
+    {
+      "original_path": "python/poly.py",
+      "preserved_path": "python/poly.py",
+      "git_mode": "100644",
+      "git_blob": "7653a9aba976869101b647c587b7468b44c931f3",
+      "size_bytes": 19289,
+      "sha256": "ac84300798a788ff1f893cfc71a5b9412e8213abc5408b2c95e5777b9abde67d"
+    },
+    {
+      "original_path": "python/random2.py",
+      "preserved_path": "python/random2.py",
+      "git_mode": "100644",
+      "git_blob": "dc13b58e9efa34a7fbeb9e6c65cca14cb20e675a",
+      "size_bytes": 4871,
+      "sha256": "865a8f1aa740da20afd3b3a073f2673f788114e103878d62c3c4a3af3ce8cfa1"
+    },
+    {
+      "original_path": "python/random3.py",
+      "preserved_path": "python/random3.py",
+      "git_mode": "100644",
+      "git_blob": "10a935df6a7d411c83c44b2e6db9c383fad497b9",
+      "size_bytes": 5078,
+      "sha256": "146b2bb1f956d20a887495dee8cd6e235ea8c20b49d3436c9396ceda71493912"
+    },
+    {
+      "original_path": "python/random4.py",
+      "preserved_path": "python/random4.py",
+      "git_mode": "100644",
+      "git_blob": "3669e0ff0e4cb333e6b7c28a99faee90f571ef78",
+      "size_bytes": 5289,
+      "sha256": "7182ba99cd6657427960fb223fc1c1e59602c328668fe0e79d0106d5bf940df7"
+    },
+    {
+      "original_path": "python/random5.py",
+      "preserved_path": "python/random5.py",
+      "git_mode": "100644",
+      "git_blob": "7e2d1ee6ce330c308fd1eeafd265938cf57912e1",
+      "size_bytes": 5685,
+      "sha256": "cdad6c42fe3918313e8d0992222d23f18eb14adc675bc256f3f1bd4396a2b65c"
+    },
+    {
+      "original_path": "python/random6.py",
+      "preserved_path": "python/random6.py",
+      "git_mode": "100644",
+      "git_blob": "ddc5c77aeed235ef2fe0c6273d609a613dcfb0ba",
+      "size_bytes": 5357,
+      "sha256": "7cd8aa09c21eca6c80a2a47be60cdce6872a80a4c53f72d5d31cd9df85df50d4"
+    },
+    {
+      "original_path": "python/sample.py",
+      "preserved_path": "python/sample.py",
+      "git_mode": "100644",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "python/scripts",
+      "preserved_path": "python/scripts",
+      "git_mode": "100644",
+      "git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "original_path": "python/smote.py",
+      "preserved_path": "python/smote.py",
+      "git_mode": "100644",
+      "git_blob": "7a5a7b1fea2a6bc5a5c1129a62095564a86752ea",
+      "size_bytes": 9869,
+      "sha256": "5c6a51ed79d2f98bff5129f98a905b061ac73634d353a5ecc1534e91fb023396"
+    },
+    {
+      "original_path": "python/test10.py",
+      "preserved_path": "python/test10.py",
+      "git_mode": "100644",
+      "git_blob": "8043b1cb984c0d25c5fbfde59dfedc7db46c9cf0",
+      "size_bytes": 1550,
+      "sha256": "236f38709919e5ec8fb2dcd50e4a0eebdec49cefaf21e1fa68afd18b5f746cb8"
+    },
+    {
+      "original_path": "python/test11 (1).py",
+      "preserved_path": "python/test11 (1).py",
+      "git_mode": "100644",
+      "git_blob": "116d5e4f6dfba583cba4d811af05a03a83e96f53",
+      "size_bytes": 4253,
+      "sha256": "d1d34d9a84e2d79bb5d9ce5693f56dffd280102ed81fc7c6f0487b8122566f40"
+    },
+    {
+      "original_path": "python/test12.py",
+      "preserved_path": "python/test12.py",
+      "git_mode": "100644",
+      "git_blob": "bf2c39f910484135179341fd7041a70cd5b27f36",
+      "size_bytes": 4686,
+      "sha256": "9dee5199444c1d6aace5e552bb2496a7ab8b8d837558733bff59555f6ce8dd88"
+    },
+    {
+      "original_path": "python/test13.py",
+      "preserved_path": "python/test13.py",
+      "git_mode": "100644",
+      "git_blob": "8106daf3219d14714f51621e97a4bbeb8dfa8495",
+      "size_bytes": 4747,
+      "sha256": "ed1eb14a84a6d8dedd19c5cd3a18e8d9ff06505f912441e1cc991f0702e51b66"
+    },
+    {
+      "original_path": "python/test14.py",
+      "preserved_path": "python/test14.py",
+      "git_mode": "100644",
+      "git_blob": "ac66ffc5cbe8cea595970c06fe07f12d2a99721c",
+      "size_bytes": 4964,
+      "sha256": "c1dba46c727f5c5adeebce057b9f99b5d5a0c2c5d2ab1976947df18ccf876cf2"
+    },
+    {
+      "original_path": "python/tully.py",
+      "preserved_path": "python/tully.py",
+      "git_mode": "100644",
+      "git_blob": "9326024c794807627072e2e839da8eef8feb0479",
+      "size_bytes": 7750,
+      "sha256": "5f8a646e1ff8719b5b32762c536a40db25d28cb666272237099be760c19321d4"
+    },
+    {
+      "original_path": "python/untitled (1).py",
+      "preserved_path": "python/untitled (1).py",
+      "git_mode": "100644",
+      "git_blob": "4ff04457c0499f0a1247c789c288e58636f1473a",
+      "size_bytes": 7793,
+      "sha256": "7680a76582926faa3f7fcb3326eadbaa386bd02b052a04f453833a8de2a359d7"
+    },
+    {
+      "original_path": "python/untitled (2).py",
+      "preserved_path": "python/untitled (2).py",
+      "git_mode": "100644",
+      "git_blob": "2d925b3650dc1c29f5880290e3411f5f21578978",
+      "size_bytes": 17234,
+      "sha256": "18993907310c789a7359585ddee8bafe5bac320be0c4a54323f52611122e8285"
+    },
+    {
+      "original_path": "python/untitled (3).py",
+      "preserved_path": "python/untitled (3).py",
+      "git_mode": "100644",
+      "git_blob": "2d925b3650dc1c29f5880290e3411f5f21578978",
+      "size_bytes": 17234,
+      "sha256": "18993907310c789a7359585ddee8bafe5bac320be0c4a54323f52611122e8285"
+    },
+    {
+      "original_path": "python/untitled.py",
+      "preserved_path": "python/untitled.py",
+      "git_mode": "100644",
+      "git_blob": "116d5e4f6dfba583cba4d811af05a03a83e96f53",
+      "size_bytes": 4253,
+      "sha256": "d1d34d9a84e2d79bb5d9ce5693f56dffd280102ed81fc7c6f0487b8122566f40"
+    },
+    {
+      "original_path": "python/untitled1 (1).py",
+      "preserved_path": "python/untitled1 (1).py",
+      "git_mode": "100644",
+      "git_blob": "a397941e17aee4fa3cd12613b3f8d9abfbaef8a1",
+      "size_bytes": 8459,
+      "sha256": "736c76c7b97306c0ecfe6b028145927facfa6e3a7a962ce0461d0675d1a7cfdf"
+    },
+    {
+      "original_path": "python/untitled1.py",
+      "preserved_path": "python/untitled1.py",
+      "git_mode": "100644",
+      "git_blob": "bf2c39f910484135179341fd7041a70cd5b27f36",
+      "size_bytes": 4686,
+      "sha256": "9dee5199444c1d6aace5e552bb2496a7ab8b8d837558733bff59555f6ce8dd88"
+    },
+    {
+      "original_path": "python/untitled10.py",
+      "preserved_path": "python/untitled10.py",
+      "git_mode": "100644",
+      "git_blob": "2d90ff2bb637c0a7132e5060162176af01122bc0",
+      "size_bytes": 1975,
+      "sha256": "c6e2c86d8f52a0e8d0cb18a9766e45eb9b3442e70b05974f7d16e40e41b87238"
+    },
+    {
+      "original_path": "python/untitled11.py",
+      "preserved_path": "python/untitled11.py",
+      "git_mode": "100644",
+      "git_blob": "60f0a65176eb91fd05e7e900c299dd638ac5b72c",
+      "size_bytes": 7083,
+      "sha256": "a41a36e301fe43eb5c4717973f07fa4bbfcac68b1d98791c52b317d67530c674"
+    },
+    {
+      "original_path": "python/untitled12.py",
+      "preserved_path": "python/untitled12.py",
+      "git_mode": "100644",
+      "git_blob": "1ca0dc78ae94dbd75f7bf5e114dbf86a625031fc",
+      "size_bytes": 8937,
+      "sha256": "5e8d0b82832bf3023ee2ae9c7969b1f6703f7b7858a9d73fe1f40f1741573102"
+    },
+    {
+      "original_path": "python/untitled13.py",
+      "preserved_path": "python/untitled13.py",
+      "git_mode": "100644",
+      "git_blob": "2d22f46e91debae4b05d50d9e816150e1308d831",
+      "size_bytes": 8975,
+      "sha256": "822dcc9238871dac591f937cf2e444a4f3127ec823bc18032455a38d77ab5658"
+    },
+    {
+      "original_path": "python/untitled14.py",
+      "preserved_path": "python/untitled14.py",
+      "git_mode": "100644",
+      "git_blob": "d43ca48bb7cae640effa48e5da02e6751ed48768",
+      "size_bytes": 10025,
+      "sha256": "6c33672c0fe849cac0e8ec7836adcbd30bf046cd217fb714b1e9688202ba71e2"
+    },
+    {
+      "original_path": "python/untitled15.py",
+      "preserved_path": "python/untitled15.py",
+      "git_mode": "100644",
+      "git_blob": "db04759379d0735fceb70d70e65e7d4159b52ced",
+      "size_bytes": 10780,
+      "sha256": "90788cf77359879580a68e4a1ef074eea7fdd77317c94fe2c3cd7da46bd211ce"
+    },
+    {
+      "original_path": "python/untitled16.py",
+      "preserved_path": "python/untitled16.py",
+      "git_mode": "100644",
+      "git_blob": "0dd17dcb754c009e3c8d51a7c14d6d352e0732a7",
+      "size_bytes": 10824,
+      "sha256": "f322513a55b706d3ad96a15878ca4724c114fd2849eb8d2fad2fac5c6c7dd683"
+    },
+    {
+      "original_path": "python/untitled17.py",
+      "preserved_path": "python/untitled17.py",
+      "git_mode": "100644",
+      "git_blob": "ad3228f9c8ec043f8f76f37861e03c3c20b30272",
+      "size_bytes": 12031,
+      "sha256": "22e7f8dfc74d62e2c7cff137a74d0087b9368d65a0decd40f3d0b5a97d03fb1d"
+    },
+    {
+      "original_path": "python/untitled18.py",
+      "preserved_path": "python/untitled18.py",
+      "git_mode": "100644",
+      "git_blob": "c0abcafc9d668ed2dced063ddb0e8fc120605ae9",
+      "size_bytes": 13762,
+      "sha256": "748cfb0a8d4c39b6f17c8ef09cbbe8ceb50e16039414b404b8636af64e7cf57f"
+    },
+    {
+      "original_path": "python/untitled19.py",
+      "preserved_path": "python/untitled19.py",
+      "git_mode": "100644",
+      "git_blob": "9b0b91da38f552fa16830f5de8af1d4ec7c90d20",
+      "size_bytes": 14292,
+      "sha256": "9b66481f4e94b7788e01f58a548b3d2faf6d8d219a585c3bff95bef5ae84c87c"
+    },
+    {
+      "original_path": "python/untitled2 (1).py",
+      "preserved_path": "python/untitled2 (1).py",
+      "git_mode": "100644",
+      "git_blob": "597c0a5e1185921e3326a72e591802c8e98212bd",
+      "size_bytes": 5227,
+      "sha256": "a4a24e94c5db86691c2b65c32d10bf6cf63b3876c064489800ee1d87a1266e43"
+    },
+    {
+      "original_path": "python/untitled2.py",
+      "preserved_path": "python/untitled2.py",
+      "git_mode": "100644",
+      "git_blob": "8106daf3219d14714f51621e97a4bbeb8dfa8495",
+      "size_bytes": 4747,
+      "sha256": "ed1eb14a84a6d8dedd19c5cd3a18e8d9ff06505f912441e1cc991f0702e51b66"
+    },
+    {
+      "original_path": "python/untitled20.py",
+      "preserved_path": "python/untitled20.py",
+      "git_mode": "100644",
+      "git_blob": "ad5356c38f2fcc141ab79e8e85383525df0fd962",
+      "size_bytes": 14006,
+      "sha256": "db1f926557310bc7edb0bf6cd857d75201fce75ad90b7b1b5d02925cf9d21600"
+    },
+    {
+      "original_path": "python/untitled21.py",
+      "preserved_path": "python/untitled21.py",
+      "git_mode": "100644",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "python/untitled22.py",
+      "preserved_path": "python/untitled22.py",
+      "git_mode": "100644",
+      "git_blob": "a207d58c4f65f4d0ef493df8ae264f39198167af",
+      "size_bytes": 14660,
+      "sha256": "e4c2bb94ff41f965eb6a5896571f773d7ceb688e18468447a940116fc8265b2d"
+    },
+    {
+      "original_path": "python/untitled23.py",
+      "preserved_path": "python/untitled23.py",
+      "git_mode": "100644",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "python/untitled24.py",
+      "preserved_path": "python/untitled24.py",
+      "git_mode": "100644",
+      "git_blob": "06075875849155fb669efb95a8c6fa2281ed7d8e",
+      "size_bytes": 15925,
+      "sha256": "17dc95305595e4b228a4e177e666617097ecea2cf84ba78ca5fd4decb42dcebf"
+    },
+    {
+      "original_path": "python/untitled25.py",
+      "preserved_path": "python/untitled25.py",
+      "git_mode": "100644",
+      "git_blob": "6f8e07f2774f2e41862e1305a141e81ddc3ae020",
+      "size_bytes": 16336,
+      "sha256": "b976354cd323af3b8ec30bd07f4d8de0a6164cdb1008ceecd5cd76cd9e4d9f1e"
+    },
+    {
+      "original_path": "python/untitled26.py",
+      "preserved_path": "python/untitled26.py",
+      "git_mode": "100644",
+      "git_blob": "f2aa0e24662fd7cacdbeb2c3b5f664f5957973b1",
+      "size_bytes": 18553,
+      "sha256": "cee843c6eefa3017b38ab7dd5f7d970007778d8ceaa48962f08b4ecb44250489"
+    },
+    {
+      "original_path": "python/untitled28.py",
+      "preserved_path": "python/untitled28.py",
+      "git_mode": "100644",
+      "git_blob": "f537ef508f747a89fd16857dfe635b631426e5e0",
+      "size_bytes": 16271,
+      "sha256": "da05f721165cfae6ed5faae3f77e239bed043af44a9f42475e10d370412f652b"
+    },
+    {
+      "original_path": "python/untitled3 (1).py",
+      "preserved_path": "python/untitled3 (1).py",
+      "git_mode": "100644",
+      "git_blob": "6e840ed2f5b2d806ced7451a871b5cd881367632",
+      "size_bytes": 5652,
+      "sha256": "3df10ec5ceaf68b9802fb093011217a103691801c01436294780821b8d26a892"
+    },
+    {
+      "original_path": "python/untitled3.py",
+      "preserved_path": "python/untitled3.py",
+      "git_mode": "100644",
+      "git_blob": "ac66ffc5cbe8cea595970c06fe07f12d2a99721c",
+      "size_bytes": 4964,
+      "sha256": "c1dba46c727f5c5adeebce057b9f99b5d5a0c2c5d2ab1976947df18ccf876cf2"
+    },
+    {
+      "original_path": "python/untitled30.py",
+      "preserved_path": "python/untitled30.py",
+      "git_mode": "100644",
+      "git_blob": "09ddc8ad0e9c94c67980f4b68e6f97cf8eb2508b",
+      "size_bytes": 17762,
+      "sha256": "bf6aa13ad56d3ad86e2c8101a56350c0ef63d305bd93ec73a9e63edda3b00658"
+    },
+    {
+      "original_path": "python/untitled32.py",
+      "preserved_path": "python/untitled32.py",
+      "git_mode": "100644",
+      "git_blob": "50301637a863d3be4d95526a5b915a6d3573d6c2",
+      "size_bytes": 18719,
+      "sha256": "4c59d03d1031d813299e088b26184da2ae958da2f5ef1c1252cb2be62c4a4562"
+    },
+    {
+      "original_path": "python/untitled33.py",
+      "preserved_path": "python/untitled33.py",
+      "git_mode": "100644",
+      "git_blob": "1b8d4256f3fd591114cdc303e73884e81bb42646",
+      "size_bytes": 19225,
+      "sha256": "e5c1d9d38b52a7d6d6aa762db56460b5911e7249f6c080b5145c1a5c775f4cf3"
+    },
+    {
+      "original_path": "python/untitled34.py",
+      "preserved_path": "python/untitled34.py",
+      "git_mode": "100644",
+      "git_blob": "7653a9aba976869101b647c587b7468b44c931f3",
+      "size_bytes": 19289,
+      "sha256": "ac84300798a788ff1f893cfc71a5b9412e8213abc5408b2c95e5777b9abde67d"
+    },
+    {
+      "original_path": "python/untitled4 (1).py",
+      "preserved_path": "python/untitled4 (1).py",
+      "git_mode": "100644",
+      "git_blob": "b312177e25ed7de489ee408331e21c9d66dc42ff",
+      "size_bytes": 6291,
+      "sha256": "8b18cc6efb6c6bbdf871978aac360728f3524516249d4670cdd73309085838b6"
+    },
+    {
+      "original_path": "python/untitled4.py",
+      "preserved_path": "python/untitled4.py",
+      "git_mode": "100644",
+      "git_blob": "abce23e2c279c142507fde199e905519162cf50d",
+      "size_bytes": 3985,
+      "sha256": "b3a4192f6eaf227b05df979d19ad5361a33e3a53f15b1e05079170d756737fa4"
+    },
+    {
+      "original_path": "python/untitled5 (1).py",
+      "preserved_path": "python/untitled5 (1).py",
+      "git_mode": "100644",
+      "git_blob": "f8caa6cc9a56b705a924f6ad83b53676303623e4",
+      "size_bytes": 6900,
+      "sha256": "ebfc1ef3342118a9d283cb3560c9b7cb7e3f929ec69c2803a367f889def9288e"
+    },
+    {
+      "original_path": "python/untitled5.py",
+      "preserved_path": "python/untitled5.py",
+      "git_mode": "100644",
+      "git_blob": "dc13b58e9efa34a7fbeb9e6c65cca14cb20e675a",
+      "size_bytes": 4871,
+      "sha256": "865a8f1aa740da20afd3b3a073f2673f788114e103878d62c3c4a3af3ce8cfa1"
+    },
+    {
+      "original_path": "python/untitled6 (1).py",
+      "preserved_path": "python/untitled6 (1).py",
+      "git_mode": "100644",
+      "git_blob": "94dd66034b44f27dad924ff3fb80743537aa2aa6",
+      "size_bytes": 7127,
+      "sha256": "2345e3a2b1dc780279c7a1d7f8ee0dc436b44ee0ab4aea7b3061845913dfb6b2"
+    },
+    {
+      "original_path": "python/untitled6.py",
+      "preserved_path": "python/untitled6.py",
+      "git_mode": "100644",
+      "git_blob": "10a935df6a7d411c83c44b2e6db9c383fad497b9",
+      "size_bytes": 5078,
+      "sha256": "146b2bb1f956d20a887495dee8cd6e235ea8c20b49d3436c9396ceda71493912"
+    },
+    {
+      "original_path": "python/untitled7 (1).py",
+      "preserved_path": "python/untitled7 (1).py",
+      "git_mode": "100644",
+      "git_blob": "97621d132afcd6f279c2b292a07cc36525f77623",
+      "size_bytes": 2719,
+      "sha256": "1dbab4fb8f9980fadc8addcd6c782a879b8d3405f39297a79afa0e0b341fbfee"
+    },
+    {
+      "original_path": "python/untitled7.py",
+      "preserved_path": "python/untitled7.py",
+      "git_mode": "100644",
+      "git_blob": "3669e0ff0e4cb333e6b7c28a99faee90f571ef78",
+      "size_bytes": 5289,
+      "sha256": "7182ba99cd6657427960fb223fc1c1e59602c328668fe0e79d0106d5bf940df7"
+    },
+    {
+      "original_path": "python/untitled8 (1).py",
+      "preserved_path": "python/untitled8 (1).py",
+      "git_mode": "100644",
+      "git_blob": "2d90ff2bb637c0a7132e5060162176af01122bc0",
+      "size_bytes": 1975,
+      "sha256": "c6e2c86d8f52a0e8d0cb18a9766e45eb9b3442e70b05974f7d16e40e41b87238"
+    },
+    {
+      "original_path": "python/untitled8.py",
+      "preserved_path": "python/untitled8.py",
+      "git_mode": "100644",
+      "git_blob": "7e2d1ee6ce330c308fd1eeafd265938cf57912e1",
+      "size_bytes": 5685,
+      "sha256": "cdad6c42fe3918313e8d0992222d23f18eb14adc675bc256f3f1bd4396a2b65c"
+    },
+    {
+      "original_path": "python/untitled9 (1).py",
+      "preserved_path": "python/untitled9 (1).py",
+      "git_mode": "100644",
+      "git_blob": "abc3ce89138734f27156d5b5fd1ff1fc9142f3c3",
+      "size_bytes": 2067,
+      "sha256": "ccdd887f1f5b4a03d310b02141e76bde2434778c6146f764a1b1e3aa729bcaea"
+    },
+    {
+      "original_path": "python/untitled9.py",
+      "preserved_path": "python/untitled9.py",
+      "git_mode": "100644",
+      "git_blob": "ddc5c77aeed235ef2fe0c6273d609a613dcfb0ba",
+      "size_bytes": 5357,
+      "sha256": "7cd8aa09c21eca6c80a2a47be60cdce6872a80a4c53f72d5d31cd9df85df50d4"
+    },
+    {
+      "original_path": "recursive.py",
+      "preserved_path": "recursive.py",
+      "git_mode": "100644",
+      "git_blob": "1538db9a8da0861d7705b522e805dcc43946006d",
+      "size_bytes": 755,
+      "sha256": "3dd19c401470f1572073e9e292178d9fc80e404b66898d4b7e88502eaf1b9df7"
+    },
+    {
+      "original_path": "unique_curves.txt",
+      "preserved_path": "unique_curves.txt",
+      "git_mode": "100644",
+      "git_blob": "1fb395e9047aa471dbef2619ab8213f1c1cedbe3",
+      "size_bytes": 2237,
+      "sha256": "2862e29059ce2ad9130afd57e55762f984f9f3013fa22bfe9185e49934da1e4a"
+    }
+  ]
+}

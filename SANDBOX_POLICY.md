@@ -31,7 +31,7 @@ Allowed statuses:
 
 ## Reserved authoritative namespaces
 
-Do not add root-level `controlled_execution/`, `preregistrations/`, `release_packages/`, or `verified_evidence/` as sandbox scientific-status mirrors. Discussion of those subjects is permitted inside experiment notes. An experiment may link to authoritative upstream artifacts, but cannot impersonate them.
+Do not add root-level `controlled_execution/`, `preregistrations/`, `release_packages/`, `verified_evidence/`, or `registry/` as sandbox scientific-status mirrors. Discussion of those subjects is permitted inside experiment notes. An experiment may link to authoritative upstream artifacts, but cannot impersonate them.
 
 ## Promotion boundary (one way, never automatic)
 
@@ -46,3 +46,10 @@ Promotion rejection does not erase the experiment, and sandbox acceptance grants
 ## Unsafe and misleading material
 
 No knowingly false factual allegations against actual individuals, privacy-invasive content, fabricated observations passed off as measured, malicious code, or dangerous misinformation. See [MODERATION.md](MODERATION.md) and [SECURITY.md](SECURITY.md).
+
+## Preservation check
+
+The archive inventory binds the pre-policy baseline at
+`a48ee3c41d17305530d65616c16c158f04e502d8`. CI checks those bytes and ancestry,
+without assigning scientific merit to historical language. New research belongs
+under `experiments/`; root governance, CI, schemas and tests are steward-owned.
