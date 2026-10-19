@@ -55,3 +55,5 @@ Upstream promotion requires a **separate PR to [S.T.A.R.-Labs](https://github.co
 [Setup audit](sandbox/SETUP_AUDIT.md) · [Live settings and owner exception](sandbox/SETTINGS.md) · [Historical byte inventory](sandbox/archive-manifest.json)
 
 [Reproducibility checks](scripts/reproducibility/README.md) · [Legacy CI audit and blockers](scripts/reproducibility/audit/AUDIT.md). The pinned software, SQL, dataset and artifact checks grant no scientific status or automatic promotion.
+
+<!-- Temporary stale-approval validation; do not merge. -->
