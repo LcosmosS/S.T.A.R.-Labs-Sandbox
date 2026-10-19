@@ -37,6 +37,26 @@ jobs:
           persist-credentials: false
           lfs: false
           submodules: false
+      - name: Check out pinned upstream references (read-only)
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream-reference
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            .github/workflows/
+            README.md
+            Contributing.md
+            LICENSE
+            SECURITY.md
+            charter/RESEARCH_CHARTER_v0.2.md
+            research/gates/ECC_RTCH_RECOVERY.md
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
       - name: Validate with trusted policy and archive checker
         shell: bash
         env:
@@ -68,7 +88,7 @@ jobs:
               print("ERROR:", error)
           raise SystemExit(bool(errors))
           PY
-          python3 -I "$archive" --root "$PROPOSAL_ROOT"
+          python3 -I "$archive" --root "$PROPOSAL_ROOT" --upstream "$GITHUB_WORKSPACE/upstream-reference"
       - name: Validate proposed policy and test guardrails only
         working-directory: proposal
         run: |
