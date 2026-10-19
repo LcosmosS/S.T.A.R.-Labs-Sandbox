@@ -368,5 +368,61 @@ class ArchiveTests(unittest.TestCase):
                     checker.check_archive(root)
 
 
+
+    def test_pinned_external_gitlink_identity_and_rogue_rejection(self):
+        """Only the precise three foreign commits are admitted as gitlinks."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            name, oid = next(iter(checker.EXTERNAL_GITLINKS.items()))
+            def record(path, mode, kind, revision):
+                """Represent a Git ls-tree record, including a NUL separator."""
+                return f"{mode} {kind} {revision}\t{path}\0".encode()
+            with patch.object(checker.subprocess, "run") as run:
+                run.return_value.stdout = record(name, "160000", "commit", oid)
+                self.assertEqual(checker.git_tree(root, "HEAD"), {name: ("160000", oid)})
+                run.return_value.stdout = record(name, "160000", "commit", "f" * 40)
+                with self.assertRaisesRegex(ValueError, "unapproved or changed"):
+                    checker.git_tree(root, "HEAD")
+                run.return_value.stdout = record(
+                    "scripts/playground/external/rogue", "160000", "commit", oid)
+                with self.assertRaisesRegex(ValueError, "unapproved or changed"):
+                    checker.git_tree(root, "HEAD")
+
+    def test_gitmodules_requires_complete_fixed_submodule_set(self):
+        """Reject partial submodule checkouts and modified Git URLs."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".gitmodules").write_text(checker.EXPECTED_GITMODULES)
+            proposal = {".gitmodules": ("100644", "f" * 40)}
+            proposal.update({p: ("160000", sha)
+                             for p, sha in checker.EXTERNAL_GITLINKS.items()})
+            def tree(_root, revision):
+                """Return the pristine baseline or the proposed gitlinks."""
+                return {} if revision == checker.BASELINE else proposal
+            with patch.object(checker, "git_tree", side_effect=tree), \
+                 patch.object(checker.subprocess, "run") as run:
+                run.return_value.stdout = b".gitmodules\0" + b"\0".join(
+                    x.encode() for x in checker.EXTERNAL_GITLINKS) + b"\0"
+                checker.check_layout(root)
+                missing = next(iter(checker.EXTERNAL_GITLINKS))
+                proposal.pop(missing)
+                with self.assertRaisesRegex(ValueError, "added or absent together"):
+                    checker.check_layout(root)
+                proposal[missing] = ("160000", checker.EXTERNAL_GITLINKS[missing])
+                (root / ".gitmodules").write_text(checker.EXPECTED_GITMODULES + "# rogue\n")
+                with self.assertRaisesRegex(ValueError, "unapproved .gitmodules"):
+                    checker.check_layout(root)
+
+    def test_root_gitmodules_disallowed_without_real_gitlinks(self):
+        """Reject a misleading submodule manifest without the fixed commits."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".gitmodules").write_text(checker.EXPECTED_GITMODULES)
+            with patch.object(checker, "git_tree", side_effect=lambda r, revision:
+                              {} if revision == checker.BASELINE else
+                              {".gitmodules": ("100644", "f" * 40)}):
+                with self.assertRaisesRegex(ValueError, "reserved"):
+                    checker.check_layout(root)
+
 if __name__ == '__main__':
     unittest.main()

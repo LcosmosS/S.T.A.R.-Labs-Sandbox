@@ -97,6 +97,15 @@ ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS = frozenset({
 })
 
 
+# Immutable opt-in external Git links. These source snapshots do not
+# constitute evidence or authorization to run external code in CI.
+EXTERNAL_GITLINKS = {
+    "scripts/playground/external/ecdata": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+    "scripts/playground/external/eclib": "39b3909a36d7d611b2d98e3751048b5ef8f5a2e2",
+    "scripts/playground/external/lmfdb": "3c09a5f981d5fc3a841430d017ad8b2ab9cc1f15",
+}
+EXPECTED_GITMODULES = "[submodule \"scripts/playground/external/ecdata\"]\n\tpath = scripts/playground/external/ecdata\n\turl = https://github.com/JohnCremona/ecdata.git\n[submodule \"scripts/playground/external/eclib\"]\n\tpath = scripts/playground/external/eclib\n\turl = https://github.com/JohnCremona/eclib.git\n[submodule \"scripts/playground/external/lmfdb\"]\n\tpath = scripts/playground/external/lmfdb\n\turl = https://github.com/LMFDB/lmfdb.git\n"
+
 def require(condition, message):
     """Raise a descriptive validation error when a condition is false."""
     if not condition:
@@ -151,8 +160,14 @@ def git_tree(root, revision):
             continue
         header, path = row.split(b"\t", 1)
         mode, kind, oid = header.decode().split()
-        require(kind == "blob", "unexpected archival submodule/tree entry")
-        tree[path.decode("utf-8")] = (mode, oid)
+        entry_path = path.decode("utf-8")
+        if kind == "commit":
+            require(mode == "160000" and entry_path in EXTERNAL_GITLINKS
+                    and EXTERNAL_GITLINKS[entry_path] == oid,
+                    f"unapproved or changed external submodule: {entry_path}")
+        else:
+            require(kind == "blob", "unexpected Git tree entry")
+        tree[entry_path] = (mode, oid)
     return tree
 
 
@@ -255,6 +270,18 @@ AUDIT_FILES = {"archive-manifest.json", "upstream-reference.json", "SETTINGS.md"
 def check_layout(root):
     """Reject research files introduced outside the permitted intake layout."""
     original = git_tree(root, BASELINE)
+    proposed = git_tree(root, "HEAD")
+    present = set(proposed).intersection(EXTERNAL_GITLINKS)
+    require(not present or present == set(EXTERNAL_GITLINKS),
+            "the three pinned external submodules must be added or absent together")
+    if present:
+        require(".gitmodules" in proposed and proposed[".gitmodules"][0] == "100644",
+                "pinned submodules require a standard tracked .gitmodules file")
+        require(safe_file(root, ".gitmodules").read_text(encoding="utf-8")
+                == EXPECTED_GITMODULES, "unapproved .gitmodules content")
+    else:
+        require(".gitmodules" not in proposed,
+                ".gitmodules is reserved for the three vetted external submodules")
     paths = subprocess.run(
         ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
         cwd=root, check=True, capture_output=True,
@@ -269,7 +296,14 @@ def check_layout(root):
                    or (len(parts) == 2 and parts[0] == "historical"
                        and parts[1] in (HISTORICAL_ROOT_RELOCATIONS | ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS))
                    or (len(parts) == 2 and parts[0] == "sandbox" and parts[1] in AUDIT_FILES))
-        require(allowed, f"new artifact outside experiments/governance paths: {path}")
+        require(allowed or path == ".gitmodules",
+                f"new artifact outside experiments/governance paths: {path}")
+        if path in EXTERNAL_GITLINKS:
+            require(path in proposed and proposed[path] ==
+                    ("160000", EXTERNAL_GITLINKS[path]),
+                    f"submodule gitlink absent or altered: {path}")
+            # CI must not fetch or execute external code.
+            continue
         safe_file(root, path)
 
 def check_all(root, upstream):
