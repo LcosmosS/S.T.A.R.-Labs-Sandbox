@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir --requirement requirements.txt \
 COPY scripts/stewardship/ ./
 USER 10001:10001
 EXPOSE 8080
-CMD ["python", "-I", "app.py"]
+CMD ["python", "app.py"]
