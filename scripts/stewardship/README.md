@@ -60,14 +60,17 @@ Configure the App's webhook URL to \`https://<your-host>/webhook\`, set its secr
 install only for the Sandbox repository, and store the App private key and other
 secrets in the deployment platform's secret manager. Never commit credentials.
 The service pins the repository ID and name and requests an installation token
-restricted to that repository and the three permissions above.
+restricted to that repository and the three permissions above. Webhook requests are
+validated and persisted to a SQLite queue before the service returns HTTP 202; a
+background worker processes events with retry backoff so GitHub does not have to wait
+for full-repository reconciliation. Keep the database on persistent writable storage.
 
 ## Security and same-SHA behavior
 
 The service verifies the \`X-Hub-Signature-256\` HMAC over the exact request bytes,
 pins the repository ID/name and installation ID, deduplicates delivery IDs, fetches
 current PR data instead of trusting webhook review claims, follows API pagination,
-and uses a separate constant-time authenticated manual reconciliation endpoint.
+and uses a separate constant-time authenticated manual reconciliation endpoint. Queue processing is serialized within one service process; use a shared queue and a distributed per-SHA lock before running multiple replicas.
 The SQLite database must be persistent so webhook replay protection survives
 restarts. Only expose the service behind HTTPS.
 
