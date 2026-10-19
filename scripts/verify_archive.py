@@ -39,6 +39,30 @@ EXPECTED_UPSTREAM_PATHS = frozenset({
     "research/gates/ECC_RTCH_RECOVERY.md",
 })
 
+# Owner-reviewed, explicit path-only relocation authority. Source bytes and Git
+# file modes remain pinned to BASELINE; no new content is authorized here.
+HISTORICAL_ROOT_RELOCATIONS = frozenset({
+    "Advancing the Global-to-Local Mapping Paradox Correction Theory_ An Analytical Framework.pdf",
+    "analyze_coma.py",
+    "analyze_phi.py",
+    "Citations.pdf",
+    "compute_virgo.py",
+    "cosmo_scale.py",
+    "entropy_cohomology.py",
+    "fibonacci.py",
+    "first_principals.py",
+    "foundational_equivalence.py",
+    "iterative_refinement.py",
+    "lmfdb_crosscheck.py",
+    "MyTable_Bigsby.csv",
+    "normalization_validation2.py",
+    "predict_coma.py",
+    "recursive.py",
+    "The Arithmetic–Cosmic Structure Conjecture (ACSC) (1).pdf",
+    "The Entropy Cohomology Conjecture (ECC).pdf",
+})
+
+
 def require(condition, message):
     """Raise a descriptive validation error when a condition is false."""
     if not condition:
@@ -113,7 +137,17 @@ def check_archive(root):
         seen.add(path)
         mode, oid = tree[path]
         require((entry["git_mode"], entry["git_blob"]) == (mode, oid), f"Git binding changed: {path}")
-        preserved = "archive/README.pre-sandbox.md" if path == "README.md" else path
+        if path == "README.md":
+            preserved = "archive/README.pre-sandbox.md"
+        elif path in HISTORICAL_ROOT_RELOCATIONS:
+            destination = f"historical/{path}"
+            source_exists = path in proposed_tree
+            destination_exists = destination in proposed_tree
+            require(source_exists != destination_exists,
+                    f"must preserve exactly one original or relocated path: {path}")
+            preserved = destination if destination_exists else path
+        else:
+            preserved = path
         require(entry["preserved_path"] == preserved, f"unexpected relocation: {path}")
         # Original README is retained at archive/README.pre-sandbox.md;
         # the new README.md is intentionally allowed to change.
@@ -197,6 +231,9 @@ def check_layout(root):
         parts = PurePosixPath(path).parts
         allowed = (path in ROOT_FILES or parts[0] in {".github", "scripts", "tests", "schemas", "experiments"}
                    or path == "archive/README.pre-sandbox.md"
+                   or path == "historical/README.md"
+                   or (len(parts) == 2 and parts[0] == "historical"
+                       and parts[1] in HISTORICAL_ROOT_RELOCATIONS)
                    or (len(parts) == 2 and parts[0] == "sandbox" and parts[1] in AUDIT_FILES))
         require(allowed, f"new artifact outside experiments/governance paths: {path}")
         safe_file(root, path)
