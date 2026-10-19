@@ -294,5 +294,79 @@ class ArchiveTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "outside experiments"):
                     checker.check_layout(root)
 
+
+    def test_second_stage_names_are_explicit_and_exclude_root_policy_files(self):
+        """Authorize only the 29 audited original non-Markdown research objects."""
+        self.assertEqual(len(checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS), 29)
+        self.assertIn("Appendices.txt", checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS)
+        self.assertIn("environment.yml", checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS)
+        self.assertIn("interweb_plot.png", checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS)
+        for excluded in ("LICENSE", ".gitignore", "README.md",
+                         "SANDBOX_POLICY.md", "CONTRIBUTING.md"):
+            self.assertNotIn(excluded, checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS)
+        self.assertFalse(checker.ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS &
+                         checker.HISTORICAL_ROOT_RELOCATIONS)
+
+    def test_second_stage_relocation_is_exactly_one_path_and_original_blob(self):
+        """Reject missing, duplicate, chmod and modified-blob moved research."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            (root / "historical").mkdir()
+            name = "Appendices.txt"
+            data = b"original archive bytes\n"
+            oid = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+            entry = {"original_path": name, "preserved_path": f"historical/{name}",
+                     "git_mode": "100644", "git_blob": oid, "size_bytes": len(data),
+                     "sha256": hashlib.sha256(data).hexdigest()}
+            (root / "sandbox/archive-manifest.json").write_text(json.dumps({
+                "baseline_commit": checker.BASELINE, "files": [entry]
+            }))
+            (root / "historical" / name).write_bytes(data)
+            baseline = {name: ("100644", oid)}
+            proposal = {f"historical/{name}": ("100644", oid)}
+            def tree(_root, revision):
+                """Resolve source or proposed Git tree independently of content."""
+                return baseline if revision == checker.BASELINE else proposal
+            with patch.object(checker, "git_tree", side_effect=tree):
+                self.assertEqual(checker.check_archive(root), 1)
+                proposal[name] = ("100644", oid)
+                with self.assertRaisesRegex(ValueError, "exactly one"):
+                    checker.check_archive(root)
+                proposal.pop(name)
+                proposal[f"historical/{name}"] = ("100755", oid)
+                with self.assertRaisesRegex(ValueError, "archival Git mode changed"):
+                    checker.check_archive(root)
+                proposal[f"historical/{name}"] = ("100644", "f" * 40)
+                with self.assertRaisesRegex(ValueError, "archival Git object changed"):
+                    checker.check_archive(root)
+                proposal.clear()
+                with self.assertRaisesRegex(ValueError, "exactly one"):
+                    checker.check_archive(root)
+
+    def test_unapproved_second_stage_relocation_is_rejected(self):
+        """Leave every other original file at its pinned source location."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            (root / "historical").mkdir()
+            name = "LICENSE"
+            data = b"license\n"
+            oid = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+            (root / "historical" / name).write_bytes(data)
+            (root / "sandbox/archive-manifest.json").write_text(json.dumps({
+                "baseline_commit": checker.BASELINE,
+                "files": [{"original_path": name, "preserved_path": "historical/LICENSE",
+                           "git_mode": "100644", "git_blob": oid, "size_bytes": len(data),
+                           "sha256": hashlib.sha256(data).hexdigest()}]
+            }))
+            with patch.object(checker, "git_tree", side_effect=lambda _root, revision: (
+                {name: ("100644", oid)} if revision == checker.BASELINE
+                else {"historical/LICENSE": ("100644", oid)}
+            )):
+                with self.assertRaisesRegex(ValueError, "unexpected relocation"):
+                    checker.check_archive(root)
+
+
 if __name__ == '__main__':
     unittest.main()

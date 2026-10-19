@@ -62,6 +62,40 @@ HISTORICAL_ROOT_RELOCATIONS = frozenset({
     "The Entropy Cohomology Conjecture (ECC).pdf",
 })
 
+# Independently owner-reviewed, explicit second-stage path-only allowance.
+# Nothing other than original Git locations changes until the move PR merges.
+ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS = frozenset({
+    "1-A Unified Framework for Multi-Scale Cartography",
+    "10-Natural Normalization of the Cosmological BSD Analogue",
+    "11-Deciphering the Cosmic Grammar: Executing a Computational Pipeline to Resolve the Recursive Encoding of Cosmological Generators",
+    "12-First-Principles Validation of the Unified Cartographic Framework",
+    "13-The Foundational Equivalence Hypothesis",
+    "14-Mapping the Energy-Geometry Correspondence",
+    "15-The Intractability Frontier",
+    "16-From Intractability to a Predictive Science: The Next Evolution of the Unified Cartographic Framework",
+    "17-An Empirical Test of the Entropy Cohomology Conjecture: Validation with an Expanded Feature Set",
+    "2-Numerical Validation of the Unified Framework for Multi-Scale Cartography”",
+    "3-A Predictive Test of the Unified Cartographic Framework",
+    "4-Iterative Refinement and Validation of the Unified Cartographic Framework",
+    "5-Iterative Refinement and Validation of the Unified Cartographic Framework Part II",
+    "6-Perturbation Analysis of the Unified Cartographic Framework",
+    "7-A Synthesis of Computational Discrepancies in the Unified Cartographic Framework: Pathways to a Refined Model",
+    "8-Towards a Cosmological BSD Analogue: Normalization and Data-Driven Refinement of the Unified Cartographic Framework",
+    "9-Data-Driven Validation of the Cosmological BSD Analogue",
+    "A Proof Sketch of the Arithmetic–Cosmic Structure Conjecture: An Evidence-Based Synthesis of the Unified Cartographic Framework",
+    "Appendices.txt",
+    "Criteria for Alternative Mapping 𝜱",
+    "environment.yml",
+    "interweb_plot.png",
+    "Packages in Local Sagemath Environment",
+    "pari_cross_check",
+    "pari_cross_reference_phi",
+    "pari_mock-L",
+    "pari_natural_normalization",
+    "pari_normalization_validation",
+    "unique_curves.txt",
+})
+
 
 def require(condition, message):
     """Raise a descriptive validation error when a condition is false."""
@@ -139,7 +173,7 @@ def check_archive(root):
         require((entry["git_mode"], entry["git_blob"]) == (mode, oid), f"Git binding changed: {path}")
         if path == "README.md":
             preserved = "archive/README.pre-sandbox.md"
-        elif path in HISTORICAL_ROOT_RELOCATIONS:
+        elif path in (HISTORICAL_ROOT_RELOCATIONS | ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS):
             destination = f"historical/{path}"
             source_exists = path in proposed_tree
             destination_exists = destination in proposed_tree
@@ -233,7 +267,7 @@ def check_layout(root):
                    or path == "archive/README.pre-sandbox.md"
                    or path == "historical/README.md"
                    or (len(parts) == 2 and parts[0] == "historical"
-                       and parts[1] in HISTORICAL_ROOT_RELOCATIONS)
+                       and parts[1] in (HISTORICAL_ROOT_RELOCATIONS | ADDITIONAL_HISTORICAL_ROOT_RELOCATIONS))
                    or (len(parts) == 2 and parts[0] == "sandbox" and parts[1] in AUDIT_FILES))
         require(allowed, f"new artifact outside experiments/governance paths: {path}")
         safe_file(root, path)
