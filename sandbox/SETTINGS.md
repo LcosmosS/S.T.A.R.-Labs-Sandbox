@@ -4,34 +4,30 @@ Policy files do not configure GitHub. The [setup audit](SETUP_AUDIT.md) records
 live settings; this document defines the intended minimum. Keep `main` as the
 existing default branch and leave experimental branches unrestricted.
 
-## Current live rule: differs from this proposal
+## Current live rule and outstanding activation tests
 
 [Sandbox Rules #25371960](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/rules/25371960)
-appeared during setup, created at **00:15:30 America/New_York on 2026-10-19**.
-**Current live readback (2026-10-19, after owner changes):** It targets
-**all branches**, blocks force pushes/deletion, requires linear history,
-CodeQL and code quality (`all`), and enables Copilot review. It **now requires
-PRs**, zero general approving reviews, CODEOWNERS approval, conversation
-resolution, and stale-review dismissal. There are **no bypass actors**.
-Its named required-status-check list is **empty**, despite strict-check policy
-being enabled. The PR requirement applies to experiment branches too and may
-prevent ordinary contributor pushes to those branches. The earlier setup
-audit describes a superseded snapshot.
+was created on 2026-10-19 and has subsequently been updated by the owner.
+**Latest readback (2026-10-19):** it targets only `~DEFAULT_BRANCH` (the
+existing `main` branch), blocks force pushes/deletion, and requires a pull
+request with **0** general approving reviews. It has no bypass actors. It now
+explicitly requires the GitHub Actions `sandbox-policy` check (integration
+`15368`) with strict up-to-date checking. Those two critical admission
+protections are **active** in GitHub, not merely proposed.
 
-This PR does not overwrite that newly changed live configuration. The following
-is a concrete **proposed replacement**, not active protection: replace that rule
-with [admission-ruleset.proposed.json](admission-ruleset.proposed.json) and add
-[governance-ruleset.proposed.json](governance-ruleset.proposed.json). The required
-status source is GitHub Actions app `15368`, verified from an actual check run.
-Do not merely add these alongside the all-branches scanning rule and assume the
-extra scanning requirements disappeared: applicable rules combine.
+The rule also requires CODEOWNERS approval, dismisses stale reviews, requires
+conversation resolution, requires linear history, retains CodeQL/code-quality
+gates, and enables Copilot review. These are **stricter than the intended
+zero-human-review admission path**; whether an ordinary experiment can be
+merged without a review has not been demonstrated end-to-end. In particular,
+the code-owner rule and its administrator handling require a separate
+operational test. Changing protections must not silently weaken the
+required `sandbox-policy` check or default-branch direct-write prohibition.
 
-**Required administrator follow-up:** enforce the GitHub Actions
-`sandbox-policy` check (integration 15368) on `main`. Strict check policy
-with an **empty** required-check list is not an effective merge gate.
-Prefer default-branch-only rules rather than blocking pushes to all experiment
-branches. Verify ordinary writer direct-push denial and ordinary experiment
-branch update/merge behavior after any ruleset change.
+The two JSON files below remain **alternative proposed configurations**, not
+the active ruleset. Do not apply them uncritically or assume that adding rules
+overrides an existing rule: overlapping rulesets accumulate requirements.
+The original setup audit includes earlier, now-superseded ruleset snapshots.
 
 ## Admission ruleset: default branch only
 
