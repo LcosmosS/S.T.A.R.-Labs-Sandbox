@@ -4,6 +4,23 @@ Policy files do not configure GitHub. The [setup audit](SETUP_AUDIT.md) records
 live settings; this document defines the intended minimum. Keep `main` as the
 existing default branch and leave experimental branches unrestricted.
 
+## Current live rule: differs from this proposal
+
+[Sandbox Rules #25371960](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/rules/25371960)
+appeared during setup, created at **00:15:30 America/New_York on 2026-10-19**.
+It targets all branches, blocks force pushes/deletion, requires linear history,
+CodeQL and code quality (`all`), and enables Copilot review. It has **no PR rule,
+no code-owner rule, and an empty named status-check list**. Deploy keys, the
+administrator role and three integrations have always-bypass entries.
+
+This PR does not overwrite that newly changed live configuration. The following
+is a concrete **proposed replacement**, not active protection: replace that rule
+with [admission-ruleset.proposed.json](admission-ruleset.proposed.json) and add
+[governance-ruleset.proposed.json](governance-ruleset.proposed.json). The required
+status source is GitHub Actions app `15368`, verified from an actual check run.
+Do not merely add these alongside the all-branches scanning rule and assume the
+extra scanning requirements disappeared: applicable rules combine.
+
 ## Admission ruleset: default branch only
 
 - Active branch ruleset; include `~DEFAULT_BRANCH`, exclude nothing.

@@ -88,7 +88,8 @@ def check_archive(root):
 ROOT_FILES = {"README.md", "DISCLAIMER.md", "CONTRIBUTING.md", "GOVERNANCE.md",
               "MODERATION.md", "SECURITY.md", "NOTICE.md", "SANDBOX_POLICY.md",
               "UPSTREAM.md", ".gitignore"}
-AUDIT_FILES = {"archive-manifest.json", "upstream-reference.json", "SETTINGS.md", "SETUP_AUDIT.md"}
+AUDIT_FILES = {"archive-manifest.json", "upstream-reference.json", "SETTINGS.md", "SETUP_AUDIT.md",
+               "admission-ruleset.proposed.json", "governance-ruleset.proposed.json"}
 
 def check_layout(root):
     original = git_tree(root, BASELINE)

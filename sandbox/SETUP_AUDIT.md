@@ -18,7 +18,7 @@ The 221 baseline files are inventoried by original path, Git blob, mode, size an
 SHA-256. All research files remain at their original paths. The baseline README
 is one newline; it is preserved verbatim in `archive/README.pre-sandbox.md` and a
 new landing page replaces it. The blank one-byte README is not a scientific disclaimer. The earlier README remains at commit
-`27ddc11605756dbf8072de35be4206ed60d185aa`. Baseline ancestry is checked. No history
+`27ddc11605756dbf8072de35be4206ed60d185aa`. Baseline ancestry is checked. No archived-history
 rewrite, research-script execution, data import or upstream code copy is involved.
 An older unfinished local setup draft was inspected and left untouched; this PR
 was prepared in a fresh checkout at the current remote baseline.
@@ -72,6 +72,30 @@ experiment format. Only the new unmerged PR branch is rebased; archived history
 is not rewritten. The original R&D and the landed parity-control program are
 not executed by this follow-up.
 
+## Live rules changed during setup
+
+At **00:15:30 America/New_York on 2026-10-19**, an active
+[Sandbox Rules #25371960](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/rules/25371960)
+was created and then updated at 00:15:53. Readback shows all-branches coverage,
+deletion/force-push prevention, linear history, CodeQL high/errors thresholds,
+code-quality severity `all`, Copilot review on pushes/drafts, and a status rule
+with an **empty required-check list**. It has **no PR or CODEOWNERS rule**.
+DeployKey, admin-role and three integration entries may always bypass it.
+
+`main` is now `protected=true` even though classic branch protection still returns
+404. The proposal branch is also covered. The guarded, leased replacement of our
+new PR branch was permitted using the existing administrator bypass and reported
+force-push and pending CodeQL violations. No archived branch or upstream ref was
+rewritten; this is not an independent approval.
+
+These live settings are preserved. The concrete minimal replacement JSON files
+and two-rule rationale are in [SETTINGS.md](SETTINGS.md). Until applied, zero
+required reviews does not imply PR-based admission, governance approval is not
+technically enforced, and a green `sandbox-policy` is not a required merge check.
+The PR can remain blocked on the configured scanning/quality conditions despite
+its own workflow passing. No actual zero-review merge, direct-write denial,
+CODEOWNERS gate or hostile-fork isolation has been demonstrated.
+
 ## Minimal additions in PR #2
 
 - A Git-bound inventory of all 221 pre-policy files, historical ancestry check,
@@ -95,8 +119,11 @@ not executed by this follow-up.
 
 ## Validation and activation status
 
-Local archive validation, metadata validation, guardrail tests and actionlint
-are run before publication. Exact-head Actions results and live rule readback
+Local archive validation, metadata validation, **15 guardrail tests** and
+**actionlint 1.7.12** passed before publication. The first reconciled head
+`ac0b5e3cf1c091467cfd260efec0fc56551b7a51` passed the
+[Actions run](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/actions/runs/39198642877).
+ Exact-head Actions results and live rule readback
 are recorded with PR #2. The archive checker is a one-time bootstrap because it
 does not exist in PR #2's base; the older base metadata validator still runs.
 Post-merge routing of extended CODEOWNERS paths, a real outsider merge with zero

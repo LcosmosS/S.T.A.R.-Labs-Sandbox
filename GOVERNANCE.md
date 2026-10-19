@@ -27,7 +27,7 @@ No production deployment or automatically published releases. Future previews, i
 
 A documented failure to enforce the ruleset is a deployment gap; policy prose must never be confused with technical enforcement.
 
-The owner-review rule is separate from admission/CI rules; see
+The proposed owner-review rule is separate from admission/CI rules; see
 [specific settings](sandbox/SETTINGS.md). GitHub cannot count self-approval.
 Sole-owner governance changes need another qualified owner or an explicitly
 recorded administrator bypass through a PR. That exception does not waive the
