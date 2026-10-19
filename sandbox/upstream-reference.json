@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "repository": "LcosmosS/S.T.A.R.-Labs",
+  "commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "authority": "reference_only",
+  "files": [
+    {
+      "path": ".github/workflows/a01-activation-preflight.yml",
+      "sha256": "ee75561f8914d6725cf9406e3ef02485ffd52494b1a22246a211b7b96ff08c89",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/a01-activation-preflight.yml"
+    },
+    {
+      "path": ".github/workflows/a01_primary_evidence.yml",
+      "sha256": "2ff89fa42ffb9238e28c5306b5fec45bb9d982b552c7da4e4d9a2348201db091",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/a01_primary_evidence.yml"
+    },
+    {
+      "path": ".github/workflows/a01_release_package.yml",
+      "sha256": "5f89c7be4669bb353380935f6b37c1956885a5dcdd23673ce5bb9e292ec0b48b",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/a01_release_package.yml"
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_release_review.yml",
+      "sha256": "639fd1fedfef8c6921d0dd046fd46a37e612450f0c4740a79f96e47d703a8b7b",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/a03_preexecution_release_review.yml"
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_verification.yml",
+      "sha256": "61546ab16d7c0ba62656d3ecb9a0bef7436877f48c7266a58ee2bf06886e672c",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/a03_preexecution_verification.yml"
+    },
+    {
+      "path": ".github/workflows/build-image.yml",
+      "sha256": "899eb701c441aff9a8094a3f9bf735110f20a49651b88e3fbf7cae1111246313",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/build-image.yml"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "44af1d12f8524f94130e857af4984159a2127db1ac4c0f337cdd3a89cea1bbd2",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/ci.yml"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "sha256": "9ee2f1f85b33b9520a142fff0ee9959ae4f226b18483c8edb3dc033261f10754",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/codeql.yml"
+    },
+    {
+      "path": ".github/workflows/independent_dataset_verification.yml",
+      "sha256": "49df37454fd55e874d5d36dc07698a2f4fe8435cd15451bdadfc5e6ea566dbf9",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/independent_dataset_verification.yml"
+    },
+    {
+      "path": ".github/workflows/main.yml",
+      "sha256": "05adaebd3de268d9faabf4b1d1cf62fc365aa63c4940c17cd095a5089766c274",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/main.yml"
+    },
+    {
+      "path": ".github/workflows/notebooks.yml",
+      "sha256": "62bb4a1b1d18921b6d52dad745b48664ccd1ab9c5a07bd5a608655c0ed330e27",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/notebooks.yml"
+    },
+    {
+      "path": ".github/workflows/observational_dataset_intake.yml",
+      "sha256": "8ec6456776395e627d99abaecad2533d73bab5ca1e9e1123f42c5996d8f46f21",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/observational_dataset_intake.yml"
+    },
+    {
+      "path": ".github/workflows/recovered-intake.yml",
+      "sha256": "00a5501d5f144fa7002884102c1f3ece41965e3ea030704c3a9b8d34223dfe1e",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/recovered-intake.yml"
+    },
+    {
+      "path": ".github/workflows/sciserver-approval-offline.yml",
+      "sha256": "7cf18b1d762f581f730feaa218ee77c7603e57f671ada18b791adc200539d49d",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/sciserver-approval-offline.yml"
+    },
+    {
+      "path": ".github/workflows/sciserver-v02-policy.yml",
+      "sha256": "9957013bbdd1da3a3cacf15af72d7d95e36f5c5d79e8b9eb35d7dbaf131467d5",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/sciserver-v02-policy.yml"
+    },
+    {
+      "path": ".github/workflows/sky_surveys.yml",
+      "sha256": "6a58441fadf5bef577bc9fd46b178bd0ee8c8ea7d4bb864d26269524d2abdffa",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/sky_surveys.yml"
+    },
+    {
+      "path": ".github/workflows/starmap.yml",
+      "sha256": "70dae91e0dd452a104698572348cf797021269ed2d4cad2ada0fcfbca1ad6e47",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/starmap.yml"
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "sha256": "097b436f084567b81ca7a79891b76b000df9d0ff87772e473eabb4a86a6ea60e",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/.github/workflows/test.yml"
+    },
+    {
+      "path": "README.md",
+      "sha256": "9963d62efe674762572c6fee761db9b3dd3af9a386feaf261c11b4d9cd23f1cb",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/README.md"
+    },
+    {
+      "path": "Contributing.md",
+      "sha256": "f8e87bdc6501234e16bbed3c164784413fc422d5b92712670c8048c3c100e246",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/Contributing.md"
+    },
+    {
+      "path": "charter/RESEARCH_CHARTER_v0.2.md",
+      "sha256": "28447bd7f008d27a3b900872f28e5462a2999af6446491b0882762747b419bd4",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/charter/RESEARCH_CHARTER_v0.2.md"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "1b2aaa93187cbd69f55b95f827220c5f65a8bbfc5deb4c28f1cf8eee8933de7e",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/LICENSE"
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "9692daa8f10d4e63531309a27e7a5b36ad7d6be986a76472a2e5b604a1f1e9a9",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/SECURITY.md"
+    },
+    {
+      "path": "research/gates/ECC_RTCH_RECOVERY.md",
+      "sha256": "a44ed6c85f9b371fe0414826e09bf8770ab2249c2cda1269af886062b8b66263",
+      "url": "https://github.com/LcosmosS/S.T.A.R.-Labs/blob/51927a9b396cdfa880f3128440db4715acdec8dc/research/gates/ECC_RTCH_RECOVERY.md"
+    }
+  ],
+  "design_source": {
+    "title": "Designing a Permissive S.T.A.R. Labs Playground Without Turning Speculation Into Claims",
+    "provided_by": "user in setup request on 2026-10-19",
+    "conversation": "6ad51125-f8b4-83ea-91e8-be8bdc1a6f6b",
+    "adaptations": [
+      "Existing repository and main branch preserved; no reinitialization.",
+      "New experiments are segregated under sandbox/experiments/.",
+      "Historical files remain in place with a pinned inventory.",
+      "JSON metadata avoids installing YAML dependencies."
+    ]
+  }
+}

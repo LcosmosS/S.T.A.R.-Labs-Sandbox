@@ -85,5 +85,56 @@ class PolicyTests(unittest.TestCase):
             self.assertTrue(any("Reserved upstream" in e for e in validator.inspect(root)))
 
 
+class AdditionalBoundaryTests(unittest.TestCase):
+    def test_unknown_keys_and_boolean_schema_version_are_rejected(self):
+        for update in [{"verified": True}, {"schema_version": True},
+                       {"status": []}, {"limitations": [""]},
+                       {"provenance": {"input_kind": "synthetic", "sources": [123]}}]:
+            with self.subTest(update=update), tempfile.TemporaryDirectory() as d:
+                root = Path(d)
+                exp, meta = baseline(root)
+                meta.update(update)
+                (exp / 'metadata.json').write_text(json.dumps(meta))
+                self.assertTrue(validator.inspect(root))
+
+    def test_nested_authority_fields_are_rejected(self):
+        for section, key, value in [('epistemic_status', 'physical_support', True),
+                                    ('provenance', 'verified', True),
+                                    ('provenance', 'upstream_commit', 'main')]:
+            with self.subTest(section=section, key=key), tempfile.TemporaryDirectory() as d:
+                root = Path(d)
+                exp, meta = baseline(root)
+                meta[section][key] = value
+                (exp / 'metadata.json').write_text(json.dumps(meta))
+                self.assertTrue(validator.inspect(root))
+
+    def test_duplicate_json_keys_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            exp, meta = baseline(root)
+            text = json.dumps(meta)
+            (exp / 'metadata.json').write_text(text[:-1] + ', "scope":"sandbox-only"}')
+            self.assertTrue(any('duplicate' in error for error in validator.inspect(root)))
+
+    def test_file_and_symlink_experiment_entries_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            exp, _ = baseline(root)
+            rogue = root / 'experiments/unclassified.py'
+            rogue.write_text('raise AssertionError("must not execute")')
+            self.assertTrue(any('unexpected' in error for error in validator.inspect(root)))
+            rogue.unlink()
+            (exp / 'metadata.json').unlink()
+            (exp / 'metadata.json').symlink_to('/etc/passwd')
+            self.assertTrue(any('symlink' in error for error in validator.inspect(root)))
+
+    def test_false_control_requires_visible_false_label(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            exp, _ = baseline(root)
+            (exp / 'README.md').write_text('SANDBOX only')
+            self.assertTrue(any('FALSE' in error for error in validator.inspect(root)))
+
+
 if __name__ == "__main__":
     unittest.main()

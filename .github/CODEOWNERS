@@ -13,3 +13,9 @@
 /schemas/ @LcosmosS
 /scripts/validate_sandbox.py @LcosmosS
 /tests/ @LcosmosS
+/scripts/ @LcosmosS
+/archive/ @LcosmosS
+/sandbox/ @LcosmosS
+/.gitignore @LcosmosS
+/experiments/_template/ @LcosmosS
+/experiments/README.md @LcosmosS

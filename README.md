@@ -1,6 +1,8 @@
 # S.T.A.R. Labs Sandbox
 
 > [!CAUTION]
+> **SANDBOX / UNVERIFIED**
+>
 > **EXPERIMENTAL SANDBOX — NOT A VERIFIED SCIENTIFIC OR PUBLICATION RECORD.**
 >
 > This repository preserves historical R&D and welcomes speculative hypotheses, deliberately false controls, counterexamples, incomplete derivations, negative results, and computational experiments. **A merge, passing CI check, or repository presence does not establish truth, reproducibility, independent review, or endorsement by [S.T.A.R.-Labs](https://github.com/LcosmosS/S.T.A.R.-Labs).**
@@ -35,3 +37,5 @@ Upstream promotion requires a **separate PR to [S.T.A.R.-Labs](https://github.co
 - [Experiments](experiments/README.md) · [License](LICENSE) · [Notice](NOTICE.md)
 
 **Scope:** experimental mathematical, computational, and physical hypotheses, including ACSC, ECC, GLMPCT, RTCH, and other S.T.A.R.-Labs-related sketches. None are established by appearing here.
+
+[Setup audit](sandbox/SETUP_AUDIT.md) · [Live settings and owner exception](sandbox/SETTINGS.md) · [Historical byte inventory](sandbox/archive-manifest.json)
