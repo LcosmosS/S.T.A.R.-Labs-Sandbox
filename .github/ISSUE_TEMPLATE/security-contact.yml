@@ -1,0 +1,18 @@
+name: Request a private security contact
+description: Request a confidential reporting channel if private vulnerability reporting is unavailable. Do not share details here.
+title: "[Security contact request] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is PUBLIC. Use it only to ask a maintainer to enable private
+        vulnerability reporting or identify a confidential disclosure channel.
+        Do not disclose exploit details, affected credentials, private data,
+        unpublished vulnerability details, or reproduction instructions.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public issue safety
+      options:
+        - label: I understand this issue is public and will not include sensitive report contents.
+          required: true

@@ -163,3 +163,27 @@ rejecting missing files, altered bytes and incorrect revisions without
 executing upstream code. [CI run 39200818602](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/actions/runs/39200818602)
 passed all 221 historical archive bindings, all 24 upstream reference bindings
 and 17 regression tests, including negative hash and revision cases.
+
+## Review remediation: immutable bootstrap and archive-mode protections
+
+PR #2's bootstrap base `22e74794bec8116a019f25bae51ec3f25f62dc6f`
+does not itself contain `scripts/verify_archive.py`. Its workflow now
+loads the verifier from immutable commit
+`6b4e234f49e7881eaa1e03943165ab50c39550e4` in a separate
+read-only checkout when, and only when, the PR base is that bootstrap commit.
+The proposal branch's checker is **not** the trusted verifier during bootstrap.
+For later PRs, the workflow uses the verifier from the trusted base branch.
+The required workflow is CODEOWNERS-owned; changes require the configured
+governance review rather than becoming a self-authorized trust bypass.
+
+That pinned verifier compares preserved file modes and Git object IDs in the
+proposed tree to the baseline tree, including the **relocated historical
+README** while permitting the sandbox's new landing README. It also binds
+the upstream reference list to a fixed inventory of **exactly 24 paths**,
+rejecting missing, duplicate or unexpected entries before hash comparison.
+
+Security and moderation guidance now points to a dedicated **public contact
+request form** if GitHub private vulnerability reporting is unavailable. The
+form is only for requesting a confidential route; it is not itself a private
+reporting channel and must contain no sensitive report content. No contact
+address was invented.
