@@ -130,10 +130,11 @@
     "provided_by": "user in setup request on 2026-10-19",
     "conversation": "6ad51125-f8b4-83ea-91e8-be8bdc1a6f6b",
     "adaptations": [
-      "Existing repository and main branch preserved; no reinitialization.",
-      "New experiments are segregated under sandbox/experiments/.",
-      "Historical files remain in place with a pinned inventory.",
-      "JSON metadata avoids installing YAML dependencies."
+      "Existing repository, archived files and main branch preserved; no reinitialization.",
+      "The root experiments/ layout and JSON schema landed in PR #1 are retained.",
+      "All 221 pre-policy files are bound to Git objects and SHA-256 digests.",
+      "The stdlib policy workflow is hardened without executing research programs.",
+      "Concrete default-branch rules are proposed separately from newly changed live settings."
     ]
   }
 }
