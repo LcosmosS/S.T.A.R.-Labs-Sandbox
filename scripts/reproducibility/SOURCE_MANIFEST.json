@@ -1,0 +1,657 @@
+{
+  "schema_version": 1,
+  "scope": "sandbox-only",
+  "origin_repository": "LcosmosS/S.T.A.R.-Labs",
+  "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "claim_of_truth": false,
+  "independently_reviewed": false,
+  "eligible_for_automatic_promotion": false,
+  "files": [
+    {
+      "source_path": "ci_diagnostics/diagnose_cosmology.py",
+      "snapshot_path": "upstream/ci_diagnostics/diagnose_cosmology.py",
+      "git_blob": "dbc6cf1b61a91392fa8b6ac6060cc0655e28ef81",
+      "sha256": "8cef5ceca82c2b7410fd28e69ea340aedfa5466523527c8ac1f5b7a465d0245f"
+    },
+    {
+      "source_path": "scripts/generate_cremona_subset.py",
+      "snapshot_path": "upstream/scripts/generate_cremona_subset.py",
+      "git_blob": "4fe27927ca1448eb3c29dfd0ee067b6da4cbce8d",
+      "sha256": "0265f016b45e96c8d564971a8c07947f6240c720f06f950e8f765bc760c046a9"
+    },
+    {
+      "source_path": "src/acsc/null_models.py",
+      "snapshot_path": "upstream/src/acsc/null_models.py",
+      "git_blob": "686f022cb2eb8a7c090a3f6d3aa3d50123e70860",
+      "sha256": "ed6e74015a738710671f47cd42453f35b97400ea46f56d60a33c5ea7107775f5"
+    },
+    {
+      "source_path": "src/acsc/projection.py",
+      "snapshot_path": "upstream/src/acsc/projection.py",
+      "git_blob": "12a1f05a65446fa705b2a2cfd308167d4cb3f70e",
+      "sha256": "682e350eac9109e1d68c00c8daf058bae49c1d8628ed15c7e7731201429823ce"
+    },
+    {
+      "source_path": "src/acsc/quantile.py",
+      "snapshot_path": "upstream/src/acsc/quantile.py",
+      "git_blob": "e45b3e28d53aadd309c6b7887f86ac28cd24f58a",
+      "sha256": "b3dbabe6d609a098d2b42025842d6f26c3e970a4d712b591b96778bd46602fe1"
+    },
+    {
+      "source_path": "src/acsc/robustness.py",
+      "snapshot_path": "upstream/src/acsc/robustness.py",
+      "git_blob": "c0533662e0f270aa986a46af9452cea15c11d78c",
+      "sha256": "dedc0d7c33b0434ba80ee431c0b9a21ae52bae323003a306a1b0a05ae1f1798f"
+    },
+    {
+      "source_path": "src/acsc/statistics.py",
+      "snapshot_path": "upstream/src/acsc/statistics.py",
+      "git_blob": "2d66694671d785792f655654dda70d2ed4fd6545",
+      "sha256": "72cd9c17c26321368d300028f68a235ee2f816150a0f31800e2496fbed0c6848"
+    },
+    {
+      "source_path": "src/acsc/tda_pipeline.py",
+      "snapshot_path": "upstream/src/acsc/tda_pipeline.py",
+      "git_blob": "c805e52e3e8e8db09db1356465936d5d0c8dc6e2",
+      "sha256": "1232403c8851aca5e3e137676679bf946e3718da1f987f1bd32ce889c03b0719"
+    },
+    {
+      "source_path": "src/data/cremona_ecdata.py",
+      "snapshot_path": "upstream/src/data/cremona_ecdata.py",
+      "git_blob": "a4232aec8fcf2c6224398f78895c696dcf27e76d",
+      "sha256": "7e3f79a9fd7ddf6af9c95d5dd4637015cc871b628ec6bf78f9060febc3067b97"
+    },
+    {
+      "source_path": "src/data/load_sky_surveys.py",
+      "snapshot_path": "upstream/src/data/load_sky_surveys.py",
+      "git_blob": "9001fe557a62923894b979437656d1d52de433d2",
+      "sha256": "8a8a084c6aafbb3ec487ba395b9cb274279eb35b3c307418fe98635e562bb67c"
+    },
+    {
+      "source_path": "src/data/sky_survey_dataset_builder.py",
+      "snapshot_path": "upstream/src/data/sky_survey_dataset_builder.py",
+      "git_blob": "3f72cdbb2f25c2a7a456f5caa31507e1c8bbd6a5",
+      "sha256": "88ba0efadbf17afe1736717088cead129766d96ddd4a7ddadb213d1bf6b3483d"
+    },
+    {
+      "source_path": "src/data/sky_survey_schema.py",
+      "snapshot_path": "upstream/src/data/sky_survey_schema.py",
+      "git_blob": "7de99d7bf2944e9f01822bbfb648fb8aff2a9cf7",
+      "sha256": "74f358b19d3c47f697f7c6666c567318cb691aa77ec7781ca8180c46ef541a36"
+    },
+    {
+      "source_path": "src/data/spherical_crossmatch_reference_audit.py",
+      "snapshot_path": "upstream/src/data/spherical_crossmatch_reference_audit.py",
+      "git_blob": "9778a26d54113b443f2d9ea5a11157768845c59f",
+      "sha256": "d6b701c9e047397014a81ff9fa0538026a9a502a232f21f8e6b784fe26d11fbe"
+    },
+    {
+      "source_path": "src/data/spherical_match_candidate.py",
+      "snapshot_path": "upstream/src/data/spherical_match_candidate.py",
+      "git_blob": "101a654a4bdc877497dd8f54287382ddb3a57483",
+      "sha256": "884a425627598a39b9cb6e322851fd281e8ea43c8ab8984bc2e12634ebbb8cbc"
+    },
+    {
+      "source_path": "src/entropy/cohomology.py",
+      "snapshot_path": "upstream/src/entropy/cohomology.py",
+      "git_blob": "36e5b7a0faad6762864fb2d03b04a408ec9bcf05",
+      "sha256": "4b0ab040c08dd8a8eb0ed993dfcaa9086f9b71426b9724a0bcb63ec48ac14e24"
+    },
+    {
+      "source_path": "src/entropy/differential_forms.py",
+      "snapshot_path": "upstream/src/entropy/differential_forms.py",
+      "git_blob": "fefcaac2024914864ce0468eaf485da81f626bf0",
+      "sha256": "3f4e3ddd79662380cdfd77c01e8a5a9958b62bba7399c5a7423769524fab407b"
+    },
+    {
+      "source_path": "src/entropy/entropy_field.py",
+      "snapshot_path": "upstream/src/entropy/entropy_field.py",
+      "git_blob": "1c0380685b7ccd4477d0c9b20d47bb4ad18c1d4e",
+      "sha256": "8b26344043eaa550a1cdcef51346542a2c695993883440282839f6e9d7d0bcdb"
+    },
+    {
+      "source_path": "src/entropy/entropy_geodesics.py",
+      "snapshot_path": "upstream/src/entropy/entropy_geodesics.py",
+      "git_blob": "648c74d70777ca15b088e9e10d3d60b21900142f",
+      "sha256": "964d1a5bc687da6c7c280aed12322af1e2cd0a3bdf437a4a0e5bd412abb09d91"
+    },
+    {
+      "source_path": "src/entropy/entropy_potential.py",
+      "snapshot_path": "upstream/src/entropy/entropy_potential.py",
+      "git_blob": "d19561cfca123c0d9f39390f4615f4e166bb507f",
+      "sha256": "da6314aa552bdb6145c55bb5c928bb9434db267d924a4a9e1d918f22cd1796bf"
+    },
+    {
+      "source_path": "src/entropy/entropy_shells.py",
+      "snapshot_path": "upstream/src/entropy/entropy_shells.py",
+      "git_blob": "7cbbf4ac9d9647b750fc5164d102b0e50fe6a644",
+      "sha256": "e9987989db6707391eb80584be067c1e34d48c49439d2c2508b4a8ac8ecc88e6"
+    },
+    {
+      "source_path": "src/entropy/fisher_rao_geodesics.py",
+      "snapshot_path": "upstream/src/entropy/fisher_rao_geodesics.py",
+      "git_blob": "d41fc4c3d4516c301d7c40beb661462e93a9a0d9",
+      "sha256": "9fcabc11dbeadb1f1d1550536c303efd0dfe9b6293f9a5aaa6ff7c602f365322"
+    },
+    {
+      "source_path": "src/entropy/symbolic_manifold.py",
+      "snapshot_path": "upstream/src/entropy/symbolic_manifold.py",
+      "git_blob": "c536f2292663473fe93742849a7cfb37522b8449",
+      "sha256": "b2ad5b6078ff07f0f1fa4d363c5814f7887b7dc48076c7c6199256f4b3fe43eb"
+    },
+    {
+      "source_path": "src/likelihoods/data/planck_compressed.py",
+      "snapshot_path": "upstream/src/likelihoods/data/planck_compressed.py",
+      "git_blob": "8c4f8736e2d22747b55c338e63e8b77a6e17be6e",
+      "sha256": "a5122b20c7d7199d2fc3c2757cd6278d67c014299941904e8714ffb996fcfc22"
+    },
+    {
+      "source_path": "src/physics/cosmology.py",
+      "snapshot_path": "upstream/src/physics/cosmology.py",
+      "git_blob": "011dd143bd610191e2b500ee4aa421c71a225f76",
+      "sha256": "71fbd4e30497b14b711b386d5727916e718767366bb67869e1040c846ab6f0ed"
+    },
+    {
+      "source_path": "src/physics/hubble_effective.py",
+      "snapshot_path": "upstream/src/physics/hubble_effective.py",
+      "git_blob": "559ee6a3eba04ddd1d21cc658a19a394a1830017",
+      "sha256": "3d4d9faa2724153d9e4f46605a690cdd686ae4bb3923d64eab2790ac736133dc"
+    },
+    {
+      "source_path": "src/physics/hubble_tension_fit.py",
+      "snapshot_path": "upstream/src/physics/hubble_tension_fit.py",
+      "git_blob": "89b5c69c80b77b3d2dcb538e4c9d63c1a6f82267",
+      "sha256": "a7ed29185656806731fa9460dcaaf1ba13d99074491e16cb41a9d3f4a4c4e1e0"
+    },
+    {
+      "source_path": "src/physics/mcmc_cosmology.py",
+      "snapshot_path": "upstream/src/physics/mcmc_cosmology.py",
+      "git_blob": "80c7b1580bd8e5be217e6aee9d8a4ccd853ac77a",
+      "sha256": "ae7870da67ff2b70c7cb5a9bb19f89a40c10de961ee7a28313c07366cb7951dd"
+    },
+    {
+      "source_path": "src/physics/mcmc_joint_pipeline.py",
+      "snapshot_path": "upstream/src/physics/mcmc_joint_pipeline.py",
+      "git_blob": "6797aa84c5c59b703656232ee4f26b7df7da9579",
+      "sha256": "d4b89d5d963b7764c4eb279334fd1f6dd482a70b9fcf4e542bc8808b3cdf756f"
+    },
+    {
+      "source_path": "src/physics/metric_perturbations.py",
+      "snapshot_path": "upstream/src/physics/metric_perturbations.py",
+      "git_blob": "5e666372dd5f47a555526acc26a75fb702d496a8",
+      "sha256": "9a8e09f8de2c75aa6f276e33a919a9b4573ced31c4ba8462e57146d1a29978e4"
+    },
+    {
+      "source_path": "src/physics/scalar_coupling.py",
+      "snapshot_path": "upstream/src/physics/scalar_coupling.py",
+      "git_blob": "1a8aec12114514acd4474dcc3a3a70c1ac524842",
+      "sha256": "34998fa27c2776a51b649639478be21772fa091ff013d37738c39632573b798c"
+    },
+    {
+      "source_path": "src/physics/symbolic_cosmology.py",
+      "snapshot_path": "upstream/src/physics/symbolic_cosmology.py",
+      "git_blob": "b24dbf64bba84c4ec7c4cc00e2367abc7c0d65d6",
+      "sha256": "28cd3bf556bd83187a28daca338f368046c51321a470408e135a18657f199434"
+    },
+    {
+      "source_path": "src/quality/sfr_leakage_gate.py",
+      "snapshot_path": "upstream/src/quality/sfr_leakage_gate.py",
+      "git_blob": "147c9929ddb400f6a58c28063b504bfc379fac6d",
+      "sha256": "c1a6c57084f63dbbdace7c5bfba19aa551e1c077b10d2e95a6009ed4a410b47a"
+    },
+    {
+      "source_path": "src/symbolic_regression/constrained_gp.py",
+      "snapshot_path": "upstream/src/symbolic_regression/constrained_gp.py",
+      "git_blob": "afae997c3314f08975c7034778a99f673bd627c7",
+      "sha256": "dc9e7f75f46bea91acc795a514d4df3de98bb298db2bf05c4c8b387f84f630a5"
+    },
+    {
+      "source_path": "src/symbolic_regression/law_discovery_manifold.py",
+      "snapshot_path": "upstream/src/symbolic_regression/law_discovery_manifold.py",
+      "git_blob": "4cef13ff62a3a52c23f7357555c0c3baabc1d8f0",
+      "sha256": "32c20764256b0675cd9eb126cc05a218ea6c8cb4537c523863a280049707f31b"
+    },
+    {
+      "source_path": "src/symbolic_regression/sr_pipeline.py",
+      "snapshot_path": "upstream/src/symbolic_regression/sr_pipeline.py",
+      "git_blob": "002577ed6fa3e38776fe32f13c435d1c6ea7a98f",
+      "sha256": "6a64762f7855e1e45874a6a87598be05371aadb1463e5021f4e1aa10d7dc6edd"
+    },
+    {
+      "source_path": "src/tda/bootstrap_stability.py",
+      "snapshot_path": "upstream/src/tda/bootstrap_stability.py",
+      "git_blob": "6b189eea8832c2c1a9c21adc2b6f9c0c93710b45",
+      "sha256": "6ef97d59e15f21b87794dfefce3e02d8b31187a54553a1c88efb1447961bc76b"
+    },
+    {
+      "source_path": "src/tda/persistence.py",
+      "snapshot_path": "upstream/src/tda/persistence.py",
+      "git_blob": "3d24141d4f16abe58168b80e2f1d0f546bfafb31",
+      "sha256": "92c5a240589e46f1e276c224d32cda434f1e43e9f93ba0abde7eb72fe47f03c7"
+    },
+    {
+      "source_path": "src/tda/persistence_landscape.py",
+      "snapshot_path": "upstream/src/tda/persistence_landscape.py",
+      "git_blob": "90a99953a343dab97aad2328c8ec3733a769263d",
+      "sha256": "2998626b21bd8af366cc77de2c9c8b1c1c063389be705aab0b426e2815c081cf"
+    },
+    {
+      "source_path": "src/tda/witness_complex.py",
+      "snapshot_path": "upstream/src/tda/witness_complex.py",
+      "git_blob": "c2b1708f645bbddd5c0b3b6ef249afcb64ace3ed",
+      "sha256": "fc4b0958fec3bdb352fcdcc5d005bbd75d36ce9b689248f6580e571d5c2f32f0"
+    },
+    {
+      "source_path": "src/utils/astro_utils.py",
+      "snapshot_path": "upstream/src/utils/astro_utils.py",
+      "git_blob": "3a0c368995ef8721e9bfef3a4a8c2fdb87cad368",
+      "sha256": "bc166b383d36f28aaf14037a85d0bf372eeba19484b6e86ab797bea6221c978d"
+    },
+    {
+      "source_path": "tests/test_astronomy_integrity_fixtures.py",
+      "snapshot_path": "upstream/tests/test_astronomy_integrity_fixtures.py",
+      "git_blob": "211fedbb77bf0a79dd3b2dac018715d568ae4547",
+      "sha256": "ed9f544dbbc1ac079fc5478bd97099266cbb4dc6faa8196ec9da3cec211aa412"
+    },
+    {
+      "source_path": "tests/test_bootstrap_stability.py",
+      "snapshot_path": "upstream/tests/test_bootstrap_stability.py",
+      "git_blob": "e7e9635933e02c814a4f5842f5e6760e48dc9ce1",
+      "sha256": "e60ad090a4bf39e497c800935e9d7b1b3b06acf26a865c43532840d79ee2219b"
+    },
+    {
+      "source_path": "tests/test_cohomology.py",
+      "snapshot_path": "upstream/tests/test_cohomology.py",
+      "git_blob": "ba3ff96b75225a5c578af21c1877f78b6c590b21",
+      "sha256": "6a73cca9198daad6492c2c499ef38cb869940ca5eadc512a2b3cf01658dbab74"
+    },
+    {
+      "source_path": "tests/test_constrained_gp.py",
+      "snapshot_path": "upstream/tests/test_constrained_gp.py",
+      "git_blob": "4697dbd4d4f599cc7d83d8ac403131b46d5ab044",
+      "sha256": "b10ff2be20c38c0adf866a19ae8c4a34ee7345fbd394aa126fe66c8642f7a8d4"
+    },
+    {
+      "source_path": "tests/test_cosmology.py",
+      "snapshot_path": "upstream/tests/test_cosmology.py",
+      "git_blob": "51d059da078b0e15697219166511c79bb426e6c8",
+      "sha256": "524a89ffe5ae0718781d488ab8942203012756b6497f72b77e42af68557816e2"
+    },
+    {
+      "source_path": "tests/test_differential_forms.py",
+      "snapshot_path": "upstream/tests/test_differential_forms.py",
+      "git_blob": "ea1593399267ccd5b097bd9d1623e1d4ed143dac",
+      "sha256": "3a8665ad5ca685018a7a19fb5c946cdc7420cb15cf305c62e55cc33a892bfe2a"
+    },
+    {
+      "source_path": "tests/test_entropy_field.py",
+      "snapshot_path": "upstream/tests/test_entropy_field.py",
+      "git_blob": "ff8bfa5136692ab36117dc534ee561a00db16381",
+      "sha256": "0e9c3e899b767ae8f1250453647a28868f8ed18ce4b440c4a55642f53231ae8b"
+    },
+    {
+      "source_path": "tests/test_entropy_potential.py",
+      "snapshot_path": "upstream/tests/test_entropy_potential.py",
+      "git_blob": "4f291a7c5f4be375e18b594225b833109d9021e7",
+      "sha256": "960994b9866f0fdc9149e909571e5372609daf5c58fafd298475076a5a9cf283"
+    },
+    {
+      "source_path": "tests/test_entropy_shells.py",
+      "snapshot_path": "upstream/tests/test_entropy_shells.py",
+      "git_blob": "2118aea439e55bd35b295bfc510c8358faeae301",
+      "sha256": "33e1c981596ed81c38d61fe869b1d18c123014da17785f3d4ef50e588efe4151"
+    },
+    {
+      "source_path": "tests/test_fail_closed_runtime.py",
+      "snapshot_path": "upstream/tests/test_fail_closed_runtime.py",
+      "git_blob": "af724b9d5d423ee3f9332824434e7a41f2984df8",
+      "sha256": "70829e13668a5f31b7000780ecb89925bb7d15a082bc7f8dbc3eae90662e051d"
+    },
+    {
+      "source_path": "tests/test_fisher_rao_entropy_geodesics.py",
+      "snapshot_path": "upstream/tests/test_fisher_rao_entropy_geodesics.py",
+      "git_blob": "8e9774dcd28c341433142adf766a19565dc222e4",
+      "sha256": "095adb3ac20833273e65a5ee20b812b9806b2d70deba7584735eba3fffe92921"
+    },
+    {
+      "source_path": "tests/test_hubble_effective.py",
+      "snapshot_path": "upstream/tests/test_hubble_effective.py",
+      "git_blob": "4c5beba3064efa99d48904e6df025aa64eb49802",
+      "sha256": "79d088e934024cf613c4a145cd512cd507214d11cf2b0248ab68a9700649b564"
+    },
+    {
+      "source_path": "tests/test_hubble_tension_fit.py",
+      "snapshot_path": "upstream/tests/test_hubble_tension_fit.py",
+      "git_blob": "14f929c019d41d663edc968c46f5a7b63cc48405",
+      "sha256": "fb91f617558b65970e43ce5a3d55c41271b51e6515d78386fbd3120875decd63"
+    },
+    {
+      "source_path": "tests/test_independent_spherical_reference_audit.py",
+      "snapshot_path": "upstream/tests/test_independent_spherical_reference_audit.py",
+      "git_blob": "0a8aaa7d9c7c041ffa6f78fffb784d2b49ff3018",
+      "sha256": "805b909565ecc816e097d919e50586ebf3d058dcdbff9c67057ddc7ad16750d2"
+    },
+    {
+      "source_path": "tests/test_metric_perturbations.py",
+      "snapshot_path": "upstream/tests/test_metric_perturbations.py",
+      "git_blob": "5d253f4c4321c94384b8afe3b22e830b50b07bc9",
+      "sha256": "925d534120dfb40ffd632ea35f69b67d9f234580777326e9ed5dea0170eec383"
+    },
+    {
+      "source_path": "tests/test_persistence_landscape.py",
+      "snapshot_path": "upstream/tests/test_persistence_landscape.py",
+      "git_blob": "2c2f73189c1ed74a270dac1cd300c42fa6b009af",
+      "sha256": "fb36c8af6f03e10a95860dd0274e44c7dfc6ae1d42e0ed84e613e49442ed1399"
+    },
+    {
+      "source_path": "tests/test_planck_compressed_loader.py",
+      "snapshot_path": "upstream/tests/test_planck_compressed_loader.py",
+      "git_blob": "ba78662f6e92fe86887e7c114b611b7f11fd0ab0",
+      "sha256": "b9951b223fc99f6c9c224c7bed82ad7dd58d8135ea28f878b0df92451fa28dc5"
+    },
+    {
+      "source_path": "tests/test_projection.py",
+      "snapshot_path": "upstream/tests/test_projection.py",
+      "git_blob": "5a8cdba23855bde6c964b47b62405bb90c0f6d53",
+      "sha256": "48544da1deabae858df1c1feabdd3a86f789fa560d65e0cc8a27e0f34c3e1663"
+    },
+    {
+      "source_path": "tests/test_reproducibility.py",
+      "snapshot_path": "upstream/tests/test_reproducibility.py",
+      "git_blob": "d26b7712e6c7e789ffcd9abfa46c0d241ffa9049",
+      "sha256": "3437ca697cd1b1524b5afb2edd4968d504f02de4c0330c815574d4708e0ca977"
+    },
+    {
+      "source_path": "tests/test_scalar_coupling.py",
+      "snapshot_path": "upstream/tests/test_scalar_coupling.py",
+      "git_blob": "1bf0b675dbe964de274d7fea7e2633042f6c563c",
+      "sha256": "ab1eebea48527c8c62c31fffedd49b7ba5b1f3307b9a3fd9cf0664e15ddabde8"
+    },
+    {
+      "source_path": "tests/test_sr_pipeline.py",
+      "snapshot_path": "upstream/tests/test_sr_pipeline.py",
+      "git_blob": "cf8a4297db806683232b2a4ff6639383b018389f",
+      "sha256": "eb628b36a90ddd08e621d7b9ed267c138650c11cb885a3f6316ccbdbe92e439f"
+    },
+    {
+      "source_path": "tests/test_statistics.py",
+      "snapshot_path": "upstream/tests/test_statistics.py",
+      "git_blob": "fbd51ed3d78d02f8bcf450093445fe6da2b2ce7b",
+      "sha256": "8afecf68194a35f65e889fabad50f3b051b6afdab09d293beceb39cf61b82535"
+    },
+    {
+      "source_path": "tests/test_symbolic_manifold.py",
+      "snapshot_path": "upstream/tests/test_symbolic_manifold.py",
+      "git_blob": "e3a72c7d11f8c336f255f77ec849a43b514e9899",
+      "sha256": "e3fe1d41cfc61f836a7f7e011075bd2a30cc3fecfed1a7d38cbf3771b98e41c0"
+    },
+    {
+      "source_path": "tests/test_tda.py",
+      "snapshot_path": "upstream/tests/test_tda.py",
+      "git_blob": "8abebe489a9f0369fcb7453a93dd98a3cc41e8c3",
+      "sha256": "16085347037f3bfab39fb982853ec904f5b9c6436ce6083366601e2060e93749"
+    },
+    {
+      "source_path": "tests/test_witness_complex.py",
+      "snapshot_path": "upstream/tests/test_witness_complex.py",
+      "git_blob": "eb1b183c5449e5083f0b22867317a7f49e49a974",
+      "sha256": "3343a4c6d0e6eecc522e0bec7826cf7b0d0f47e8139dc1e861aa8791c61b935b"
+    },
+    {
+      "source_path": "LICENSE",
+      "snapshot_path": "upstream/LICENSE",
+      "git_blob": "ad0b40a677ff845adfa2a400be73c8ff80cef923",
+      "sha256": "1b2aaa93187cbd69f55b95f827220c5f65a8bbfc5deb4c28f1cf8eee8933de7e"
+    },
+    {
+      "source_path": "tools/recovery_intake.py",
+      "snapshot_path": "upstream/tools/recovery_intake.py",
+      "git_blob": "83a6dda350468e0d97f367ce41b84861b1bc221e",
+      "sha256": "9c458a075ab96de24d6aeff6be23abe666095e088ac74f3f722138052b2a4a21"
+    },
+    {
+      "source_path": "scripts/validate_provenance_capture.py",
+      "snapshot_path": "upstream/scripts/validate_provenance_capture.py",
+      "git_blob": "08aa72c97f7b8055c64426b25f9c68666c4da856",
+      "sha256": "6bcff86b398e71c10c50528b3fd309076561dd85d1fe5c866f6c4f6cd41c6ce8"
+    },
+    {
+      "source_path": "scripts/audit_cocalc_archive.py",
+      "snapshot_path": "upstream/scripts/audit_cocalc_archive.py",
+      "git_blob": "a12890cdeb7f3a9358e0a24bb70a7b01fc328ccc",
+      "sha256": "deae88bf0a781e1a49aafdfeb848bffa5e88644413b9fa3469eea7727212514c"
+    },
+    {
+      "source_path": "tests/test_recovery_intake.py",
+      "snapshot_path": "upstream/tests/test_recovery_intake.py",
+      "git_blob": "de1b3aa4fefb9bf63f889b36c8e9716d604e151d",
+      "sha256": "73b17b138cce5107dd6bcb28573ffb92b473be4ca582fdab61d2c304da77a2eb"
+    },
+    {
+      "source_path": "tests/test_provenance_capture_validator.py",
+      "snapshot_path": "upstream/tests/test_provenance_capture_validator.py",
+      "git_blob": "66b7e02f97eb47bec1d4a3f94d59817f12a5c17a",
+      "sha256": "b450264caf25b7add631ddb9f99fd070c076220156cdb5510c93b2edcbd5895f"
+    },
+    {
+      "source_path": "tests/test_audit_cocalc_archive.py",
+      "snapshot_path": "upstream/tests/test_audit_cocalc_archive.py",
+      "git_blob": "b55143f542a6e021e665a2ffedb10df5165d5ed1",
+      "sha256": "f697e294dca67ef1eca3633592acc6a52b6b54cfbac45fd5231eb8e993392ffb"
+    }
+  ],
+  "local_package_adapters": [
+    "upstream/src/__init__.py",
+    "upstream/src/acsc/__init__.py",
+    "upstream/src/data/__init__.py",
+    "upstream/src/entropy/__init__.py",
+    "upstream/src/likelihoods/__init__.py",
+    "upstream/src/likelihoods/data/__init__.py",
+    "upstream/src/physics/__init__.py",
+    "upstream/src/quality/__init__.py",
+    "upstream/src/symbolic_regression/__init__.py",
+    "upstream/src/tda/__init__.py",
+    "upstream/src/utils/__init__.py",
+    "upstream/src/diagnostics/__init__.py",
+    "upstream/scripts/__init__.py",
+    "upstream/tools/__init__.py"
+  ],
+  "tests": [
+    "tests/test_projection.py",
+    "tests/test_statistics.py",
+    "tests/test_tda.py",
+    "tests/test_reproducibility.py",
+    "tests/test_witness_complex.py",
+    "tests/test_bootstrap_stability.py",
+    "tests/test_cosmology.py",
+    "tests/test_cohomology.py",
+    "tests/test_differential_forms.py",
+    "tests/test_entropy_field.py",
+    "tests/test_entropy_potential.py",
+    "tests/test_entropy_shells.py",
+    "tests/test_fisher_rao_entropy_geodesics.py",
+    "tests/test_scalar_coupling.py",
+    "tests/test_symbolic_manifold.py",
+    "tests/test_persistence_landscape.py",
+    "tests/test_fail_closed_runtime.py",
+    "tests/test_metric_perturbations.py",
+    "tests/test_hubble_effective.py",
+    "tests/test_hubble_tension_fit.py",
+    "tests/test_constrained_gp.py",
+    "tests/test_sr_pipeline.py",
+    "tests/test_astronomy_integrity_fixtures.py",
+    "tests/test_independent_spherical_reference_audit.py",
+    "tests/test_planck_compressed_loader.py",
+    "tests/test_a03_synthetic_reference.py",
+    "tests/test_recovery_intake.py",
+    "tests/test_provenance_capture_validator.py",
+    "tests/test_audit_cocalc_archive.py"
+  ],
+  "derived_files": [
+    {
+      "snapshot_path": "upstream/src/diagnostics/a03_kernels.py",
+      "sha256": "8e2a228478f9829abae726d404695d9086650c17f6eb169b3f830f7c52b830c5"
+    },
+    {
+      "snapshot_path": "upstream/src/diagnostics/a03_reference.py",
+      "sha256": "eb1b28b6cfd4537da67a737085dfcde851f0daeebbbbff2536576a7dd6e631d4"
+    },
+    {
+      "snapshot_path": "upstream/tests/test_a03_synthetic_reference.py",
+      "sha256": "7a23c5c91610878fac5273e82558c58e4982a61dca7fe2dd3c5e2dfab67ad8b8"
+    }
+  ],
+  "extraction_provenance": [
+    {
+      "source_path": "src/experiments/exp_map_a01.py",
+      "name": "ProtocolViolation",
+      "lines": [
+        36,
+        37
+      ],
+      "sha256": "d206f4f21efbcec3437ba9c07e9a477d455cf9e65e12860898e06f4c92fe5331"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a01.py",
+      "name": "_discriminant",
+      "lines": [
+        146,
+        161
+      ],
+      "sha256": "168d76317732a8d141af3634e359e2f39d9545b8e3c4bf2fc4480d43c094b715"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a01.py",
+      "name": "SplitMix64",
+      "lines": [
+        295,
+        322
+      ],
+      "sha256": "2b1d5b68bb865ebb7ccb9a6cb5e0b4dcaae4a3f19f9dacd363598f925f2fee6a"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a03.py",
+      "name": "MCJProtocolError",
+      "lines": [
+        176,
+        177
+      ],
+      "sha256": "31584742248c74ab8c78cd642b87a0ca422ab210d1c071b563cd059e43cc0330"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a03.py",
+      "name": "mcj_neighbor_edges",
+      "lines": [
+        316,
+        355
+      ],
+      "sha256": "7f4d8567000e149cf135f00d2fb40a68039714a8321ece6633bad97c0b47b812"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a03.py",
+      "name": "rank_coherence",
+      "lines": [
+        358,
+        367
+      ],
+      "sha256": "ec923e8ce6edfcef8fca21244541d0c9c9cc774f5137a4ce99f27c96687a7636"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a03.py",
+      "name": "decile_groups",
+      "lines": [
+        370,
+        383
+      ],
+      "sha256": "07b69b5cd267893f404ad662a2a3c2e82886334a699a1451393467f207c4537c"
+    },
+    {
+      "source_path": "src/experiments/exp_map_a03.py",
+      "name": "_null_statistics_core",
+      "lines": [
+        386,
+        395
+      ],
+      "sha256": "4c49f4a625a0373cb3535d1de693ae06576e70b6f7d448e01b535a6bb3509db3"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "require",
+      "lines": [
+        44,
+        47
+      ],
+      "sha256": "6a711c36806eec9a895b406e558d8a89853e24c1e658567a519f88a456911d94"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "reference_invariants",
+      "lines": [
+        60,
+        72
+      ],
+      "sha256": "d66430bd70b70f3383fa48bf6eead866357d1fecd46247e76ff7eb47cb606041"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "symbolic_identity",
+      "lines": [
+        75,
+        85
+      ],
+      "sha256": "d02d04869c85c227aa317333a3d0767337d110a5d74ebd74548ec47ce8281e43"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "fixture",
+      "lines": [
+        149,
+        167
+      ],
+      "sha256": "6b158ce2fdd8f073c1570d3c05581d5850177b979113c4565b82982417f4ce15"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "reference_edges",
+      "lines": [
+        170,
+        186
+      ],
+      "sha256": "d0722481bb6a55e66d432443260bd0b96663f997b74261a44d57948e1d152c70"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "reference_words",
+      "lines": [
+        189,
+        200
+      ],
+      "sha256": "6bb6f52035d1db60bae9e29fa4e8f4d218c961a75b1bf95db0b5ff340ad0ff23"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "reference_permutation",
+      "lines": [
+        203,
+        216
+      ],
+      "sha256": "4f9f7668c963e86fd4cfa2f108ffb3cf884ea1275665d21ece37507d21dc036b"
+    },
+    {
+      "source_path": "research/independent_review/2026-10-16/verify_a03.py",
+      "name": "fixture_checks",
+      "lines": [
+        219,
+        275
+      ],
+      "sha256": "edd68b817a786c083c5eafddaf0737173fc7ca049b2d489268133d007bef8886"
+    }
+  ],
+  "known_negative_controls": [
+    {
+      "source_path": "tests/test_entropy_geodesics.py",
+      "preserved_at": "scripts/reproducibility/audit/quarantined-checks/test_entropy_geodesics.py.txt",
+      "reason": "Shape-only check passes despite numerical overflow; replaced by explicit invalid-arithmetic rejection and separate finite Fisher-Rao invariant tests."
+    }
+  ]
+}

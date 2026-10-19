@@ -1,0 +1,1736 @@
+{
+  "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "entries": [
+    {
+      "path": ".github/actions/hydrate-audit/action.yml",
+      "git_blob": "38ba1b5385c38ae2c53a6118c2a929cb6957f580",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": ".github/codeql/codeql-config.yml",
+      "git_blob": "3001b76aefbe3d87794df435af23be4d93680dc5",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/a01-activation-preflight.yml",
+      "git_blob": "7b1799d1b4aa4298817671dffb28f7d8f4d46fce",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "a01-preflight": {
+          "steps": [
+            {
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            },
+            {
+              "name": "Hydrate exact pinned arithmetic source bytes",
+              "run": "set -euo pipefail\nmkdir -p data/ecdata/allcurves\ncurl --fail --location --retry 3 --retry-all-errors \\\n  --output data/ecdata/allcurves/allcurves.00000-09999 \\\n  https://raw.githubusercontent.com/JohnCremona/ecdata/25cec5ecfec8b9f016eb1631ac633194c2bed39f/allcurves/allcurves.00000-09999\n"
+            },
+            {
+              "uses": "./.github/actions/hydrate-audit"
+            },
+            {
+              "uses": "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+            },
+            {
+              "name": "Install dependencies",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt pytest\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Verify upstream ecdata gitlink and exact source bytes",
+              "run": "set -euo pipefail\ntest \"$(git ls-tree HEAD data/ecdata | awk '{print $3}')\" = \"25cec5ecfec8b9f016eb1631ac633194c2bed39f\"\npython - <<'PY'\nfrom pathlib import Path\nimport hashlib\npath=Path(\"data/ecdata/allcurves/allcurves.00000-09999\")\nassert hashlib.sha256(path.read_bytes()).hexdigest()==\"259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968\"\nassert sum(1 for _ in path.open(encoding=\"utf-8\")) == 64687\nPY\n"
+            },
+            {
+              "name": "Validate registry and activation-only regression",
+              "run": "python scripts/validate_exp_map_a01_preregistration.py\npython scripts/validate_audit_registries.py\npython scripts/check_controlled_readiness.py --require-ready\npython -m pytest -q tests/test_exp_map_a01_preregistration.py\n"
+            },
+            {
+              "name": "Controlled runner preflight (never run inference in this PR)",
+              "run": "star-controlled-experiment preflight --spec controlled_execution/specs/EXP-MAP-A01.json"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/a01_primary_evidence.yml",
+      "git_blob": "43e2601f0b92b1eac63a81a5830366e7403d0524",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "inspect-saved-primary-package": {
+          "steps": [
+            {
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            },
+            {
+              "uses": "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+            },
+            {
+              "name": "Inspect saved bytes and primary outputs without an experiment run",
+              "run": "python release_packages/EXP-MAP-A01-primary-execution-v0.1/verify_package.py | tee \"$RUNNER_TEMP/a01-primary-inspection.json\"\ndiff -u release_packages/EXP-MAP-A01-primary-execution-v0.1/verification.json \"$RUNNER_TEMP/a01-primary-inspection.json\"\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/a01_release_package.yml",
+      "git_blob": "9c56e7b1d7286e64f0eec415783ab9fb681ae1f3",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "read-only-package": {
+          "steps": [
+            {
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            },
+            {
+              "uses": "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+            },
+            {
+              "name": "Fetch governed upstream ecdata and verify SHA-256",
+              "run": "set -euo pipefail\nmkdir -p data/ecdata/allcurves\ncurl --fail --location --retry 4 --retry-all-errors \\\n  https://raw.githubusercontent.com/JohnCremona/ecdata/25cec5ecfec8b9f016eb1631ac633194c2bed39f/allcurves/allcurves.00000-09999 \\\n  -o data/ecdata/allcurves/allcurves.00000-09999\necho '259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968  data/ecdata/allcurves/allcurves.00000-09999' | sha256sum -c -\n"
+            },
+            {
+              "name": "Verify preregistration, activated rows, A03 closed gate, and immutable source",
+              "run": "set -euo pipefail\nGITHUB_TOKEN=\"${{ github.token }}\" python scripts/verify_exp_map_a01_release_package.py --require-source --verify-github-approval --receipt \"$RUNNER_TEMP/a01-package-read-only.json\"\npython -m unittest discover -s tests -p test_exp_map_a01_release_package.py -v\necho '### A01 package source verification PASS \u2014 no registered inference' >> \"$GITHUB_STEP_SUMMARY\"\n"
+            },
+            {
+              "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_release_review.yml",
+      "git_blob": "5c5bef080b5756e89bc860faae11487af7c12f96",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "review-archive-integrity": {
+          "steps": [
+            {
+              "name": "Checkout complete history and frozen package",
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            },
+            {
+              "name": "Check archive against immutable PR86 source commit",
+              "run": "python3 scripts/validate_a03_preexecution_release.py --verify-origin"
+            },
+            {
+              "name": "Exercise tampering and false-status rejections",
+              "run": "python3 -m unittest discover -s tests -p test_a03_review_release.py -v"
+            },
+            {
+              "name": "Upload review-only package",
+              "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_verification.yml",
+      "git_blob": "b11f64f3220f48efa2692d4c7b3029a9d3dd0c90",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "reference-verification": {
+          "steps": [
+            {
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+            },
+            {
+              "uses": "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065"
+            },
+            {
+              "name": "Fetch exact pinned ecdata source",
+              "run": "set -euo pipefail\nmkdir -p data/ecdata/allcurves\ncurl --fail --location --retry 4 --retry-all-errors \\\n  https://raw.githubusercontent.com/JohnCremona/ecdata/25cec5ecfec8b9f016eb1631ac633194c2bed39f/allcurves/allcurves.00000-09999 \\\n  -o data/ecdata/allcurves/allcurves.00000-09999\necho '259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968  data/ecdata/allcurves/allcurves.00000-09999' | sha256sum -c -\n"
+            },
+            {
+              "name": "Install pinned reference-check environment",
+              "run": "python -m pip install -r research/independent_review/2026-10-16/requirements.txt"
+            },
+            {
+              "name": "Verify arithmetic, synthetic algorithms and closed execution gates",
+              "run": "set -euo pipefail\npython -c 'import runpy; runpy.run_path(\"research/independent_review/2026-10-16/verify_a03.py\", run_name=\"__main__\")' \\\n  --output \"$RUNNER_TEMP/a03-reference-verification.json\"\npython -c 'import runpy; runpy.run_path(\"scripts/validate_exp_map_a03_preregistration.py\", run_name=\"__main__\")'\npython -m pytest -q tests/test_a03_reference_verification.py tests/test_exp_map_a03_candidate.py tests/test_exp_map_a03_safety.py\necho '### A03 pre-execution verification: PASS' >> \"$GITHUB_STEP_SUMMARY\"\necho 'Pinned cohort and synthetic reference checks passed. Registered real-cohort endpoint/null execution was prohibited. Execution and support flags remain false; off-author activation approval is still required.' >> \"$GITHUB_STEP_SUMMARY\"\n"
+            },
+            {
+              "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/build-image.yml",
+      "git_blob": "69d61ecf4f84adc7365a637de9d56ffe6659c674",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "validate-pr": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v6"
+            },
+            {
+              "name": "Build image without publishing",
+              "uses": "docker/build-push-action@v7"
+            }
+          ]
+        },
+        "publish-main": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v6"
+            },
+            {
+              "name": "Log in to GHCR",
+              "uses": "docker/login-action@v4"
+            },
+            {
+              "name": "Build and push immutable commit image",
+              "uses": "docker/build-push-action@v7"
+            },
+            {
+              "name": "Advance latest only if this SHA is still main",
+              "run": "set -euo pipefail\ncurrent_main=\"$(\n  git ls-remote \"https://github.com/${GITHUB_REPOSITORY}.git\" refs/heads/main |\n    awk '{print $1}'\n)\"\nif [[ -z \"$current_main\" ]]; then\n  echo \"Unable to resolve current main SHA; refusing to update latest.\" >&2\n  exit 1\nfi\nif [[ \"$current_main\" != \"$GITHUB_SHA\" ]]; then\n  echo \"Skipping latest: $GITHUB_SHA is stale; current main is $current_main.\"\n  exit 0\nfi\ndocker buildx imagetools create             --tag ghcr.io/lcosmoss/star-sage:latest             ghcr.io/lcosmoss/star-sage:${GITHUB_SHA}\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "git_blob": "a406179c8156c0b48e0839b5e78493a67df4b207",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "unit-tests": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "./.github/actions/hydrate-audit"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install test dependencies and package",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt\npython -m pip install pytest\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Run unit tests",
+              "run": "pytest -q"
+            }
+          ]
+        },
+        "package-install": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Build wheel and source distribution",
+              "run": "python -m pip install --upgrade pip build\npython -m build\n"
+            },
+            {
+              "name": "Install and test wheel outside repository checkout",
+              "run": "set -euo pipefail\npython -m venv /tmp/star-wheel\n/tmp/star-wheel/bin/python -m pip install --upgrade pip\n/tmp/star-wheel/bin/python -m pip install -r requirements.txt pytest\n/tmp/star-wheel/bin/python -m pip install dist/*.whl --no-deps\n\nrm -rf /tmp/star-wheel-tests\nmkdir -p /tmp/star-wheel-tests\ncp             tests/test_projection.py             tests/test_statistics.py             tests/test_tda.py             tests/test_fail_closed_runtime.py             tests/test_reproducibility.py             tests/test_inference_control.py             tests/test_witness_complex.py             tests/test_bootstrap_stability.py             tests/test_planck_compressed_loader.py             tests/test_controlled_readiness.py             tests/test_controlled_runner.py             tests/test_provenance_capture_validator.py             /tmp/star-wheel-tests/\n\ncd /tmp\nexport PYTHONSAFEPATH=1\n/tmp/star-wheel/bin/python - <<'PY'\nfrom pathlib import Path\nfrom importlib.metadata import requires\nfrom packaging.requirements import Requirement\nimport src\nimport tools.recovery_intake as recovery_intake\nfrom src.pipeline.full_inference import run_full_inference\nfrom src.acsc.projection import project\nfrom src.likelihoods.data.planck_compressed import PLANCK_COMPRESSED\n\npackage_path = Path(src.__file__).resolve()\nassert \"site-packages\" in str(package_path), package_path\nassert callable(run_full_inference)\nassert callable(project)\nassert callable(recovery_intake.process)\nassert \"site-packages\" in str(Path(recovery_intake.__file__).resolve())\nassert PLANCK_COMPRESSED is not None\nstar_requires = requires(\"star\") or []\nparsed_requires = [Requirement(req) for req in star_requires]\njupyterlab_requires = [\n    req for req in parsed_requires if req.name.lower() == \"jupyterlab\"\n]\nassert len(jupyterlab_requires) == 1, star_requires\njupyterlab_requirement = jupyterlab_requires[0]\nassert not jupyterlab_requirement.extras, jupyterlab_requirement\nassert jupyterlab_requirement.marker is None, jupyterlab_requirement\nassert str(jupyterlab_requirement.specifier) == \"==4.5.11\", jupyterlab_requirement\nprint(\"clean wheel imports passed:\", package_path)\nPY\n/tmp/star-wheel/bin/star-run-inference --help\n/tmp/star-wheel/bin/star-controlled-experiment --help\ntest \"$(/tmp/star-wheel/bin/jupyter lab --version)\" = \"4.5.11\"\n/tmp/star-wheel/bin/python -m pytest -q /tmp/star-wheel-tests\n"
+            }
+          ]
+        },
+        "registry-validation": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "./.github/actions/hydrate-audit"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Validate registry tables",
+              "run": "python - <<'PY'\nimport csv\nfrom pathlib import Path\nfrom scripts.theory_search_states import (\n    ALLOWED_CANDIDATE_STATUSES,\n    TERMINAL_CANDIDATE_STATUSES,\n    TERMINAL_FAILURE_STATUSES,\n    TERMINAL_SUCCESS_STATUSES,\n    UNRESOLVED_CANDIDATE_STATUSES,\n    is_terminal,\n    is_unresolved,\n)\n\nroot = Path(\"registry\")\nrequired = [\n    \"claim_evidence_v0.2.csv\",\n    \"claim_experiment_crosswalk_v0.2.csv\",\n    \"experiment_registry_v0.2.csv\",\n    \"dataset_registry_v0.1.csv\",\n    \"data_provenance_registry_v0.1.csv\",\n    \"parameter_registry_v0.1.csv\",\n    \"null_registry_v0.1.csv\",\n    \"r&d_artifact_registry_v0.1.csv\",\n    \"theory_search_registry_v0.1.csv\",\n    \"theory_candidate_registry_v0.1.csv\",\n    \"theory_obstruction_registry_v0.1.csv\",\n]\nfor name in required:\n    assert (root / name).exists(), f\"missing registry: {name}\"\n\ndef rows(name):\n    with (root / name).open(newline=\"\", encoding=\"utf-8\") as f:\n        reader = csv.reader(f)\n        fieldnames = next(reader, [])\n        field_count = len(fieldnames)\n        records = []\n        for line_no, values in enumerate(reader, start=2):\n            assert len(values) == field_count, f\"CSV field-count mismatch: {name}:{line_no} expected {field_count} fields, got {len(values)}\"\n            records.append(dict(zip(fieldnames, values)))\n        return records\n\nclaims = rows(\"claim_evidence_v0.2.csv\")\ncrosswalk = rows(\"claim_experiment_crosswalk_v0.2.csv\")\nexperiments = rows(\"experiment_registry_v0.2.csv\")\ndatasets = rows(\"dataset_registry_v0.1.csv\")\nprovenance = rows(\"data_provenance_registry_v0.1.csv\")\nparameters = rows(\"parameter_registry_v0.1.csv\")\nnulls = rows(\"null_registry_v0.1.csv\")\nartifacts = rows(\"r&d_artifact_registry_v0.1.csv\")\ntheory_searches = rows(\"theory_search_registry_v0.1.csv\")\ntheory_candidates = rows(\"theory_candidate_registry_v0.1.csv\")\ntheory_obstructions = rows(\"theory_obstruction_registry_v0.1.csv\")\n\nclaim_ids = {r[\"Claim_ID\"] for r in claims}\nexp_ids = [r[\"Experiment_ID\"] for r in experiments]\ndataset_ids = {r[\"Dataset_ID\"] for r in datasets}\nprovenance_ids = [r[\"Dataset_ID\"] for r in provenance]\nprovenance_by_id = {r[\"Dataset_ID\"]: r for r in provenance}\nparameter_ids = {r[\"Parameter_Set_ID\"] for r in parameters}\nnull_ids = {r[\"Null_ID\"] for r in nulls}\n\nassert len(exp_ids) == len(set(exp_ids)), \"duplicate Experiment_ID\"\nassert len(claim_ids) == len(claims), \"duplicate Claim_ID\"\nassert len(dataset_ids) == len(datasets), \"duplicate Dataset_ID\"\nassert len(provenance_ids) == len(provenance), \"duplicate provenance Dataset_ID\"\nassert set(provenance_ids) == dataset_ids, \"provenance Dataset_IDs must match dataset registry\"\nassert len(parameter_ids) == len(parameters), \"duplicate Parameter_Set_ID\"\nassert len(null_ids) == len(nulls), \"duplicate Null_ID\"\n\ncrosswalk_pairs = {(r[\"Claim_ID\"], r[\"Experiment_ID\"]) for r in crosswalk}\nfor r in claims:\n    assert r[\"Claim_ID\"] in claim_ids\n    assert r[\"Evidence_Requirement\"].strip(), f\"empty evidence requirement: {r['Claim_ID']}\"\n\nfor r in experiments:\n    assert r[\"Mode\"] == \"controlled\", f\"non-controlled experiment in controlled registry: {r['Experiment_ID']}\"\n    for cid in r[\"Claim_IDs\"].split(\";\"):\n        assert cid in claim_ids, f\"unknown Claim_ID: {cid}\"\n        assert (cid, r[\"Experiment_ID\"]) in crosswalk_pairs, f\"missing crosswalk: {cid}/{r['Experiment_ID']}\"\n    assert r[\"Dataset_ID\"] in dataset_ids, f\"unknown Dataset_ID: {r['Dataset_ID']}\"\n    assert r[\"Dataset_ID\"] in provenance_by_id, f\"missing provenance record: {r['Dataset_ID']}\"\n    assert provenance_by_id[r[\"Dataset_ID\"]][\"Provenance_Status\"] in {\"verified\", \"partially_verified\", \"unverified\", \"unknown\"}, f\"invalid provenance status: {r['Dataset_ID']}\"\n    assert r[\"Parameter_Set_ID\"] in parameter_ids, f\"unknown Parameter_Set_ID: {r['Parameter_Set_ID']}\"\n    assert r[\"Null_ID\"] in null_ids, f\"unknown Null_ID: {r['Null_ID']}\"\n\n# Data Provenance Registry v0.1 validation.\nprovenance_fields = [\n    \"Provenance_ID\",\n    \"Dataset_ID\",\n    \"Source_Name\",\n    \"Source_URL\",\n    \"Source_Type\",\n    \"Provider\",\n    \"Version_or_Release\",\n    \"Acquisition_Method\",\n    \"Acquisition_Date\",\n    \"Original_Format\",\n    \"Transformation_History\",\n    \"Parent_Dataset_ID\",\n    \"Spatial_Match_Method\",\n    \"Match_Tolerance\",\n    \"Selection_Criteria\",\n    \"Missingness_Policy\",\n    \"Integrity_Check\",\n    \"License_or_Usage\",\n    \"Provenance_Status\",\n    \"Evidence_Status\",\n    \"Notes\",\n]\nassert provenance, \"data provenance registry must contain at least one record\"\nassert list(provenance[0].keys()) == provenance_fields, \"unexpected data provenance schema\"\nassert all(list(r.keys()) == provenance_fields for r in provenance), \"inconsistent data provenance schema\"\n\nallowed_provenance_status = {\"verified\", \"partially_verified\", \"unverified\", \"unknown\", \"quarantined\"}\nallowed_evidence_status = {\"controlled\", \"derived\", \"exploratory\", \"historical\", \"unknown\", \"negative_null\"}\nallowed_source_types = {\n    \"survey\",\n    \"catalog\",\n    \"simulation\",\n    \"theory\",\n    \"derived\",\n    \"observational\",\n    \"computational\",\n    \"internal_registry\",\n    \"constraint_set\",\n    \"other\",\n}\n\nfor r in provenance:\n    assert r[\"Provenance_Status\"] in allowed_provenance_status, f\"invalid provenance status: {r['Dataset_ID']}\"\n    assert r[\"Evidence_Status\"] in allowed_evidence_status, f\"invalid evidence status: {r['Dataset_ID']}\"\n    assert not r[\"Source_Type\"] or r[\"Source_Type\"] in allowed_source_types, f\"invalid source type: {r['Dataset_ID']}\"\n\nprovenance_record_ids = [r[\"Provenance_ID\"] for r in provenance]\nassert len(provenance_record_ids) == len(set(provenance_record_ids)), \"duplicate Provenance_ID\"\nassert all(r[\"Provenance_ID\"].strip() for r in provenance), \"empty Provenance_ID\"\n\n# Normalize Parent_Dataset_ID values once and retain the previous\n# foreign-key validation before traversing lineage.\nparent_map = {}\nfor r in provenance:\n    dataset_id = r[\"Dataset_ID\"].strip()\n    parent = r[\"Parent_Dataset_ID\"].strip()\n    if parent:\n        assert parent in dataset_ids, f\"unknown Parent_Dataset_ID: {dataset_id}\"\n        assert parent != dataset_id, f\"self-referential Parent_Dataset_ID: {dataset_id}\"\n        parent_map[dataset_id] = parent\n\n# Reject indirect lineage cycles such as A -> B -> A or\n# A -> B -> C -> A.\nfor dataset_id in parent_map:\n    seen = set()\n    current = dataset_id\n    while current in parent_map:\n        if current in seen:\n            raise AssertionError(\n                f\"Parent_Dataset_ID lineage cycle detected starting at {dataset_id}\"\n            )\n        seen.add(current)\n        current = parent_map[current]\n\nfor r in provenance:\n    parent = r[\"Parent_Dataset_ID\"].strip()\n\n    # Derived records may omit a parent when no single registered upstream\n    # dataset is known; the unresolved chain must remain explicit in Notes.\n    if r[\"Evidence_Status\"] == \"derived\" and not parent:\n        note = r[\"Notes\"].lower()\n        assert any(term in note for term in (\n            \"upstream\",\n            \"generation chain\",\n            \"provenance chain\",\n            \"parent\",\n        )), f\"derived provenance lacks Parent_Dataset_ID or unresolved-chain note: {r['Dataset_ID']}\"\n\n    # A record may be marked verified only when source/acquisition evidence\n    # required to support that status is actually recorded.\n    if r[\"Provenance_Status\"] == \"verified\":\n        required_verified = [\n            \"Source_Name\",\n            \"Source_URL\",\n            \"Provider\",\n            \"Version_or_Release\",\n            \"Acquisition_Method\",\n            \"Acquisition_Date\",\n            \"Original_Format\",\n        ]\n        assert all(r[field].strip() for field in required_verified), (\n            f\"verified provenance lacks source/acquisition evidence: {r['Dataset_ID']}\"\n        )\n\n    # Integrity is intentionally optional until an actual source artifact\n    # has been archived or hashed.\n    if r[\"Integrity_Check\"].strip():\n        assert r[\"Integrity_Check\"].strip().lower() not in {\"unknown\", \"tbd\", \"placeholder\"}\n\n    # Experimental definitions remain in their dedicated registries.\n    forbidden_experiment_fields = {\n        \"Experiment_ID\",\n        \"Claim_ID\",\n        \"Parameter_Set_ID\",\n        \"Null_ID\",\n        \"Primary_Endpoint\",\n    }\n    assert not forbidden_experiment_fields.intersection(r.keys()), (\n        f\"experimental metadata leaked into provenance schema: {r['Dataset_ID']}\"\n    )\n\n# Every dataset used by a controlled experiment must have a provenance record.\ncontrolled_dataset_ids = {\n    r[\"Dataset_ID\"] for r in experiments if r[\"Mode\"] == \"controlled\"\n}\nassert controlled_dataset_ids.issubset(\n    {r[\"Dataset_ID\"] for r in provenance}\n), \"controlled dataset missing provenance record\"\n\n\n\n# Theory-search preregistration validation.\ntheory_search_fields = [\n    \"Search_ID\",\n    \"Claim_ID\",\n    \"Registry_Namespace\",\n    \"Qualified_Search_ID\",\n    \"Name\",\n    \"Protocol_Path\",\n    \"Search_Frame_Version\",\n    \"Status\",\n    \"Candidate_Count\",\n    \"Candidate_IDs\",\n    \"Admission_Criteria_Frozen\",\n    \"Observable_Embargo\",\n    \"List_Immutable_After_Start\",\n    \"Exhaustion_Rule\",\n    \"Terminal_Conclusion\",\n    \"Universal_NoGo_Claim\",\n    \"Controlled_Execution_Eligible\",\n    \"Controlled_Support_Eligible\",\n    \"Physical_Support_Eligible\",\n    \"Notes\",\n]\ntheory_candidate_fields = [\n    \"Candidate_ID\",\n    \"Search_ID\",\n    \"Registry_Namespace\",\n    \"Qualified_Candidate_ID\",\n    \"Name\",\n    \"Parent_Theory_Class\",\n    \"Registered_Representative\",\n    \"Independent_Motivation\",\n    \"Representative_Source_DOI\",\n    \"Admission_Status\",\n    \"Audit_Status\",\n    \"Failure_Gate\",\n    \"Failure_Mechanism\",\n    \"Audit_Record_Path\",\n    \"Terminal\",\n    \"Ellipticity_Selection_Prohibited\",\n    \"Observable_Selection_Prohibited\",\n    \"Within_Class_Model_Shopping_Prohibited\",\n    \"Controlled_Execution_Eligible\",\n    \"Controlled_Support_Eligible\",\n    \"Physical_Support_Eligible\",\n    \"Notes\",\n]\ntheory_obstruction_fields = [\n    \"Obstruction_ID\",\n    \"Claim_ID\",\n    \"Registry_Namespace\",\n    \"Qualified_Obstruction_ID\",\n    \"Name\",\n    \"Protocol_Path\",\n    \"Parent_Theory_Sector\",\n    \"Status\",\n    \"Substage_A\",\n    \"Substage_B\",\n    \"Substage_C\",\n    \"Primary_Question\",\n    \"Permitted_Conclusion\",\n    \"Universal_NoGo_Claim\",\n    \"Controlled_Execution_Eligible\",\n    \"Controlled_Support_Eligible\",\n    \"Physical_Support_Eligible\",\n    \"Notes\",\n]\n\nassert len(theory_searches) == 1, \"P0-SF-v0.1 must be the single v0.1 search frame\"\nassert list(theory_searches[0].keys()) == theory_search_fields, \"unexpected theory search schema\"\nassert all(list(r.keys()) == theory_candidate_fields for r in theory_candidates), \"unexpected theory candidate schema\"\nassert all(list(r.keys()) == theory_obstruction_fields for r in theory_obstructions), \"unexpected theory obstruction schema\"\n\nsearch = theory_searches[0]\nexpected_candidates = {\"P0-T001\", \"P0-T002\", \"P0-T003\", \"P0-T004\", \"P0-T005\"}\ncandidate_ids = [r[\"Candidate_ID\"] for r in theory_candidates]\nassert search[\"Search_ID\"] == \"P0-SF-v0.1\"\nassert search[\"Claim_ID\"] == \"CLAIM-ACSC-MECH-001\"\nassert search[\"Claim_ID\"] in claim_ids\nassert search[\"Registry_Namespace\"] == \"THEORY-SEARCH-v0.1\"\nassert search[\"Qualified_Search_ID\"] == \"THEORY-SEARCH-v0.1:P0-SF-v0.1\"\nassert search[\"Search_Frame_Version\"] == \"P0-SF-v0.1\"\nassert search[\"Status\"] in {\"preregistered_closed\", \"active\", \"exhausted\"}\nassert int(search[\"Candidate_Count\"]) == 5\nassert set(search[\"Candidate_IDs\"].split(\";\")) == expected_candidates\nassert len(candidate_ids) == len(set(candidate_ids)) == 5\nassert set(candidate_ids) == expected_candidates\nassert search[\"Admission_Criteria_Frozen\"] == \"true\"\nassert search[\"Observable_Embargo\"] == \"true\"\nassert search[\"List_Immutable_After_Start\"] == \"true\"\nassert search[\"Exhaustion_Rule\"] == \"N_unresolved=0\"\nassert search[\"Universal_NoGo_Claim\"] == \"false\"\nassert search[\"Controlled_Execution_Eligible\"] == \"false\"\nassert search[\"Controlled_Support_Eligible\"] == \"false\"\nassert search[\"Physical_Support_Eligible\"] == \"false\"\nassert search[\"Protocol_Path\"] == \"preregistrations/P0-ANSATZ-001/protocol.md\"\nassert (Path(search[\"Protocol_Path\"])).exists(), \"missing P0 protocol\"\n\nfor r in theory_candidates:\n    assert r[\"Search_ID\"] == search[\"Search_ID\"]\n    assert r[\"Registry_Namespace\"] == \"THEORY-SEARCH-v0.1\"\n    assert r[\"Qualified_Candidate_ID\"] == f\"THEORY-SEARCH-v0.1:{r['Candidate_ID']}\"\n    assert r[\"Admission_Status\"] == \"admitted\"\n    assert r[\"Audit_Status\"] in ALLOWED_CANDIDATE_STATUSES\n    expected_terminal = is_terminal(r[\"Audit_Status\"])\n    assert (r[\"Terminal\"] == \"true\") == expected_terminal, (\n        f\"Terminal flag disagrees with lifecycle state: {r['Candidate_ID']}\"\n    )\n    if r[\"Audit_Status\"] == \"REGISTERED_UNTESTED\":\n        assert not r[\"Failure_Gate\"].strip()\n        assert not r[\"Failure_Mechanism\"].strip()\n        assert not r[\"Audit_Record_Path\"].strip()\n    else:\n        assert r[\"Audit_Record_Path\"].strip(), (\n            f\"audited candidate missing Audit_Record_Path: {r['Candidate_ID']}\"\n        )\n        if r[\"Audit_Status\"] in TERMINAL_FAILURE_STATUSES:\n            assert r[\"Failure_Gate\"].strip()\n            assert r[\"Failure_Mechanism\"].strip()\n        elif r[\"Audit_Status\"] in {\n            \"PASSES_P0\",\n            *TERMINAL_SUCCESS_STATUSES,\n        }:\n            assert not r[\"Failure_Gate\"].strip()\n            assert not r[\"Failure_Mechanism\"].strip()\n    assert r[\"Independent_Motivation\"].strip()\n    assert r[\"Registered_Representative\"].strip()\n    assert r[\"Representative_Source_DOI\"].strip()\n    assert r[\"Ellipticity_Selection_Prohibited\"] == \"true\"\n    assert r[\"Observable_Selection_Prohibited\"] == \"true\"\n    assert r[\"Within_Class_Model_Shopping_Prohibited\"] == \"true\"\n    assert r[\"Controlled_Execution_Eligible\"] == \"false\"\n    assert r[\"Controlled_Support_Eligible\"] == \"false\"\n    assert r[\"Physical_Support_Eligible\"] == \"false\"\n\nunresolved_candidates = [\n    r for r in theory_candidates if is_unresolved(r[\"Audit_Status\"])\n]\nassert len(unresolved_candidates) == sum(\n    r[\"Audit_Status\"] in UNRESOLVED_CANDIDATE_STATUSES\n    for r in theory_candidates\n)\nif search[\"Status\"] == \"exhausted\":\n    assert not unresolved_candidates, \"exhausted theory search has unresolved candidates\"\n\nassert \"CLAIM-ACSC-MECH-001\" in claim_ids\nassert len(theory_obstructions) == 1\nobstruction = theory_obstructions[0]\nassert obstruction[\"Obstruction_ID\"] == \"M1-INH-E1\"\nassert obstruction[\"Registry_Namespace\"] == \"THEORY-SEARCH-v0.1\"\nassert obstruction[\"Qualified_Obstruction_ID\"] == \"THEORY-SEARCH-v0.1:M1-INH-E1\"\nassert obstruction[\"Claim_ID\"] == \"CLAIM-ACSC-MECH-002\"\nassert obstruction[\"Claim_ID\"] in claim_ids\nassert obstruction[\"Status\"] == \"planned\"\nassert obstruction[\"Substage_A\"] == \"planned\"\nassert obstruction[\"Substage_B\"] == \"planned\"\nassert obstruction[\"Substage_C\"] == \"planned\"\nassert obstruction[\"Universal_NoGo_Claim\"] == \"false\"\nassert obstruction[\"Controlled_Execution_Eligible\"] == \"false\"\nassert obstruction[\"Controlled_Support_Eligible\"] == \"false\"\nassert obstruction[\"Physical_Support_Eligible\"] == \"false\"\nassert (Path(obstruction[\"Protocol_Path\"])).exists(), \"missing obstruction protocol\"\n\nfor r in crosswalk:\n    assert r[\"Claim_ID\"] in claim_ids\n    assert r[\"Experiment_ID\"] in set(exp_ids)\n    assert r[\"Role\"].strip()\n    assert r[\"Required_Control\"].strip()\n\nfor r in artifacts:\n    assert r[\"Artifact_ID\"].strip()\n    assert r[\"Path\"].strip()\n    assert r[\"Evidence_Status\"] in {\"historical_or_illustrative\", \"exploratory\", \"controlled\"}\n\nprint(\n    f\"validated {len(claims)} claims, {len(experiments)} experiments, \"\n    f\"{len(datasets)} datasets, {len(parameters)} parameter sets, \"\n    f\"{len(nulls)} null models, {len(artifacts)} R&D artifacts, {len(provenance)} provenance records, \"\n    f\"{len(theory_searches)} theory search frames, {len(theory_candidates)} theory candidates, \"\n    f\"{len(theory_obstructions)} theory obstruction programs\"\n)\nPY\n"
+            },
+            {
+              "name": "Validate audit namespaces and quarantine eligibility",
+              "run": "python scripts/validate_audit_registries.py"
+            }
+          ]
+        },
+        "controlled-readiness": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install package for readiness validation",
+              "run": "python -m pip install -r requirements.txt\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Validate controlled-execution readiness claims",
+              "run": "set -o pipefail\nmkdir -p results\npython scripts/check_controlled_readiness.py 2>&1 | tee results/controlled_readiness.txt\n"
+            },
+            {
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        },
+        "controlled-runner": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install controlled-runner dependencies and package",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt pytest\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Exercise controlled transaction CLI",
+              "run": "star-controlled-experiment --help"
+            },
+            {
+              "name": "Run controlled transaction tests",
+              "run": "pytest -q tests/test_controlled_runner.py tests/test_controlled_readiness.py"
+            }
+          ]
+        },
+        "exp-map-a01-preregistration": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Initialize pinned Cremona ecdata submodule",
+              "run": "git submodule update --init data/ecdata"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install preregistration validation dependencies",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Validate locked EXP-MAP-A01 preregistration without execution",
+              "run": "python scripts/validate_exp_map_a01_preregistration.py"
+            },
+            {
+              "name": "Run EXP-MAP-A01 preregistration tests",
+              "run": "pytest -q tests/test_exp_map_a01_preregistration.py"
+            }
+          ]
+        },
+        "exp-map-a03-preregistration": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Hydrate exact pinned A03 ecdata input",
+              "run": "set -euo pipefail\nmkdir -p data/ecdata/allcurves\ncurl --fail --location --retry 4 --retry-all-errors \\\n  https://raw.githubusercontent.com/JohnCremona/ecdata/25cec5ecfec8b9f016eb1631ac633194c2bed39f/allcurves/allcurves.00000-09999 \\\n  -o data/ecdata/allcurves/allcurves.00000-09999\necho \"259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968  data/ecdata/allcurves/allcurves.00000-09999\" | sha256sum -c -\n"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install preregistration validation dependencies",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt\npython -m pip install -e . --no-deps\npython -m pip install pytest\n"
+            },
+            {
+              "name": "Validate locked EXP-MAP-A03 preregistration without execution",
+              "run": "python scripts/validate_exp_map_a03_preregistration.py"
+            },
+            {
+              "name": "Run EXP-MAP-A03 locked-design regression tests",
+              "run": "pytest -q tests/test_exp_map_a03_candidate.py tests/test_preregistration_transition_candidates.py"
+            }
+          ]
+        },
+        "arithmetic-smoke": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Install dependencies and package",
+              "run": "sage -python -m pip install -r requirements.txt\nsage -python -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Projection smoke test",
+              "run": "sage -python - <<'PY'\nimport numpy as np\nfrom src.acsc.projection import project\ncoords = project([{\"delta\": -11, \"conductor\": 11, \"rank\": 0}])\nassert coords.shape == (1, 3) and np.isfinite(coords).all()\nprint(\"projection smoke test passed\")\nPY\n"
+            }
+          ]
+        },
+        "ci-artifact": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Build CI metadata artifact",
+              "run": "mkdir -p results\nprintf 'ci_commit,%s\\n' \"$GITHUB_SHA\" > results/ci_metadata.csv\n"
+            },
+            {
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "git_blob": "0407c5fed6e6d13a2daddae8f9d42acdef76127f",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "analyze": {
+          "steps": [
+            {
+              "name": "Checkout source",
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Initialize CodeQL",
+              "uses": "github/codeql-action/init@v4"
+            },
+            {
+              "name": "Analyze and upload results",
+              "uses": "github/codeql-action/analyze@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/independent_dataset_verification.yml",
+      "git_blob": "2996d31c533eb13096cbf8ad268fa759c43a18ee",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "static-verification-contract": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install verification dependencies",
+              "run": "python -m pip install pytest -r verification/datasets/requirements.txt"
+            },
+            {
+              "name": "Verify canonical census and reconstruction contracts",
+              "run": "set -euo pipefail\npython scripts/independent_dataset_verification.py --format markdown\n"
+            },
+            {
+              "name": "Run independent-verification tests",
+              "run": "pytest -q tests/test_independent_dataset_verification.py"
+            }
+          ]
+        },
+        "live-public-source-refetch": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install hardened VOTable parser",
+              "run": "python -m pip install -r verification/datasets/requirements.txt"
+            },
+            {
+              "name": "Re-fetch VizieR and direct SDSS/MaNGA publisher sources",
+              "run": "set -euo pipefail\nmkdir -p results/mismatches\npython scripts/independent_dataset_verification.py             --live-public-sources             --mismatch-dir results/mismatches             --receipt-out results/live_public_source_receipt.json             | tee results/live_public_source_receipt.stdout.json\n"
+            },
+            {
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/main.yml",
+      "git_blob": "bd3c674d195a646a7aaf53e2078b043865933086",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "sync-provenance-docs": {
+          "steps": [
+            {
+              "name": "Check out repository",
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Download Google Docs as plain text",
+              "run": "set -euo pipefail\ncapture_dir=provenance_capture\nmkdir -p \"$capture_dir/raw\"\nmanifest=\"$capture_dir/google_docs_manifest.csv\"\nprintf 'document_index,document_id,source_url,output_path,sha256,content_type,final_url\\n' > \"$manifest\"\nindex=0\nwhile IFS= read -r doc_id; do\n  [[ -z \"$doc_id\" ]] && continue\n  index=$((index + 1))\n  relative_output=\"raw/doc_$(printf '%03d' \"$index\")_${doc_id}.txt\"\n  output=\"$capture_dir/$relative_output\"\n  url=\"https://docs.google.com/document/d/${doc_id}/export?format=txt\"\n  echo \"Downloading Google Doc ${index}: ${doc_id}\"\n  meta=$(curl --fail --location --silent --show-error --retry 3 \\\n    --connect-timeout 15 --max-time 60 \\\n    --write-out '%{content_type}\\n%{url_effective}' \\\n    \"$url\" --output \"$output\")\n  content_type=$(printf '%s\\n' \"$meta\" | sed -n '1p')\n  final_url=$(printf '%s\\n' \"$meta\" | sed -n '2p')\n  if [[ \"$content_type\" != text/plain* ]]; then\n    echo \"::error::Doc ${doc_id} did not export as text (type=${content_type}).\"\n    exit 1\n  fi\n  case \"$final_url\" in\n    https://docs.google.com/*|https://*.googleusercontent.com/*) ;;\n    *)\n      echo \"::error::Doc ${doc_id} redirected to unexpected host: ${final_url}\"\n      exit 1\n      ;;\n  esac\n  test -s \"$output\"\n  sha256=$(sha256sum \"$output\" | awk '{print $1}')\n  printf '%s,%s,%s,%s,%s,%s,%s\\n' \\\n    \"$index\" \"$doc_id\" \\\n    \"https://docs.google.com/document/d/${doc_id}/edit?usp=sharing\" \\\n    \"$relative_output\" \"$sha256\" \"$content_type\" \"$final_url\" >> \"$manifest\"\ndone <<< \"$DOC_IDS\"\necho \"Captured $index Google Docs.\"\nwc -l \"$manifest\"\n"
+            },
+            {
+              "name": "Validate staged provenance capture",
+              "run": "python scripts/validate_provenance_capture.py provenance_capture"
+            },
+            {
+              "name": "Upload provenance capture artifact",
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/notebooks.yml",
+      "git_blob": "3a3591477c9bfca61fdde97edc92aebe39ef199d",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "smoke": {
+          "steps": [
+            {
+              "name": "Install Git",
+              "run": "apt-get update && apt-get install -y git"
+            },
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Install notebook dependencies",
+              "run": "sage -python -m pip install --upgrade pip\nsage -python -m pip install -r requirements.txt\nsage -python -m pip install nbconvert nbclient ipykernel\nsage -python -m pip install -e . --no-deps\necho \"PYTHONPATH=$GITHUB_WORKSPACE:$GITHUB_WORKSPACE/src\" >> \"$GITHUB_ENV\"\n"
+            },
+            {
+              "name": "Execute controlled smoke notebooks",
+              "run": "set -euo pipefail\nexpected=\"\nnotebooks/00_registry_overview.ipynb\nnotebooks/01_preprocessing.ipynb\nnotebooks/02_arithmetic_reconstruction.ipynb\nnotebooks/03_mapping_benchmark.ipynb\nnotebooks/04_rank_environment.ipynb\nnotebooks/05_rank_topology.ipynb\nnotebooks/06_null_models.ipynb\nnotebooks/07_sfr_prediction.ipynb\nnotebooks/08_robustness.ipynb\n\"\nfor nb in $expected; do\n  test -s \"$nb\"\n  sage -python -m jupyter nbconvert --to notebook --execute \"$nb\" \\\n    --output \"/tmp/$(basename \"$nb\")\" \\\n    --ExecutePreprocessor.timeout=300 \\\n    --ExecutePreprocessor.kernel_name=python3\ndone\nsage -python - <<'PY'\nfrom pathlib import Path\nexpected = {\n    \"00_registry_overview.ipynb\",\n    \"01_preprocessing.ipynb\",\n    \"02_arithmetic_reconstruction.ipynb\",\n    \"03_mapping_benchmark.ipynb\",\n    \"04_rank_environment.ipynb\",\n    \"05_rank_topology.ipynb\",\n    \"06_null_models.ipynb\",\n    \"07_sfr_prediction.ipynb\",\n    \"08_robustness.ipynb\",\n}\nactual = {p.name for p in Path(\"notebooks\").glob(\"*.ipynb\")}\nassert actual == expected, f\"controlled smoke notebook set mismatch: {sorted(actual ^ expected)}\"\nPY\necho \"executed all canonical controlled software smoke notebooks\"\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/observational_dataset_intake.yml",
+      "git_blob": "02d656c4edde618bdb1bf80a7d2837079df701f1",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "provenance-and-aladin-candidate": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Fetch only governed observational LFS objects",
+              "run": "set -euo pipefail\nINCLUDE=\"data/intake/recovered/2026-10-08/9dca2008683fde4b0f7a90af5de85ee846a30a47f6f6fae3968c83dea06fa5d2.csv,data/intake/sdss/pipe3d/dr17-v3_1_1-2026-10-09/SDSS17Pipe3D_v3_1_1.fits,data/intake/sdss/gema/dr17-2.0.2-2026-10-09/GEMA_2.0.2.fits,data/intake/vizier/alfalfa100/2026-10-09-cds-corrected-2019/table2.vot,data/derived/vizier/alfalfa100/2026-10-09-cds-corrected-2019/alfalfa100_hi_centroids_full.csv\"\ngit lfs fetch --include=\"$INCLUDE\" origin \"$GITHUB_SHA\"\ngit lfs checkout -- data/intake/recovered/2026-10-08/9dca2008683fde4b0f7a90af5de85ee846a30a47f6f6fae3968c83dea06fa5d2.csv\ngit lfs checkout -- data/intake/sdss/pipe3d/dr17-v3_1_1-2026-10-09/SDSS17Pipe3D_v3_1_1.fits\ngit lfs checkout -- data/intake/sdss/gema/dr17-2.0.2-2026-10-09/GEMA_2.0.2.fits\ngit lfs checkout -- data/intake/vizier/alfalfa100/2026-10-09-cds-corrected-2019/table2.vot\ngit lfs checkout -- data/derived/vizier/alfalfa100/2026-10-09-cds-corrected-2019/alfalfa100_hi_centroids_full.csv\n"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Verify source bytes, schemas, coordinates, registries and pending review gate",
+              "run": "set -euo pipefail\nmkdir -p results\npython scripts/validate_observational_datasets.py --format markdown | tee results/observational_dataset_lineage.md\ncat results/observational_dataset_lineage.md >> \"$GITHUB_STEP_SUMMARY\"\n"
+            },
+            {
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/recovered-intake.yml",
+      "git_blob": "64a82505793640beeeb2558c54fc1fe972b24c44",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "diagnostic-intake": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "name": "Fetch real recovery and quarantine LFS payloads",
+              "run": "git lfs install --local\ngit lfs fetch --include='data/intake/recovered/**,data/quarantine/**,historical/r&d/code_log/2026-10-08_recovered/saved_outputs/**' origin HEAD\ngit lfs checkout 'data/intake/recovered/**' 'data/quarantine/**' 'historical/r&d/code_log/2026-10-08_recovered/saved_outputs/**'\n"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Verify source hashes and process isolated diagnostic profiles",
+              "run": "python tools/recovery_intake.py --output \"$RUNNER_TEMP/recovery-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}\""
+            },
+            {
+              "name": "Validate existing registry gates with hydrated quarantine",
+              "run": "python scripts/validate_audit_registries.py"
+            },
+            {
+              "uses": "actions/upload-artifact@v4"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/sciserver-approval-offline.yml",
+      "git_blob": "037fcbb867aad1d8933939772cbe0a3b77da0613",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "approval-offline": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install offline test dependencies only",
+              "run": "python -m pip install pytest==9.0.2 cryptography==46.0.3"
+            },
+            {
+              "name": "Verify approval signatures and fail-closed boundaries",
+              "run": "python -m compileall -q integrations/sciserver/approval_policy.py\npython -m pytest -q tests/integrations/test_sciserver_approval.py tests/integrations/test_sciserver_policy.py\ngit diff --check origin/main...HEAD\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/sciserver-v02-policy.yml",
+      "git_blob": "ee89fb1a0a833cc825c5a38df7f99f5c41abf8b0",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "policy-offline": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install only offline test runner",
+              "run": "python -m pip install pytest==9.0.2"
+            },
+            {
+              "name": "Run policy and provenance tests (no tokens, no network)",
+              "run": "python -m compileall -q integrations/sciserver/query_policy.py integrations/sciserver/receipts.py\npython -m pytest -q tests/integrations/test_sciserver_policy.py\ngit diff --check origin/main...HEAD\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/sky_surveys.yml",
+      "git_blob": "704699349c4c6647e007ce1f2b57cca8a05ed0dd",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "sky-survey-smoke": {
+          "steps": [
+            {
+              "name": "Checkout repository",
+              "uses": "actions/checkout@v6"
+            },
+            {
+              "name": "Validate Python project root",
+              "run": "set -euo pipefail\nROOT=\"$GITHUB_WORKSPACE\"\nfor input in requirements.txt pyproject.toml ci_diagnostics/diagnose_cosmology.py src/tests/test_load_sky_surveys.py src/data/sky_survey_dataset_builder.py; do\n  test -f \"$ROOT/$input\" || { echo \"Missing Python project input: $ROOT/$input\" >&2; exit 1; }\ndone\necho \"ROOT=$ROOT\" >> \"$GITHUB_OUTPUT\"\necho \"Detected project root: $ROOT\"\n"
+            },
+            {
+              "name": "Install dependencies",
+              "run": "cd \"${{ steps.root.outputs.ROOT }}\"\nsage -python -m pip install -r requirements.txt\nsage -python -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Install Parquet engine for the Sage Python interpreter",
+              "run": "set -euo pipefail\n# The Sage container has no ensurepip/python3-venv. Installing pip\n# packages globally may use a different site-packages directory.\n# Install the wheel at a known location and explicitly import it\n# using the SAME Sage interpreter that runs the survey builder.\nsage -python -m pip install --no-deps --target /tmp/star-sky-pyarrow pyarrow==21.0.0\nsage -python - <<'PY'\nimport sys\nsys.path.insert(0, \"/tmp/star-sky-pyarrow\")\nimport pandas\nimport pyarrow\nprint(\"Sage Python Parquet engine:\", pyarrow.__version__, \"pandas:\", pandas.__version__)\nPY\n"
+            },
+            {
+              "name": "Run cosmology diagnostics",
+              "run": "set -euo pipefail\ncd \"${{ steps.root.outputs.ROOT }}\"\nsage -python ci_diagnostics/diagnose_cosmology.py | tee ci_diagnostics/output.txt\n"
+            },
+            {
+              "name": "Validate sky survey loader",
+              "run": "cd \"${{ steps.root.outputs.ROOT }}\"\nsage -python -m pytest -q src/tests/test_load_sky_surveys.py\n"
+            },
+            {
+              "name": "Run dataset union builder (downsampled)",
+              "run": "set -euo pipefail\ncd \"${{ steps.root.outputs.ROOT }}\"\nsage -python - <<'PY'\nimport sys\nsys.path.insert(0, \"/tmp/star-sky-pyarrow\")\nfrom pathlib import Path\nimport pandas as pd\nfrom src.data.sky_survey_dataset_builder import SkySurveyUnionBuilder\n\noutput = Path(\"sky_surveys_ci.parquet\")\nbuilder = SkySurveyUnionBuilder(downsample=200)\nexpected = builder.build()\nbuilder.save(output)\nassert output.is_file() and output.stat().st_size > 0, \"Parquet output missing\"\nrestored = pd.read_parquet(output)\npd.testing.assert_frame_equal(restored, expected, check_dtype=True)\nassert len(restored) <= 400, \"downsampled union exceeded input bound\"\nprint(f\"Parquet union round-trip passed: {len(restored)} rows\")\nPY\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/starmap.yml",
+      "git_blob": "75bb2da4f4a8d00bdd0a382563ff7765985e3718",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "prototype": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "actions/setup-node@v4"
+            },
+            {
+              "run": "npm ci"
+            },
+            {
+              "name": "Hydrate locked ALFALFA publisher bytes only when display admission is proposed",
+              "run": "set -euo pipefail\n# The production sky gate must validate hydrated bytes, never an\n# unhydrated Git LFS pointer. Pending review creates no activation.\nif node -e 'const m=require(\"./web_tool/content/sky-overlay-releases.v1.json\"); process.exit(m.sources.some(s=>s.datasetId===\"DATA-VIZIER-ALFALFA100\")?0:1)'; then\n  FILE=\"data/intake/vizier/alfalfa100/2026-10-09-cds-corrected-2019/table2.vot\"\n  git lfs fetch --include=\"$FILE\" origin \"$GITHUB_SHA\"\n  git lfs checkout -- \"$FILE\"\n  echo \"654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079  $FILE\" | sha256sum -c -\nfi\n"
+            },
+            {
+              "run": "npm test"
+            },
+            {
+              "name": "Verify source-hydrated admitted release receipt and bytes",
+              "run": "npm run sky:check"
+            },
+            {
+              "run": "npm run build"
+            },
+            {
+              "run": "npm run typecheck"
+            },
+            {
+              "name": "Install Chromium for research content browser smoke",
+              "run": "npx playwright install --with-deps chromium"
+            },
+            {
+              "name": "Test /research in desktop and mobile browsers",
+              "run": "set -euo pipefail\nnpm run preview -- --host 127.0.0.1 --port 8081 >/tmp/starmap-research-preview.log 2>&1 &\npreview_pid=$!\ntrap 'kill \"$preview_pid\" 2>/dev/null || true' EXIT\nready=0\nfor i in $(seq 1 50); do\n  if curl --fail --silent --output /dev/null http://127.0.0.1:8081/research; then\n    ready=1\n    break\n  fi\n  sleep 2\ndone\nif [ \"$ready\" != 1 ]; then\n  cat /tmp/starmap-research-preview.log\n  exit 1\nfi\nnode scripts/research-browser-smoke.mjs http://127.0.0.1:8081\nnode scripts/sky-browser-smoke.mjs http://127.0.0.1:8081\n"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "git_blob": "1937a64c104711ae76cb844f020007f23d604389",
+      "disposition": "audited-workflow",
+      "jobs": {
+        "test": {
+          "steps": [
+            {
+              "uses": "actions/checkout@v4"
+            },
+            {
+              "uses": "./.github/actions/hydrate-audit"
+            },
+            {
+              "uses": "actions/setup-python@v5"
+            },
+            {
+              "name": "Install dependencies and package",
+              "run": "python -m pip install --upgrade pip\npython -m pip install -r requirements.txt\npython -m pip install pytest\npython -m pip install -e . --no-deps\n"
+            },
+            {
+              "name": "Run tests",
+              "run": "pytest -q"
+            }
+          ]
+        }
+      },
+      "reason": "Every job/step is captured below; per-workflow decisions and exclusions are enumerated in AUDIT.md."
+    },
+    {
+      "path": "ci_diagnostics/diagnose_cosmology.py",
+      "git_blob": "dbc6cf1b61a91392fa8b6ac6060cc0655e28ef81",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/ci_diagnostics/diagnose_cosmology.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "docker/Dockerfile",
+      "git_blob": "9ed9197ffb4176ab287e930a7124d64092df260a",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "notebooks/00_registry_overview.ipynb",
+      "git_blob": "6541e0d91bc8d61a123fde3f43ca071fc84c89c8",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/01_preprocessing.ipynb",
+      "git_blob": "de8688bf35a8c4e4151bc30ba7e9e97181c05ae5",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/02_arithmetic_reconstruction.ipynb",
+      "git_blob": "e1dcae57a2c52273796e066e8006287dcc03d76d",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/03_mapping_benchmark.ipynb",
+      "git_blob": "695c391f15cbc4c11e1f2e497eee1fe480808e64",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/04_rank_environment.ipynb",
+      "git_blob": "7c272f1ac0420c7b272474adf698bc08ffa0c1c4",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/05_rank_topology.ipynb",
+      "git_blob": "70a2f1d5fdf99639a786f1a87c8896f8506861ad",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/06_null_models.ipynb",
+      "git_blob": "c171ae1363486d1f99a26133c659132463e70a8c",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/07_sfr_prediction.ipynb",
+      "git_blob": "df3570e22618653ce2895f33987dc77716f5741b",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "notebooks/08_robustness.ipynb",
+      "git_blob": "deb2dcfdea74b9cd0f8c918343c44d7b12500bf0",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "preregistrations/M1-INH-E1/derivations/e1a_general_einstein_reduction.py",
+      "git_blob": "270557976d27055b5db22b814c4dda1970dcb4f2",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "pyproject.toml",
+      "git_blob": "af954a53fb1a8cbb9d90032ad8fadee93b95eaf1",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "release_packages/EXP-MAP-A01-primary-execution-v0.1/verify_package.py",
+      "git_blob": "5ac2c632d562735c47494b7da98635c778bf2ece",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "requirements.txt",
+      "git_blob": "698bc714218acb5b3bcece616815b97eea03c1f9",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "research/independent_review/2026-10-16/verify_a03.py",
+      "git_blob": "5f98dc5a60be4d2a3bdd9f591515912829b24e62",
+      "disposition": "audited-reference-or-notebook",
+      "reason": "See workflow coverage and explicit non-execution/authority boundaries in AUDIT.md."
+    },
+    {
+      "path": "scripts/audit_cocalc_archive.py",
+      "git_blob": "a12890cdeb7f3a9358e0a24bb70a7b01fc328ccc",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/scripts/audit_cocalc_archive.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "scripts/build_cosmology_data.py",
+      "git_blob": "d35c284fd621a1028c9dc41776725fcf61b9dd69",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/check_controlled_readiness.py",
+      "git_blob": "bc25b10718148dcf1c8f0c1dc1c4bde2a85f79b0",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "scripts/diff_outputs.py",
+      "git_blob": "454da28a4529d5414ec16a1f47d1f2d39d6d42ff",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/ec_curvedata.py",
+      "git_blob": "2833acc2967103d0d54e4bd11717827b683517ff",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/generate_cremona_subset.py",
+      "git_blob": "4fe27927ca1448eb3c29dfd0ee067b6da4cbce8d",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/scripts/generate_cremona_subset.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "scripts/generate_pantheon_module_from_csv.py",
+      "git_blob": "90ee0bc499cc037005257049af792bb44ea06f27",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/independent_dataset_verification.py",
+      "git_blob": "2607197d7bb5332c53383360cbe0502462e27cf1",
+      "disposition": "adapted-source-and-schema-only",
+      "reason": "Hardened VOTable function slices and dataset contracts; no human review/admission census."
+    },
+    {
+      "path": "scripts/independent_gate_report.py",
+      "git_blob": "090e32d6106ee7ea80a066e273e730c9882caa93",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "scripts/m1_e1b_independent_autodiff.py",
+      "git_blob": "160191259441433078803fd9524d4e2d5dbcd265",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/parse_cremona_chunks.py",
+      "git_blob": "29a28d5b29d38fcd9a59042d41ba447e66e5bbcc",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/parse_lmfdb_raw.py",
+      "git_blob": "57a0577c8bf43d6105fdeed3e009f7353d570ee9",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/theory_search_states.py",
+      "git_blob": "8ab1cf637b13cdad44efe3071bd6bd94b0b176bf",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/validate_a03_preexecution_release.py",
+      "git_blob": "47aef12673354bcade695f1b34940eba7c08c884",
+      "disposition": "pinned-read-only-reference",
+      "reason": "Separate immutable upstream sparse checkout; artifact/certificate or exact-algebra checks only, no approval requirement."
+    },
+    {
+      "path": "scripts/validate_audit_registries.py",
+      "git_blob": "ade60496bf261d5224c12083fbf583cd97f5c212",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "scripts/validate_exp_map_a01_preregistration.py",
+      "git_blob": "25672088a65b88b847dfece6b8957155da621a1e",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "scripts/validate_exp_map_a03_preregistration.py",
+      "git_blob": "5aaf733e60b732d62b1d90bf524a0bc0fdfb7d15",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "scripts/validate_observational_datasets.py",
+      "git_blob": "be3a90563930dba741a8c94d4ce058a8eecc141c",
+      "disposition": "adapted-source-and-schema-only",
+      "reason": "Pinned byte/schema contracts plus exact FITS/parser slices; no registry refresh or display promotion."
+    },
+    {
+      "path": "scripts/validate_provenance_capture.py",
+      "git_blob": "08aa72c97f7b8055c64426b25f9c68666c4da856",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/scripts/validate_provenance_capture.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "scripts/verify_exp_map_a01_release_package.py",
+      "git_blob": "268c41359c737362e29da36208886ac52fee7b31",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "src/tests/test_load_sky_surveys.py",
+      "git_blob": "b7f45203b53843ac32e62152bb583099a0004d2d",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/integrations/test_sciserver_approval.py",
+      "git_blob": "2895b4e6ceedd40c9fb830728614a8b06f871c9b",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/integrations/test_sciserver_identifier.py",
+      "git_blob": "05724be018d24d20b067a5e96dbf311ff4c1b20a",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/integrations/test_sciserver_policy.py",
+      "git_blob": "55e6aa80c2533bd20a0e5ddce827163b3bd1bc76",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/integrations/test_sciserver_runtime.py",
+      "git_blob": "c3a31d698d3c764e311676c93ab8c994239c7660",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/null_models.py",
+      "git_blob": "9ac675430edab6f33afb0d2ed99afd4c9ed94f47",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_a01_a03_shared_dataset_compatibility.py",
+      "git_blob": "4d9b6e474afb72736ac700ed9da0dbd1d1fc8d43",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_a03_reference_verification.py",
+      "git_blob": "f5c1c37a0e4013bab61c0dbe8fc8107698f38093",
+      "disposition": "adapted-pure-synthetic-functions",
+      "reason": "Six synthetic reference tests use extracted kernels/reference functions; no preflight/cohort/approval code."
+    },
+    {
+      "path": "tests/test_a03_review_release.py",
+      "git_blob": "4972e77537c66fb1f981686ab35dcd90038e58ac",
+      "disposition": "pinned-read-only-reference",
+      "reason": "Separate immutable upstream sparse checkout; artifact/certificate or exact-algebra checks only, no approval requirement."
+    },
+    {
+      "path": "tests/test_astronomy_integrity_fixtures.py",
+      "git_blob": "211fedbb77bf0a79dd3b2dac018715d568ae4547",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_astronomy_integrity_fixtures.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_audit_cocalc_archive.py",
+      "git_blob": "b55143f542a6e021e665a2ffedb10df5165d5ed1",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_audit_cocalc_archive.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_audit_registry_validation.py",
+      "git_blob": "6c256ed6c7306ae3efdb230695be839af2688a88",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_bootstrap_stability.py",
+      "git_blob": "e7e9635933e02c814a4f5842f5e6760e48dc9ce1",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_bootstrap_stability.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_charter_documentation_integrity.py",
+      "git_blob": "ab13b17f10663fb94790c50c2618c8e8cd9c3ce5",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_cohomology.py",
+      "git_blob": "ba3ff96b75225a5c578af21c1877f78b6c590b21",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_cohomology.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_constrained_gp.py",
+      "git_blob": "4697dbd4d4f599cc7d83d8ac403131b46d5ab044",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_constrained_gp.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_controlled_readiness.py",
+      "git_blob": "0d37014d2b8539b46e515053da1817cc7f2c0086",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_controlled_runner.py",
+      "git_blob": "4ad9beb052a1178c01d3b108b5b054d579cafa14",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_cosmology.py",
+      "git_blob": "51d059da078b0e15697219166511c79bb426e6c8",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_cosmology.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_differential_forms.py",
+      "git_blob": "ea1593399267ccd5b097bd9d1623e1d4ed143dac",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_differential_forms.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_entropy_field.py",
+      "git_blob": "ff8bfa5136692ab36117dc534ee561a00db16381",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_entropy_field.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_entropy_geodesics.py",
+      "git_blob": "fc5619b50ca998b8a3bd51ac20141f5269e35100",
+      "disposition": "known-numerical-failure-quarantined",
+      "reason": "Original shape-only test passes despite overflow. Preserved as text; negative control rejects invalid arithmetic."
+    },
+    {
+      "path": "tests/test_entropy_potential.py",
+      "git_blob": "4f291a7c5f4be375e18b594225b833109d9021e7",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_entropy_potential.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_entropy_shells.py",
+      "git_blob": "2118aea439e55bd35b295bfc510c8358faeae301",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_entropy_shells.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_exp_map_a01_preregistration.py",
+      "git_blob": "b7d2d6aa9ddc5e78ebd24d7b45eda3fd9ab8e05f",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_exp_map_a01_release_package.py",
+      "git_blob": "900b64e991d39b55127240dea0908464c25cd623",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_exp_map_a03_candidate.py",
+      "git_blob": "442f0f4828d46c83d9cbc60fd20196982587966d",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_exp_map_a03_safety.py",
+      "git_blob": "b440b02727032fe1b82ec6959ed6b3b2987a592c",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_fail_closed_runtime.py",
+      "git_blob": "af724b9d5d423ee3f9332824434e7a41f2984df8",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_fail_closed_runtime.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_fisher_rao_entropy_geodesics.py",
+      "git_blob": "8e9774dcd28c341433142adf766a19565dc222e4",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_fisher_rao_entropy_geodesics.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_hubble_effective.py",
+      "git_blob": "4c5beba3064efa99d48904e6df025aa64eb49802",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_hubble_effective.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_hubble_tension_fit.py",
+      "git_blob": "14f929c019d41d663edc968c46f5a7b63cc48405",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_hubble_tension_fit.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_independent_dataset_verification.py",
+      "git_blob": "747f7295255c61af0100dd6d851838e3b9a8488c",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_independent_gate_report.py",
+      "git_blob": "47d34c343acf65ca28731684a49ad2152bfea3e8",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_independent_spherical_reference_audit.py",
+      "git_blob": "0a8aaa7d9c7c041ffa6f78fffb784d2b49ff3018",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_independent_spherical_reference_audit.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_inference_control.py",
+      "git_blob": "1981f0cd0fcfa901dcd8c45f13fa26041f533889",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_m1_inh_e1a_general_reduction.py",
+      "git_blob": "c7667ba4c22d29eddcdb75d03d33108e732f3df5",
+      "disposition": "pinned-read-only-reference",
+      "reason": "Separate immutable upstream sparse checkout; artifact/certificate or exact-algebra checks only, no approval requirement."
+    },
+    {
+      "path": "tests/test_m1_inh_e1b_evidence.py",
+      "git_blob": "745d5657f41db014905875238c8967c5ed0d63e9",
+      "disposition": "pinned-read-only-reference",
+      "reason": "Separate immutable upstream sparse checkout; artifact/certificate or exact-algebra checks only, no approval requirement."
+    },
+    {
+      "path": "tests/test_metric_perturbations.py",
+      "git_blob": "5d253f4c4321c94384b8afe3b22e830b50b07bc9",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_metric_perturbations.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_persistence_landscape.py",
+      "git_blob": "2c2f73189c1ed74a270dac1cd300c42fa6b009af",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_persistence_landscape.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_planck_compressed_loader.py",
+      "git_blob": "ba78662f6e92fe86887e7c114b611b7f11fd0ab0",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_planck_compressed_loader.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_planck_repository_metadata.py",
+      "git_blob": "1f51a525a5a8ceb346d5242095d64d6d0e5b8e49",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_preregistration_transition_candidates.py",
+      "git_blob": "f89de37bc5d7c16eed628d41a49a0004805219ea",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_projection.py",
+      "git_blob": "5a8cdba23855bde6c964b47b62405bb90c0f6d53",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_projection.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_provenance_capture_validator.py",
+      "git_blob": "66b7e02f97eb47bec1d4a3f94d59817f12a5c17a",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_provenance_capture_validator.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_publisher_byte_verification.py",
+      "git_blob": "9b663327de7c40d494f2c7021d6a53ef2b5fa6e0",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_quantile.py",
+      "git_blob": "8d05765e4b42b50110a1e221a6fbfd998a4ef8c7",
+      "disposition": "not-a-test-module",
+      "reason": "Defines a second transformer but no regression test functions."
+    },
+    {
+      "path": "tests/test_recovered_lfs_selection.py",
+      "git_blob": "12960827aceb7136f4b20ff2104d409c356e3de7",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_recovery_intake.py",
+      "git_blob": "de1b3aa4fefb9bf63f889b36c8e9716d604e151d",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_recovery_intake.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_registry_validation.py",
+      "git_blob": "afa395e9ee1d841a884d5f302d81327bc12ae969",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_reproducibility.py",
+      "git_blob": "d26b7712e6c7e789ffcd9abfa46c0d241ffa9049",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_reproducibility.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_scalar_coupling.py",
+      "git_blob": "1bf0b675dbe964de274d7fea7e2633042f6c563c",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_scalar_coupling.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_selective_lfs_provenance.py",
+      "git_blob": "ca34712ee2c977747f0e3bf77a624027d8e463ef",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_sr_pipeline.py",
+      "git_blob": "cf8a4297db806683232b2a4ff6639383b018389f",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_sr_pipeline.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_statistics.py",
+      "git_blob": "fbd51ed3d78d02f8bcf450093445fe6da2b2ce7b",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_statistics.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_symbolic_manifold.py",
+      "git_blob": "e3a72c7d11f8c336f255f77ec849a43b514e9899",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_symbolic_manifold.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_symbolic_persistence.py",
+      "git_blob": "85c19cce86216b41e85b2adc1aa12ecffea0af30",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_tda.py",
+      "git_blob": "8abebe489a9f0369fcb7453a93dd98a3cc41e8c3",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_tda.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_theory_search_registry.py",
+      "git_blob": "a4d5b3a0bf4cdeb9c1a3ebe79153acc6df981790",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tests/test_vizier_alfalfa_intake_templates.py",
+      "git_blob": "16dfd74b0921531a751bff6b94f8644f1d2acdb6",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tests/test_witness_complex.py",
+      "git_blob": "eb1b183c5449e5083f0b22867317a7f49e49a974",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tests/test_witness_complex.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tests/test_zone_identifier_receipts.py",
+      "git_blob": "31ad667d765ab42283c8968264557aa7b2286ba5",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tools/pantheon_plus_converter.py",
+      "git_blob": "478f807567a78b33b6c6d4264ed29959bfd4c41a",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tools/recovery_intake.py",
+      "git_blob": "83a6dda350468e0d97f367ce41b84861b1bc221e",
+      "disposition": "ported-byte-identical-software",
+      "equivalent": "upstream/tools/recovery_intake.py",
+      "reason": "Executed only in the explicit isolated software/fixture test selection, or imported by those tests; see source manifest."
+    },
+    {
+      "path": "tools/validate_preregistration_transition_candidates.py",
+      "git_blob": "abf15ba9647d770df8766e0efb7dbe1283ba0d6b",
+      "disposition": "excluded-authority-or-mixed-governance-see-audit",
+      "reason": "Bound to upstream authoritative registry/preregistration/controlled admission; not a Sandbox acceptance gate. Generic source, metadata and non-promotion equivalents are separate."
+    },
+    {
+      "path": "tools/validate_selective_lfs.py",
+      "git_blob": "6e2a85636edc3776cffcd7b231a2e61f37a5719e",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "tools/verify_recovered_lfs_selection.py",
+      "git_blob": "04437d6ab985d32176238a64c6debf47d336022f",
+      "disposition": "adapted-or-deferred-see-workflow-and-blocker-audit",
+      "reason": "Specific historical inputs, application or source package are not active Sandbox products; AUDIT.md distinguishes unavailable artifacts, safe replacements and intentional exclusions. This row is not a claimed passing port."
+    },
+    {
+      "path": "web_tool/package-lock.json",
+      "git_blob": "6342572d17e0ba0d900069e80dcf686b2e5851a2",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/package.json",
+      "git_blob": "fbe459a4a7ca32cc8f7e227076ce9ae2c23d63c3",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/alfalfa-sky-release.test.mjs",
+      "git_blob": "eb9d69fed28cb5967fc579e4d6b904985a062c55",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/app-env-plugin.mjs",
+      "git_blob": "9b9b69e071c99fb2ed1b56a759bead15169b2fe8",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/brand-check.mjs",
+      "git_blob": "ca3a36cfe9c7c6cd51974d3138ce320911981ffa",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/brand-check.test.mjs",
+      "git_blob": "8a2ac609e1c3aba78f32dcf59d3fd6cf6e337e0a",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/browser-guard.mjs",
+      "git_blob": "ebfbdb147f0b266a4ca46fe451daae1ae023c2db",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/browser-smoke-verdict.mjs",
+      "git_blob": "020dd9991778b477e0003316064275db0d0fe3d8",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/browser-smoke-verdict.test.mjs",
+      "git_blob": "4d6e3e82f1b55dd6e5ae14b759eebc6bbf29580c",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/browser-smoke.mjs",
+      "git_blob": "9561f5cd64f47cdbb754d41e4340fd9908ebb80b",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/check-auth-invariant.mjs",
+      "git_blob": "b558378c35f88069e34e344579391c395f565640",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/check-auth-invariant.test.mjs",
+      "git_blob": "de8328eec525cc9f01ab1d81ae0f128d2ec93e2a",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/check-frozen-sky-releases.mjs",
+      "git_blob": "b1db58c62c090599f84d70d17ae905e0dba29944",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/check-frozen-sky-releases.test.mjs",
+      "git_blob": "32c6b73de2d94b0ddd4ceb26fd33016de414fe15",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/filter-deployed-sky-assets.mjs",
+      "git_blob": "a4f100d558976a1fefd539b750879ed6c2d8bf52",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/grok-pwa-plugin.mjs",
+      "git_blob": "97821e8b28840b612d13c35bb95f6dfd07ffa006",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/grok-pwa-plugin.test.mjs",
+      "git_blob": "38ed9204c9ccf608635020e9e76cf0675bd9e985",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/grok-pwa-shared.d.mts",
+      "git_blob": "609ea6b65670d68ac9261d569bd8a0a8d092c6a4",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/grok-pwa-shared.mjs",
+      "git_blob": "e0aae02b45849f6dff89e0cdb6e51894a4ab863f",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/install-page.html",
+      "git_blob": "f1d3bdbd1a1a1c5337a019d7f188cfd1ce19b33d",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/migrate.mjs",
+      "git_blob": "d6622a95f0357b570d42abbc7240262830de57b4",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/migration-plan.mjs",
+      "git_blob": "861450f0849ab6f56a00c30ddeb91ac4262cc1f7",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/migration-plan.test.mjs",
+      "git_blob": "5fcefb22b1710362c10d96610021cd15b08721df",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/preview-thumbnail.mjs",
+      "git_blob": "dd2afaed2b10ece67a7b8a5320b35d76edf0de09",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/preview.mjs",
+      "git_blob": "cab7a4d0cc0e35dd7734362f70d3bbf64f6e42b5",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/preview.test.mjs",
+      "git_blob": "cf39aecf27ccf30de42a28da07a88dd6b884095f",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/repository-publications.mjs",
+      "git_blob": "e2686555160387593e86e436346b09865baaf1f0",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/repository-publications.test.mjs",
+      "git_blob": "3fcd22518e61dee0cc232a5deb7ff3e6a71a088b",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/research-browser-smoke.mjs",
+      "git_blob": "4254f8decbecaf3787f7e95a4e1f78343dc12ee0",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/research-content.test.mjs",
+      "git_blob": "da2f5001cc7e5d71e71f58f238f58c55fe56ad3e",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/selected-lfs-snapshot.test.mjs",
+      "git_blob": "5bd82fef4a90d5338e115747249f3551700f5017",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sign-out-plan.mjs",
+      "git_blob": "cfcd425d3fc423d2d3f9e7b9efd9f6d4721dfab6",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sign-out-plan.test.mjs",
+      "git_blob": "7c20d88df5ef0d8a448d007fe5e0aae9ae2e8883",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sky-browser-smoke.mjs",
+      "git_blob": "6467ee208b8a86dfe0e8ec291cb95753a52bdab9",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sky-overlay-input.test.mjs",
+      "git_blob": "6c731ea87615edf0b166b785a155af02fd977a4c",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sky-published-release.test.mjs",
+      "git_blob": "9285efdb9c4c43e2094ead66e2d19b32455ac359",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sync-registry.mjs",
+      "git_blob": "72d72e04f493733f159d2093cf28b6dded07774b",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sync-research-content.mjs",
+      "git_blob": "b303a61ffd7111295cd9b72468386ef28c0fc450",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/sync-selected-lfs.mjs",
+      "git_blob": "f9c1cb3b36cb267846bf99e822f62bc2597a496e",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/test.mjs",
+      "git_blob": "7c530e214e7fdd7cd9ee5efc2bb6eee2d4e1567c",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/vercel-registry-inputs.test.mjs",
+      "git_blob": "7eb79689e48a04e81804e2b444587bf091c73765",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/verify-notebook.mjs",
+      "git_blob": "3a8b66c297fbebf7006463d245aaa61fe994fa24",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/with-app-env.mjs",
+      "git_blob": "1dbf0709e0dc6c95ca144c24b0433885d08b842e",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/with-app-env.test.mjs",
+      "git_blob": "b68772ef020782c9d86ea633ff34e5cb9d6d7cf1",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/write-atomic.mjs",
+      "git_blob": "293e2951f4c0b729174f21a79baa0a717f1b03f0",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/scripts/write-atomic.test.mjs",
+      "git_blob": "68ddccf1eacfa980cd157740720f7f2af3b82ef5",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/app-data/app-data.test.ts",
+      "git_blob": "5788361653ce7dcc086b2857f3c61531aaf00b31",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/app-data/readiness-schedule.test.ts",
+      "git_blob": "9a19189d2de446bbd2e0f81c7e4e8173896bbbb1",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/auth/gate-identity.test.ts",
+      "git_blob": "02cf0269fe3cdbcba3d96be110264f94e0cdea13",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/auth/sign-in-gate.test.ts",
+      "git_blob": "6b66a33ea9a0856c23661099dfc7d368dc022dff",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/star/experiment-lifecycle.test.ts",
+      "git_blob": "99f96a6075c95fd79c56e75e3d89314cc84de522",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/star/repository-status.test.ts",
+      "git_blob": "966db7dc4e1bcfc5cd1571db73fcf87b99278fe8",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    },
+    {
+      "path": "web_tool/src/lib/star/snapshots.test.ts",
+      "git_blob": "5e9e75850548feb96fc2c49bfbb12dedf122579b",
+      "disposition": "not-applicable-no-sandbox-web-application",
+      "reason": "No active Sandbox web application or display release; not applicable."
+    }
+  ],
+  "summary": {
+    "workflow_definitions": 18,
+    "check_build_reference_paths": 176,
+    "byte_identical_ported_files": 72,
+    "copied_upstream_test_modules": 28,
+    "derived_synthetic_test_modules": 1,
+    "all_rows_are_passes": false
+  }
+}

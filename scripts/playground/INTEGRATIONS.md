@@ -77,8 +77,9 @@ python3 scripts/playground/ports/ecc_b01/investigator_a_v3.py \
 ```
 
 This produces an analytic fixture report, not mathematical certification,
-cosmological evidence, or independent replication. No ECC fixture scripts
-run in sandbox CI.
+cosmological evidence, or independent replication. The additional pinned
+diagnostic workflow runs only the v3 regression and its 16 analytic/quadrature
+fixtures with temporary outputs. Historical v1/v2 fixtures are not executed.
 
 ## 4. Parent-theory ansatz
 

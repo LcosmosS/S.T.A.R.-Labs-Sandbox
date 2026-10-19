@@ -1,0 +1,190 @@
+name: Sandbox reproducibility
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      public_sources:
+        description: Re-fetch four pinned observational publisher objects and check declared schemas
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sandbox-reproducibility-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  software:
+    name: pinned-software-and-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONHASHSEED: '0'
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.12'
+      - name: Install exact hash-locked binary tools
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r scripts/reproducibility/requirements-linux-py312.lock
+      - name: Verify pinned sources and reject malformed artifacts and datasets
+        run: |
+          python -I scripts/reproducibility/integrity.py
+          python -I -m unittest discover -s tests -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/sandbox-tests.log"
+      - name: Run actual offline SQL policy and receipt regressions
+        env:
+          PYTHONPATH: scripts/playground/ports
+        run: |
+          python -m scripts.playground.sciserver_offline validate
+          python -m pytest -q scripts/playground/ports/tests/integrations/test_sciserver_policy.py --junitxml="$RUNNER_TEMP/sql-tests.xml"
+      - name: Run pinned ECC v3 symbolic controls, including the wrong-comparator negative control
+        run: python -m pytest -q scripts/playground/ports/tests/test_ecc_b01_a_c03_v3.py --junitxml="$RUNNER_TEMP/ecc-tests.xml"
+      - name: Run allowlisted synthetic numerical and builder regressions
+        run: |
+          python -m pytest -q -c scripts/reproducibility/pytest.ini scripts/reproducibility/upstream/tests scripts/reproducibility/tests --junitxml="$RUNNER_TEMP/numerical-tests.xml"
+          python scripts/reproducibility/upstream/ci_diagnostics/diagnose_cosmology.py
+      - name: Verify exact public arithmetic source (no endpoint/null computation)
+        run: |
+          python scripts/reproducibility/datasets.py --dataset DATA-ARITHMETIC --download "$RUNNER_TEMP/allcurves.00000-09999" | tee "$RUNNER_TEMP/arithmetic-receipt.json"
+          python scripts/reproducibility/upstream/scripts/generate_cremona_subset.py --source "$RUNNER_TEMP/allcurves.00000-09999" --output "$RUNNER_TEMP/ci-subset.csv"
+      - name: Build twice and test installed wheel outside the checkout
+        run: python scripts/reproducibility/build_check.py --output "$RUNNER_TEMP/sandbox-build" | tee "$RUNNER_TEMP/build-check.log"
+      - name: Reject whitespace errors
+        # Byte-identical upstream snapshots retain their original whitespace.
+        run: git diff --check HEAD^ HEAD -- . ':(exclude)scripts/reproducibility/upstream'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-software-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/sql-tests.xml
+            ${{ runner.temp }}/sandbox-tests.log
+            ${{ runner.temp }}/ecc-tests.xml
+            ${{ runner.temp }}/numerical-tests.xml
+            ${{ runner.temp }}/arithmetic-receipt.json
+            ${{ runner.temp }}/sandbox-build/
+            ${{ runner.temp }}/build-check.log
+          if-no-files-found: error
+          retention-days: 30
+
+  saved-reference-integrity:
+    name: saved-reference-integrity-only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout immutable upstream inspection inputs, never initialize LFS or submodules
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: reference
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            release_packages/EXP-MAP-A01-primary-execution-v0.1
+            release_packages/EXP-MAP-A03-preexecution-verification-v0.1
+            scripts/validate_a03_preexecution_release.py
+            tests/test_a03_review_release.py
+            tests/test_m1_inh_e1a_general_reduction.py
+            tests/test_m1_inh_e1b_evidence.py
+            preregistrations/M1-INH-E1
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.12'
+      - name: Checkout proposed hash lock for symbolic software tools
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: tooling
+          sparse-checkout: scripts/reproducibility/requirements-linux-py312.lock
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - name: Install exact symbolic-test tools
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r tooling/scripts/reproducibility/requirements-linux-py312.lock
+      - name: Inspect saved A01 bytes and formulas; compare saved inspection receipt
+        working-directory: reference
+        run: |
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          python -I release_packages/EXP-MAP-A01-primary-execution-v0.1/verify_package.py | tee "$RUNNER_TEMP/saved-a01.json"
+          diff -u release_packages/EXP-MAP-A01-primary-execution-v0.1/verification.json "$RUNNER_TEMP/saved-a01.json"
+      - name: Inspect frozen A03 origins and exercise byte/status tamper controls
+        working-directory: reference
+        run: |
+          python -I scripts/validate_a03_preexecution_release.py --verify-origin | tee "$RUNNER_TEMP/saved-a03.json"
+          python -m unittest discover -s tests -p test_a03_review_release.py -v
+      - name: Check exact symbolic identities and saved M1 source certificates (no approval)
+        working-directory: reference
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: python -m pytest -q tests/test_m1_inh_e1a_general_reduction.py tests/test_m1_inh_e1b_evidence.py --junitxml="$RUNNER_TEMP/m1-reference.xml"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-saved-reference-inspection
+          path: |
+            ${{ runner.temp }}/saved-a*.json
+            ${{ runner.temp }}/m1-reference.xml
+          if-no-files-found: error
+          retention-days: 30
+
+  public-source-bytes:
+    if: github.event_name == 'workflow_dispatch' && inputs.public_sources
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.12'
+      - name: Install hash-locked schema verification tools
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r scripts/reproducibility/requirements-linux-py312.lock
+      - name: Re-fetch exact locked publisher bytes; preserve mismatches as failures
+        run: |
+          failed=0
+          mkdir "$RUNNER_TEMP/publisher-bytes"
+          for dataset in DATA-MANGA-HI-ALL DATA-SFR-MANGA-PIP3D DATA-COSMIC-ENV DATA-VIZIER-ALFALFA100; do
+            if ! python scripts/reproducibility/datasets.py --dataset "$dataset" --download "$RUNNER_TEMP/publisher-bytes/$dataset" | tee "$RUNNER_TEMP/publisher-bytes/$dataset.receipt.json"; then
+              failed=1
+            fi
+          done
+          exit "$failed"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-public-source-byte-comparison
+          path: ${{ runner.temp }}/publisher-bytes/
+          if-no-files-found: error
+          retention-days: 7
