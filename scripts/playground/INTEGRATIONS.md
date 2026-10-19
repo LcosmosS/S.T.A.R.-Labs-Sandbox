@@ -10,28 +10,28 @@ entries or upstream support flags are changed.
 
 Run from sandbox repository root with Python 3.12+ on **POSIX/WSL2**:
 
-\`\`\`bash
+```bash
 python3 -m scripts.playground.sciserver_offline list
 python3 -m scripts.playground.sciserver_offline validate
 # Explicit opt-in: creates a private local plan/receipt only, NO remote request
 python3 -m scripts.playground.sciserver_offline prepare \
   --query-id DR18-CANARY-10
-\`\`\`
+```
 
-Use \`--state-root /private/user-owned/path\` if you prefer an alternative local
+Use `--state-root /private/user-owned/path` if you prefer an alternative local
 0700 receipt root. The unmodified pinned source uses a default
-\`~/.local/state/star-sciserver/runs/\`; receipts are local hash-chained files,
+`~/.local/state/star-sciserver/runs/`; receipts are local hash-chained files,
 not authenticated operator approvals. The only permitted local preparation
-is the fixed TOP 10 DR18 canary. \`DR18-DETERMINISTIC-200K\` is **blocked**.
-Both queries have \`submission_enabled=false\`. No SciServer account,
+is the fixed TOP 10 DR18 canary. `DR18-DETERMINISTIC-200K` is **blocked**.
+Both queries have `submission_enabled=false`. No SciServer account,
 API key, MyDB write, remote SQL execution, login or MCP tool is activated.
 Review the prepared SQL and provenance manually before proposing a distinct
 authorized live-acquisition experiment.
 
 The code and catalog are stored, with original relative paths, under
-\`scripts/playground/ports/integrations/sciserver/\` and
-\`scripts/playground/ports/verification/datasets/casjobs/\`.
-Use the pinned tests under \`ports/tests/integrations/\` as source references;
+`scripts/playground/ports/integrations/sciserver/` and
+`scripts/playground/ports/verification/datasets/casjobs/`.
+Use the pinned tests under `ports/tests/integrations/` as source references;
 the sandbox CI uses independent stdlib regression tests instead of invoking
 the upstream's pytest suite or creating local receipt state.
 
@@ -46,7 +46,7 @@ released package "ACSC v2". This integration records the latest identifiable
 implementation, provide its exact path or commit; this port must not pretend
 an editorial revision is a released scientific v2 result.
 
-A first-principles ACSC experiment must define a fixed map \`Phi\` from actual
+A first-principles ACSC experiment must define a fixed map `Phi` from actual
 elliptic invariants, dimensionless arithmetic coordinates, a separately
 specified physical correspondence hypothesis, survey sampling, units,
 alternative mappings, arithmetic/cosmological nulls and falsifiers.
@@ -69,12 +69,12 @@ are copied unchanged (original, v2 and corrected v3). Upstream PR #103 is
 **open and unmerged**, with independent Investigator B comparison outstanding.
 
 Optional local numerical fixture check, only after installing and verifying
-\`numpy\`, \`scipy\`, \`sympy\` in a private virtual environment:
+`numpy`, `scipy`, `sympy` in a private virtual environment:
 
-\`\`\`bash
+```bash
 python3 scripts/playground/ports/ecc_b01/investigator_a_v3.py \
   /tmp/ecc_b01_sandbox_v3.json
-\`\`\`
+```
 
 This produces an analytic fixture report, not mathematical certification,
 cosmological evidence, or independent replication. No ECC fixture scripts
@@ -88,26 +88,26 @@ GR+irrotational dust; Einstein–Vlasov; canonical exponential quintessence;
 Brans–Dicke–Lambda; Einstein–Abelian–Higgs defects.
 
 Sandbox alternatives are allowed, but they do not change the upstream
-\`P0-SF-v0.1\` cutoff, candidate definitions or negative/positive results.
+`P0-SF-v0.1` cutoff, candidate definitions or negative/positive results.
 Do not select a purported independent parent physical theory by fitting a
 desired ACSC observable in reverse.
 
 ## 5. Real pinned arithmetic dependencies
 
-The three **true git submodules** are under \`scripts/playground/external/\`
+The three **true git submodules** are under `scripts/playground/external/`
 at the exact upstream gitlink commits. They are **not initialized by CI**,
 do not auto-install packages or supply verified scientific evidence.
 
 From repository root, initialize only those you actually need:
 
-\`\`\`bash
+```bash
 git submodule update --init scripts/playground/external/ecdata
 git submodule update --init scripts/playground/external/eclib
 git submodule update --init scripts/playground/external/lmfdb
-\`\`\`
+```
 
 Inspect each external repository's license, security and disk footprint before
-cloning. \`lmfdb\` can be large. The root \`.gitmodules\` file is necessary Git
+cloning. `lmfdb` can be large. The root `.gitmodules` file is necessary Git
 configuration and is a deliberate exception to the otherwise Markdown-only
 top-level organization.
 
@@ -120,3 +120,7 @@ sensitivity, reproducible seeds, and failed counterexamples. Passing CI means
 only that repository boundaries and data-source bindings survived their tests.
 No source-port, software test or numerical fixture can promote claims or
 alter upstream registries.
+
+For optional source/data verification without scientific activation or
+independent review, see [sandbox reproducibility CI](../reproducibility/README.md).
+SciServer remote SQL submission and all upstream eligibility controls remain disabled.

@@ -15,7 +15,7 @@ The [main S.T.A.R.-Labs research repository](https://github.com/LcosmosS/S.T.A.R
 
 ## Existing historical research is preserved
 
-The existing research notes and [R&D/](R%26D/) archive predate this governance framework. All **47** historical root research artifacts (PDF, Python, CSV, text, extensionless documents, YAML, and image) have been **moved without content or Git-mode changes** to [historical/](historical/), with original-path mappings and fixed digests preserved in the archive inventory. The root now contains only Markdown files, `.gitignore`, and `LICENSE`; other nested historical material is unchanged. These are **legacy historical materials, not retrospectively certified findings**. No new experiment metadata schema is imposed on them; historical uses of “proof” or “validation” do not establish scientific acceptance.
+The existing research notes and [R&D/](R%26D/) archive predate this governance framework. All **47** historical root research artifacts (PDF, Python, CSV, text, extensionless documents, YAML, and image) have been **moved without content or Git-mode changes** to [historical/](historical/), with original-path mappings and fixed digests preserved in the archive inventory. The root retains Markdown files, `.gitignore`, `LICENSE`, and Git's required `.gitmodules` configuration for the three opt-in, pinned scientific submodules; other nested historical material is unchanged. These are **legacy historical materials, not retrospectively certified findings**. No new experiment metadata schema is imposed on them; historical uses of “proof” or “validation” do not establish scientific acceptance.
 
 ## Start a new experiment
 
@@ -26,6 +26,18 @@ The existing research notes and [R&D/](R%26D/) archive predate this governance f
 5. Keep code, results, limitations, provenance, and refutations together. Do not convert exploratory output into upstream claims.
 
 **Example:** [SBX-2026-0001 — deliberately false parity control](experiments/SBX-2026-0001-parity-control/README.md). CI validates experiment metadata and repository boundaries; it does not run untrusted experiment programs or judge scientific truth.
+
+## Reproducibility without an independent scientific review gate
+
+[Sandbox reproducibility CI](scripts/reproducibility/README.md) runs pinned
+dataset provenance, DR18 SQL, SciServer receipts/security, arithmetic hashes,
+seeded numerical tests and saved-package integrity checks. Additional large-data,
+SageMath, browser and image-build checks are on-demand; none count as passing
+until actually executed. SBX investigators may opt into an artifact contract
+for CSV hashes, row completeness and bounded SQL lint, without scientific
+signoff. [Coverage of all 18 legacy CI workflows](scripts/reproducibility/coverage.json)
+distinguishes automated, optional and excluded checks. CI software success is
+not experimental confirmation or automatic upstream promotion.
 
 ## Status and promotion
 
