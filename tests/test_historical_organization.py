@@ -51,9 +51,17 @@ class HistoricalOrganizationTests(unittest.TestCase):
 
 
     def test_second_stage_root_contains_only_allowed_documentation(self):
-        """Enforce the requested root layout, retaining .gitignore and LICENSE."""
+        """Retain Markdown, license, ignorefile and only pinned Git metadata."""
         root_files = sorted(p.name for p in ROOT.iterdir() if p.is_file())
-        unexpected = [p for p in root_files if p not in (".gitignore", "LICENSE")
+        allowed = {".gitignore", "LICENSE"}
+        if ".gitmodules" in root_files:
+            # An actual submodule checkout requires the Git metadata at root;
+            # the trusted archive checker binds all three exact gitlink SHAs.
+            proposed = checker.git_tree(ROOT, "HEAD")
+            for path, sha in checker.EXTERNAL_GITLINKS.items():
+                self.assertEqual(proposed.get(path), ("160000", sha))
+            allowed.add(".gitmodules")
+        unexpected = [p for p in root_files if p not in allowed
                       and not p.lower().endswith(".md")]
         self.assertEqual(unexpected, [])
         self.assertIn(".gitignore", root_files)
