@@ -540,6 +540,14 @@ class StewardshipService:
             return self._reconcile_locked(installation_id)
 
     def validate_webhook(self, event_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+        # Signed GitHub App lifecycle events do not trigger stewardship
+        # evaluation and may lack repository metadata.
+        if event_name in {"ping", "installation", "installation_repositories"}:
+            return {
+                "ignored": True,
+                "reason": "non-PR GitHub App lifecycle event",
+            }
+
         repo = payload.get("repository")
         if not isinstance(repo, dict):
             raise StewardshipError("webhook payload has no repository metadata")
