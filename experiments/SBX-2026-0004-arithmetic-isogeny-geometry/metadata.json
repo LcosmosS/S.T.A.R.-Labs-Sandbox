@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0004",
+  "title": "Real elliptic-curve isogeny geometry under an arithmetic-only conditional null",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "On 38 frozen, genuine ecdata curves, compare within-conductor isogeny-label distance contrasts of the legacy ACSC coordinate map against an explicitly modified BSD-independent MCJ-inspired map.",
+  "falsifier": "A class-label permutation null conditioned on conductor and rank may yield a primary map-contrast difference equal to or larger than the observed value; scale ablations and alternative selections could erase it.",
+  "provenance": {
+    "input_kind": "observed",
+    "sources": [
+      "John Cremona ecdata allcurves/allcurves.00000-09999 at Git commit 25cec5ecfec8b9f016eb1631ac633194c2bed39f, entire file SHA-256 259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968; selected source line numbers preserved in curves.csv and result.json.",
+      "Exact classical Weierstrass b2/b4/b6/b8/c4/discriminant formulas; no BSD formula or observed cosmic data."
+    ],
+    "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "limitations": [
+    "Small purposively selected conductor strata are not representative of ecdata or cosmology.",
+    "Original ACSC rank is an isogeny invariant; rank-conditioned null is necessary to avoid tautological advantage, but does not control every arithmetic dependency.",
+    "Modified MCJ includes torsion instead of Im(log j) to avoid degeneracy for rational j and is not the exact manuscript formula.",
+    "Euclidean distance and scaling are imposed, not derived physical metrics; no galaxy or cosmological outcomes are used.",
+    "No independent scientific review, theorem proof, observed physical correspondence or upstream eligibility is asserted."
+  ]
+}

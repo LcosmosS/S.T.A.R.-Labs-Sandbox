@@ -1,0 +1,47 @@
+name: Sandbox promotion-readiness report (non-gating)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-only:
+    name: promotion-readiness-report-only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12.12'
+      - name: Report missing fields and explicitly label nonclaims
+        run: |
+          python3 -I scripts/reproducibility/promotion_readiness.py --output "$RUNNER_TEMP/sbx-readiness.json"
+          python3 -I - <<'PY'
+          import json, os
+          from pathlib import Path
+          d = json.loads((Path(os.environ['RUNNER_TEMP'])/'sbx-readiness.json').read_text())
+          out = Path(os.environ['GITHUB_STEP_SUMMARY'])
+          with out.open('a') as f:
+              f.write('## Sandbox documentation audit — NOT scientific approval\n\n')
+              f.write('This report cannot block exploratory experiments or confer upstream status.\n\n')
+              for e in d['experiments']:
+                  f.write(f"- `{e['experiment_id']}`: {len(e['gaps'])} documentation/observational gaps; no promotion\n")
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-readiness-report-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/sbx-readiness.json
+          if-no-files-found: warn
+          retention-days: 30
