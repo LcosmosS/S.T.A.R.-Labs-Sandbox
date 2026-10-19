@@ -170,7 +170,7 @@ jobs:
       - name: Install offline SQL, receipt and identifier test dependencies
         run: |
           python3 -m pip install pytest==9.0.3 cryptography==46.0.3 \
-            pandas==2.2.2
+            pandas==2.2.2 requests==2.32.3
       - name: Exercise SciServer SQL allowlist, local receipt, fake-client and signature negatives
         working-directory: upstream
         shell: bash
