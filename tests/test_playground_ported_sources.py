@@ -87,11 +87,16 @@ class PortIntegrityTests(unittest.TestCase):
                                  entry["git_blob"])
         self.assertEqual(group_counts, EXPECTED)
         self.assertEqual(len(expected_paths), len(manifest["files"]))
+        # Compare tracked source files, not interpreter-generated __pycache__.
+        tracked = subprocess.run(
+            ["git", "ls-files", "-z", "--", "scripts/playground/ports"],
+            cwd=ROOT, check=True, capture_output=True,
+        ).stdout.decode("utf-8").split("\0")
         actual_ports = {
-            p.relative_to(ROOT).as_posix()
-            for p in PORTS.rglob("*") if p.is_file()
-            and p.relative_to(PORTS).as_posix() not in
-            {"MANIFEST.json", "README.md"}
+            path for path in tracked if path and path not in {
+                "scripts/playground/ports/MANIFEST.json",
+                "scripts/playground/ports/README.md",
+            }
         }
         self.assertEqual(actual_ports, expected_paths)
 
@@ -159,7 +164,9 @@ class OfflineSciServerTests(unittest.TestCase):
         """Validate exact DR18 SQL sources and both blocked submission flags."""
         policy = pinned_policy()
         catalog = policy.load_catalog()
-        self.assertFalse(catalog["remote_submission_enabled"])
+        self.assertFalse(json.loads(
+            policy.CATALOG_PATH.read_text(encoding="utf-8")
+        )["remote_submission_enabled"])
         self.assertEqual(set(catalog["queries"]),
                          {"DR18-CANARY-10", "DR18-DETERMINISTIC-200K"})
         self.assertTrue(catalog["queries"]["DR18-CANARY-10"]
