@@ -280,6 +280,17 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: upstream/web_tool/package-lock.json
+      - name: Hydrate only a source-bound ALFALFA sky release when admitted in pinned build
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          if node -e 'const m=require("./web_tool/content/sky-overlay-releases.v1.json"); process.exit(m.sources.some(s=>s.datasetId==="DATA-VIZIER-ALFALFA100")?0:1)'; then
+            FILE="data/intake/vizier/alfalfa100/2026-10-09-cds-corrected-2019/table2.vot"
+            git lfs fetch --include="$FILE" origin HEAD
+            git lfs checkout -- "$FILE"
+            echo "654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079  $FILE" | sha256sum -c -
+          fi
       - name: Install web tool and verify source-bound release data
         working-directory: upstream/web_tool
         shell: bash
@@ -357,6 +368,15 @@ jobs:
           set -euo pipefail
           python3 -m pip install -r requirements.txt
           python3 -m pip install -e . --no-deps
+      - name: Hydrate pinned quarantine test fixtures and arithmetic dependency
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          git submodule update --init data/ecdata
+          test "$(git ls-tree HEAD data/ecdata | awk '{print $3}')" = 25cec5ecfec8b9f016eb1631ac633194c2bed39f
+          git lfs fetch --include='data/quarantine/**' origin HEAD
+          git lfs checkout -- data/quarantine
       - name: Execute legacy software tests (no production credentials)
         working-directory: upstream
         shell: bash
