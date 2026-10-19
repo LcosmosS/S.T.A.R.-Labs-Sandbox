@@ -1,0 +1,374 @@
+name: sandbox-extended-reproducibility
+
+# Opt-in, potentially expensive verification. Never performs independent
+# scientific review, submission, approval, registration or deployment.
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Choose one upstream software/data reproducibility suite"
+        required: true
+        type: choice
+        options:
+          - observational-lfs
+          - publisher-refetch
+          - recovered-lfs
+          - sage-notebooks
+          - sage-sky
+          - starmap-browser
+          - build-image
+          - legacy-unit-suite
+
+permissions:
+  contents: read
+
+jobs:
+  observational-lfs:
+    if: inputs.suite == 'observational-lfs'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            data/intake/
+            data/derived/vizier/
+            data/provenance/
+            historical/r&d/docs/recovered_corpus_audit_2026-10-08/
+            historical/r&d/code_log/2026-10-08_recovered/
+            registry/
+            research/acquisition/
+            scripts/validate_observational_datasets.py
+            web_tool/content/sky-overlay-candidates.v1.json
+            web_tool/content/sky-overlay-releases.v1.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Hydrate only five immutable, declared LFS source objects
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          INCLUDE="data/intake/recovered/2026-10-08/9dca2008683fde4b0f7a90af5de85ee846a30a47f6f6fae3968c83dea06fa5d2.csv,data/intake/sdss/pipe3d/dr17-v3_1_1-2026-10-09/SDSS17Pipe3D_v3_1_1.fits,data/intake/sdss/gema/dr17-2.0.2-2026-10-09/GEMA_2.0.2.fits,data/intake/vizier/alfalfa100/2026-10-09-cds-corrected-2019/table2.vot,data/derived/vizier/alfalfa100/2026-10-09-cds-corrected-2019/alfalfa100_hi_centroids_full.csv"
+          git lfs fetch --include="$INCLUDE" origin HEAD
+          git lfs checkout -- data/intake/recovered data/intake/sdss data/intake/vizier data/derived/vizier
+      - name: Audit FITS/VOTable CSV bytes, schema, coordinates, source lineage
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../results
+          python3 -B scripts/validate_observational_datasets.py --format markdown \
+            > ../results/observational-lineage.md
+          echo 'Observed-data source bytes only. No independent review or sky release.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-observational-lfs-lineage
+          path: results/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publisher-refetch:
+    if: inputs.suite == 'publisher-refetch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            registry/
+            data/provenance/observational_dataset_intake_2026-10-09.json
+            verification/datasets/
+            scripts/independent_dataset_verification.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install hardened public VOTable parser
+        run: python3 -m pip install defusedxml==0.7.1
+      - name: Re-fetch pinned public VizieR and SDSS/MaNGA sources
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../results/mismatches
+          python3 -B scripts/independent_dataset_verification.py \
+            --live-public-sources \
+            --mismatch-dir ../results/mismatches \
+            --receipt-out ../results/publisher-refetch.json \
+            > ../results/publisher-refetch.stdout.json
+          echo 'Network publisher comparison only; no upstream scientific reviewer attestation.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-public-source-refetch
+          path: results/
+          if-no-files-found: warn
+          retention-days: 30
+
+  recovered-lfs:
+    if: inputs.suite == 'recovered-lfs'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            data/intake/recovered/
+            data/quarantine/
+            historical/r&d/
+            registry/
+            tools/recovery_intake.py
+            scripts/validate_audit_registries.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Hydrate quarantined recovery source objects at pinned SHA
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs fetch --include='data/intake/recovered/**,data/quarantine/**,historical/r&d/code_log/2026-10-08_recovered/saved_outputs/**' origin HEAD
+          git lfs checkout -- data/intake/recovered data/quarantine historical/r\&d/code_log/2026-10-08_recovered/saved_outputs
+      - name: Diagnose recovered sources and audit namespace bindings
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../results
+          python3 -B tools/recovery_intake.py --output ../results/recovery-diagnostics
+          python3 -B scripts/validate_audit_registries.py
+          echo 'Quarantined sources remain quarantined; review and support flags unchanged.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-recovered-lfs
+          path: results/
+          if-no-files-found: warn
+          retention-days: 30
+
+  sage-notebooks:
+    if: inputs.suite == 'sage-notebooks'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: sagemath/sagemath:latest
+      options: --user root --memory=8g
+    steps:
+      - name: Install Git in Sage container
+        run: apt-get update && apt-get install -y git
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          filter: blob:none
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - name: Install source notebook runtime (external Sage image is NOT digest-pinned)
+        working-directory: upstream
+        run: |
+          sage -python -m pip install -r requirements.txt
+          sage -python -m pip install nbconvert nbclient ipykernel
+          sage -python -m pip install -e . --no-deps
+      - name: Execute the nine original smoke notebooks
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          for nb in notebooks/00_registry_overview.ipynb notebooks/01_preprocessing.ipynb notebooks/02_arithmetic_reconstruction.ipynb notebooks/03_mapping_benchmark.ipynb notebooks/04_rank_environment.ipynb notebooks/05_rank_topology.ipynb notebooks/06_null_models.ipynb notebooks/07_sfr_prediction.ipynb notebooks/08_robustness.ipynb; do
+            test -s "$nb"
+            sage -python -m jupyter nbconvert --to notebook --execute "$nb" \
+              --output "/tmp/$(basename "$nb")" --ExecutePreprocessor.timeout=300 \
+              --ExecutePreprocessor.kernel_name=python3
+          done
+          echo 'Notebook smoke completed; this is not a controlled scientific experiment.' >> "$GITHUB_STEP_SUMMARY"
+
+  sage-sky:
+    if: inputs.suite == 'sage-sky'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    container:
+      image: sagemath/sagemath:latest
+      options: --user root
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          filter: blob:none
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - name: Install Sage-compatible numerical runtime and Parquet engine
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          sage -python -m pip install -r requirements.txt
+          sage -python -m pip install -e . --no-deps
+          sage -python -m pip install --no-deps --target /tmp/star-sky-pyarrow pyarrow==21.0.0
+      - name: Validate sky loader, cosmology diagnostics and Parquet roundtrip
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          sage -python ci_diagnostics/diagnose_cosmology.py
+          sage -python -m pytest -q src/tests/test_load_sky_surveys.py
+          sage -python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "/tmp/star-sky-pyarrow")
+          import pandas as pd
+          from src.data.sky_survey_dataset_builder import SkySurveyUnionBuilder
+          output = Path("sky_surveys_ci.parquet")
+          builder = SkySurveyUnionBuilder(downsample=200)
+          expected = builder.build()
+          builder.save(output)
+          assert output.is_file() and output.stat().st_size > 0
+          pd.testing.assert_frame_equal(pd.read_parquet(output), expected, check_dtype=True)
+          assert len(expected) <= 400
+          PY
+          echo 'Sky-survey software smoke only; observational overlay eligibility unchanged.' >> "$GITHUB_STEP_SUMMARY"
+
+  starmap-browser:
+    if: inputs.suite == 'starmap-browser'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          filter: blob:none
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: upstream/web_tool/package-lock.json
+      - name: Install web tool and verify source-bound release data
+        working-directory: upstream/web_tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm test
+          npm run sky:check
+          npm run build
+          npm run typecheck
+      - name: Run local desktop/mobile research browser smoke
+        working-directory: upstream/web_tool
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 8081 > /tmp/star-sandbox-preview.log 2>&1 &
+          process_id=$!
+          trap 'kill "$process_id" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in $(seq 1 50); do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:8081/research; then
+              ready=1; break
+            fi
+            sleep 2
+          done
+          test "$ready" = 1 || { cat /tmp/star-sandbox-preview.log; exit 1; }
+          node scripts/research-browser-smoke.mjs http://127.0.0.1:8081
+          node scripts/sky-browser-smoke.mjs http://127.0.0.1:8081
+          echo 'Local browser tests only; no web publication or sky scientific admission.' >> "$GITHUB_STEP_SUMMARY"
+
+  build-image:
+    if: inputs.suite == 'build-image'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
+        with:
+          context: upstream
+          file: upstream/docker/Dockerfile
+          push: false
+          tags: sandbox-local/star-sage:repro-smoke
+      - run: echo 'Built locally without login, package publication or latest tag promotion.' >> "$GITHUB_STEP_SUMMARY"
+
+  legacy-unit-suite:
+    if: inputs.suite == 'legacy-unit-suite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned upstream software dependencies
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install -e . --no-deps
+      - name: Execute legacy software tests (no production credentials)
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m pytest -q \
+            --junitxml=../legacy-full-software-test.xml
+          echo 'Full software suite test output does NOT grant experimental or scientific eligibility.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-full-legacy-unit-tests
+          path: legacy-full-software-test.xml
+          if-no-files-found: warn
+          retention-days: 30
