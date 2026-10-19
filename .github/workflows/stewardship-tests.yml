@@ -35,3 +35,5 @@ jobs:
           persist-credentials: false
       - name: Test pure policy and GitHub App decisions
         run: python3 -I -m unittest discover -s tests -p 'test_stewardship*.py' -v
+      - name: Build stewardship App container
+        run: docker build -f scripts/stewardship/Dockerfile -t sandbox-stewardship:test .
