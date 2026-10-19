@@ -27,6 +27,8 @@ The existing research notes and [R&D/](R%26D/) archive predate this governance f
 
 **Example:** [SBX-2026-0001 — deliberately false parity control](experiments/SBX-2026-0001-parity-control/README.md). CI validates experiment metadata and repository boundaries; it does not run untrusted experiment programs or judge scientific truth.
 
+**First-principles research workbench:** [reusable pinned numerical tools and scientific reasoning contract](scripts/playground/README.md) · [SBX-2026-0002 synthetic projection/permutation demonstration](experiments/SBX-2026-0002-first-principles-workbench/README.md) · [SBX-2026-0003 exact/closed cochain controls for ECC/RTCH](experiments/SBX-2026-0003-exact-form-controls/README.md). These are **sandbox-only exploratory facilities**; no independent scientific review or preregistration is required to investigate a hypothesis. Governance, software-integrity and security checks remain active, and no scientific claim is promoted upstream.
+
 ## Reproducibility without an independent scientific review gate
 
 [Sandbox reproducibility CI](scripts/reproducibility/README.md) runs pinned

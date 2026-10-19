@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0003",
+  "title": "Exact versus closed discrete entropy-form first-principles controls",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "Explore the mathematical constraints on entropy 1-forms by contrasting exact gradients with closed non-exact 1-cochains in a finite cycle complex.",
+  "falsifier": "A purported nonzero circulation for a globally single-valued exact discrete gradient contradicts the telescoping identity and indicates an implementation or assumption error.",
+  "provenance": {
+    "input_kind": "synthetic",
+    "sources": [
+      "Hand-defined four-edge graph and single filled-square cell complex; elementary discrete cochain algebra.",
+      "No imported ECC/RTCH empirical data and no upstream topology evidence."
+    ]
+  },
+  "limitations": [
+    "Finite synthetic cell complexes do not establish persistent cohomology for observed spacetime or galaxies.",
+    "Closedness on an unfilled graph must not be mistaken for closedness of the same cochain on a filled square.",
+    "No thermodynamic or gravitational entropy coupling is inferred."
+  ]
+}
