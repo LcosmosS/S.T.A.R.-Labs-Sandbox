@@ -1,27 +1,28 @@
 # Governance boundary ownership; ordinary experiments intentionally have NO owner requirement.
-/.github/ @LcosmosS
-/README.md @LcosmosS
-/DISCLAIMER.md @LcosmosS
-/SANDBOX_POLICY.md @LcosmosS
-/CONTRIBUTING.md @LcosmosS
-/GOVERNANCE.md @LcosmosS
-/MODERATION.md @LcosmosS
-/SECURITY.md @LcosmosS
-/UPSTREAM.md @LcosmosS
-/NOTICE.md @LcosmosS
-/LICENSE @LcosmosS
-/schemas/ @LcosmosS
-/scripts/validate_sandbox.py @LcosmosS
-/tests/ @LcosmosS
-/scripts/ @LcosmosS
-/archive/ @LcosmosS
-/sandbox/ @LcosmosS
-/.gitignore @LcosmosS
-/experiments/_template/ @LcosmosS
-/experiments/README.md @LcosmosS
+# Stewardship implementation and policy boundary are reviewed by both authorized stewards.
+/.github/ @LcosmosS @LibertySquared
+/README.md @LcosmosS @LibertySquared
+/DISCLAIMER.md @LcosmosS @LibertySquared
+/SANDBOX_POLICY.md @LcosmosS @LibertySquared
+/CONTRIBUTING.md @LcosmosS @LibertySquared
+/GOVERNANCE.md @LcosmosS @LibertySquared
+/MODERATION.md @LcosmosS @LibertySquared
+/SECURITY.md @LcosmosS @LibertySquared
+/UPSTREAM.md @LcosmosS @LibertySquared
+/NOTICE.md @LcosmosS @LibertySquared
+/LICENSE @LcosmosS @LibertySquared
+/schemas/ @LcosmosS @LibertySquared
+/scripts/validate_sandbox.py @LcosmosS @LibertySquared
+/tests/ @LcosmosS @LibertySquared
+/scripts/ @LcosmosS @LibertySquared
+/archive/ @LcosmosS @LibertySquared
+/sandbox/ @LcosmosS @LibertySquared
+/.gitignore @LcosmosS @LibertySquared
+/experiments/_template/ @LcosmosS @LibertySquared
+/experiments/README.md @LcosmosS @LibertySquared
 
 # Curated relocations of the pinned historical research inventory
-/historical/ @LcosmosS
+/historical/ @LcosmosS @LibertySquared
 
 # Protected dependency manifest; required for real pinned Git submodules.
-/.gitmodules @LcosmosS
+/.gitmodules @LcosmosS @LibertySquared

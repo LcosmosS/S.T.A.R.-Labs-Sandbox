@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "scope": "sandbox-engineering-stewardship",
+  "stewards": ["LcosmosS", "LibertySquared"],
+  "approval_free_path_pattern": "^experiments/SBX-[0-9]{4}-[0-9]{4}-[a-z0-9]+(?:-[a-z0-9]+)*/.+$",
+  "unknown_paths": "protected",
+  "renames": "inspect_old_and_new_paths",
+  "protected_review_rule": "one_non_author_approved_current_head",
+  "invalidate_on": "any_new_head_commit",
+  "scientific_review": false,
+  "automatic_promotion": false
+}

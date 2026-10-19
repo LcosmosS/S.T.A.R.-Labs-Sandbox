@@ -1,0 +1,35 @@
+name: stewardship-tests
+
+on:
+  pull_request:
+    paths:
+      - "scripts/stewardship/**"
+      - "tests/test_stewardship.py"
+      - ".github/workflows/stewardship-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/stewardship/**"
+      - "tests/test_stewardship.py"
+      - ".github/workflows/stewardship-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stewardship-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: stewardship-tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Test pure stewardship evaluator
+        run: python3 -I -m unittest discover -s tests -p 'test_stewardship.py' -v
