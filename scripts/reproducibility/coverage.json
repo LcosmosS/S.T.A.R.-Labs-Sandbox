@@ -7,7 +7,7 @@
   "independent_scientific_review": false,
   "remote_sql_submission": false,
   "production_publication": false,
-  "default_ci": "automated checks only; optional heavy modes are NOT PASS without running",
+  "default_ci": "automatic_only; on_demand checks are NOT PASS without separate execution; no scientific approval or promotion",
   "workflows": [
     {
       "path": ".github/workflows/a01-activation-preflight.yml",
