@@ -141,17 +141,23 @@ Activation follows [SETTINGS.md](SETTINGS.md). The setup PR does not merge itsel
 
 ## Post-review ruleset readback and reference-check extension (2026-10-19)
 
-The audit above is a dated setup snapshot, not the current rule state. The owner
-subsequently activated PR-required and CODEOWNERS review in Sandbox Rules
-#25371960 and removed bypass actors. Strict status checking is set, but the
-required-check list is **empty**, so a green `sandbox-policy` is not a merge
-requirement yet. The rule still covers **all branches**; to allow rapid
-experimentation it should target `main` only, with an explicitly required
-`sandbox-policy` check. Changes to live settings require repository admin
-access and must be tested, not inferred from policy files.
+The earlier sections document historical setup snapshots. The owner's
+subsequent change to [Sandbox Rules #25371960](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/rules/25371960)
+now targets **`~DEFAULT_BRANCH` only**, requires PRs with zero general
+approvals, **explicitly requires `sandbox-policy`** from GitHub Actions
+(integration `15368`) with strict up-to-date checks, and has **no bypass
+actors**. This fixes the earlier all-branches admission blocker and the
+missing required-check setting. Other live constraints remain (CODEOWNERS,
+conversation resolution, stale-review dismissal, CodeQL/code quality,
+linear history). A real zero-review merge and independent writer direct-push
+rejection have **not** been demonstrated and are not claimed.
 
-The improved validator in this PR verifies every upstream reference entry's
-path, canonical URL, and SHA-256 against a sparse read-only checkout of
-`LcosmosS/S.T.A.R.-Labs` at commit `51927a9b396cdfa880f3128440db4715acdec8dc`. It rejects mismatched hashes,
-missing files and incorrect checkout revisions. It neither follows mutable
-`main` nor executes upstream source code.
+The improved validator in this PR verifies all **24 upstream reference files**
+against a separate, sparse, read-only checkout of
+`LcosmosS/S.T.A.R.-Labs` at pinned commit
+`51927a9b396cdfa880f3128440db4715acdec8dc`.
+It checks the commit identity, paths, canonical URLs and SHA-256 digests,
+rejecting missing files, altered bytes and incorrect revisions without
+executing upstream code. [CI run 39200818602](https://github.com/LcosmosS/S.T.A.R.-Labs-Sandbox/actions/runs/39200818602)
+passed all 221 historical archive bindings, all 24 upstream reference bindings
+and 17 regression tests, including negative hash and revision cases.
