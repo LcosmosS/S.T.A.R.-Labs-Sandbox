@@ -91,7 +91,8 @@ class ArchiveTests(unittest.TestCase):
             target = root / "sandbox/upstream-reference.json"
             target.write_text(json.dumps(manifest))
             from unittest.mock import Mock
-            with patch.object(checker.subprocess, "run",
+            with patch.object(checker, "EXPECTED_UPSTREAM_PATHS", frozenset({source_path})), \
+                 patch.object(checker.subprocess, "run",
                               return_value=Mock(stdout=checker.UPSTREAM_COMMIT + "\n")):
                 self.assertEqual(checker.check_upstream_reference(root, upstream), 1)
                 item["sha256"] = "0" * 64
@@ -121,9 +122,94 @@ class ArchiveTests(unittest.TestCase):
                                    f"blob/{checker.UPSTREAM_COMMIT}/{source_path}")}]
             }))
             from unittest.mock import Mock
-            with patch.object(checker.subprocess, "run",
+            with patch.object(checker, "EXPECTED_UPSTREAM_PATHS", frozenset({source_path})), \
+                 patch.object(checker.subprocess, "run",
                               return_value=Mock(stdout="f" * 40 + "\n")):
                 with self.assertRaisesRegex(ValueError, "pinned commit"):
+                    checker.check_upstream_reference(root, upstream)
+
+
+    def test_mode_only_change_to_historical_file_is_rejected(self):
+        """Reject chmod-only changes to a preserved file without altered bytes."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            original = b"historical bytes\n"
+            oid = hashlib.sha1(f"blob {len(original)}\0".encode() + original).hexdigest()
+            entry = {"original_path": "historical.py", "preserved_path": "historical.py",
+                     "git_mode": "100644", "git_blob": oid,
+                     "size_bytes": len(original),
+                     "sha256": hashlib.sha256(original).hexdigest()}
+            (root / "historical.py").write_bytes(original)
+            (root / "sandbox/archive-manifest.json").write_text(json.dumps({
+                "baseline_commit": checker.BASELINE, "files": [entry]}))
+            def tree(_root, revision):
+                """Return an unchanged baseline and a mode-only changed proposal."""
+                mode = "100644" if revision == checker.BASELINE else "100755"
+                return {"historical.py": (mode, oid)}
+            with patch.object(checker, "git_tree", side_effect=tree):
+                with self.assertRaisesRegex(ValueError, "archival Git mode changed"):
+                    checker.check_archive(root)
+
+    def test_relocated_readme_is_checked_but_live_readme_is_editable(self):
+        """Apply archive mode checks to the relocated original README only."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            (root / "archive").mkdir()
+            original = b"\n"
+            oid = hashlib.sha1(f"blob {len(original)}\0".encode() + original).hexdigest()
+            (root / "archive/README.pre-sandbox.md").write_bytes(original)
+            (root / "README.md").write_text("New sandbox landing page\n")
+            entry = {"original_path": "README.md",
+                     "preserved_path": "archive/README.pre-sandbox.md",
+                     "git_mode": "100644", "git_blob": oid,
+                     "size_bytes": len(original),
+                     "sha256": hashlib.sha256(original).hexdigest()}
+            (root / "sandbox/archive-manifest.json").write_text(json.dumps({
+                "baseline_commit": checker.BASELINE, "files": [entry]}))
+            proposed = {"archive/README.pre-sandbox.md": ("100644", oid),
+                        "README.md": ("100644", "f" * 40)}
+            def tree(_root, revision):
+                """Return the baseline README or the relocated proposed copy."""
+                return ({"README.md": ("100644", oid)}
+                        if revision == checker.BASELINE else proposed)
+            with patch.object(checker, "git_tree", side_effect=tree):
+                self.assertEqual(checker.check_archive(root), 1)
+                proposed["archive/README.pre-sandbox.md"] = ("100755", oid)
+                with self.assertRaisesRegex(ValueError, "archival Git mode changed"):
+                    checker.check_archive(root)
+
+    def test_upstream_inventory_must_include_exactly_24_paths(self):
+        """Reject missing and unexpected entries even when remaining hashes look valid."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            upstream = root / "upstream"
+            upstream.mkdir()
+            self.assertEqual(len(checker.EXPECTED_UPSTREAM_PATHS), 24)
+            def entry(path):
+                """Make a syntactically valid pinned reference for the given path."""
+                return {"path": path, "sha256": "0" * 64,
+                        "url": (f"https://github.com/{checker.UPSTREAM_REPOSITORY}/"
+                                f"blob/{checker.UPSTREAM_COMMIT}/{path}")}
+            records = [entry(path) for path in sorted(checker.EXPECTED_UPSTREAM_PATHS)]
+            manifest = {"schema_version": 1, "repository": checker.UPSTREAM_REPOSITORY,
+                        "commit": checker.UPSTREAM_COMMIT, "authority": "reference_only",
+                        "files": records}
+            output = root / "sandbox/upstream-reference.json"
+            output.write_text(json.dumps(manifest))
+            with patch.object(checker.subprocess, "run") as run:
+                run.return_value.stdout = "f" * 40 + "\n"
+                with self.assertRaisesRegex(ValueError, "pinned commit"):
+                    checker.check_upstream_reference(root, upstream)
+                manifest["files"] = records[:-1]
+                output.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "inventory"):
+                    checker.check_upstream_reference(root, upstream)
+                manifest["files"] = records[:-1] + [entry("README-extra.md")]
+                output.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "missing or unexpected paths"):
                     checker.check_upstream_reference(root, upstream)
 
 if __name__ == '__main__':

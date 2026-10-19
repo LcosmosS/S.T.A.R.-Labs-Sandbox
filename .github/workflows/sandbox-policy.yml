@@ -57,6 +57,19 @@ jobs:
           persist-credentials: false
           lfs: false
           submodules: false
+      - name: Check out immutable bootstrap archive verifier
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.sha == '22e74794bec8116a019f25bae51ec3f25f62dc6f'
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: 6b4e234f49e7881eaa1e03943165ab50c39550e4
+          path: trusted-archive
+          fetch-depth: 1
+          sparse-checkout: |
+            scripts/verify_archive.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
       - name: Validate with trusted policy and archive checker
         shell: bash
         env:
@@ -70,8 +83,14 @@ jobs:
             if [ -f "$policy_root/scripts/verify_archive.py" ]; then
               archive="$policy_root/scripts/verify_archive.py"
             else
+              # Base commit predates the archive checker: use an immutable,
+              # inspected bootstrap verifier, never the PR proposal's copy.
               test "$PR_BASE_SHA" = 22e74794bec8116a019f25bae51ec3f25f62dc6f
-              echo 'Archive-check bootstrap: inspect the proposed checker before merging.'
+              trusted="$GITHUB_WORKSPACE/trusted-archive"
+              test "$(git -C "$trusted" rev-parse HEAD)" = 6b4e234f49e7881eaa1e03943165ab50c39550e4
+              archive="$trusted/scripts/verify_archive.py"
+              test -f "$archive"
+              echo 'Archive-check bootstrap: using immutable pinned verifier.'
             fi
           fi
           export POLICY_VALIDATOR="$policy_root/scripts/validate_sandbox.py"
