@@ -1,6 +1,8 @@
 import copy
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -238,6 +240,77 @@ class AppIntegrationTests(unittest.TestCase):
         )
         review_result = self.service(review_api).reconcile()
         self.assertEqual(review_result["published_checks"][0]["conclusion"], "failure")
+
+
+    def test_stale_webhook_payload_cannot_restore_a_dismissed_approval(self):
+        api = FakeGitHub(
+            [pr()], {1: [{"filename": "scripts/tool.py"}]},
+            reviews={1: [review(state="DISMISSED")]},
+        )
+        payload = {
+            "repository": {"id": REPO_ID, "full_name": REPO},
+            "installation": {"id": 7},
+            "action": "submitted",
+            "pull_request": pr(),
+            # This old event payload claims an approval; the authoritative API says dismissed.
+            "review": review(state="APPROVED", commit=HEAD, review_id=11),
+        }
+        result = self.service(api).handle_webhook(
+            "pull_request_review", "stale-approval-delivery", payload
+        )
+        self.assertEqual(result["published_checks"][0]["conclusion"], "failure")
+
+    def test_reconciliations_are_serialized_against_out_of_order_workers(self):
+        class BlockingGitHub(FakeGitHub):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.first_entered = threading.Event()
+                self.release_first = threading.Event()
+                self.second_entered = threading.Event()
+                self.guard = threading.Lock()
+                self.block_once = True
+
+            def list_open_pulls(self, token):
+                if threading.current_thread().name == "stewardship-first":
+                    with self.guard:
+                        should_block = self.block_once
+                        self.block_once = False if should_block else self.block_once
+                    if should_block:
+                        self.first_entered.set()
+                        if not self.release_first.wait(timeout=2):
+                            raise RuntimeError("test timed out waiting to release first reconcile")
+                elif threading.current_thread().name == "stewardship-second":
+                    self.second_entered.set()
+                return super().list_open_pulls(token)
+
+        api = BlockingGitHub(
+            [pr()], {1: [{"filename": "experiments/SBX-2026-0001-demo/out.json"}]}
+        )
+        service = self.service(api)
+        results = []
+        errors = []
+
+        def run_reconcile():
+            try:
+                results.append(service.reconcile())
+            except Exception as exc:
+                errors.append(exc)
+
+        first = threading.Thread(target=run_reconcile, name="stewardship-first")
+        second = threading.Thread(target=run_reconcile, name="stewardship-second")
+        first.start()
+        self.assertTrue(api.first_entered.wait(timeout=1))
+        second.start()
+        try:
+            self.assertFalse(api.second_entered.wait(timeout=0.1))
+        finally:
+            api.release_first.set()
+        first.join(timeout=2)
+        second.join(timeout=2)
+        self.assertFalse(first.is_alive())
+        self.assertFalse(second.is_alive())
+        self.assertEqual(errors, [])
+        self.assertEqual(len(results), 2)
 
 if __name__ == "__main__":
     unittest.main()
