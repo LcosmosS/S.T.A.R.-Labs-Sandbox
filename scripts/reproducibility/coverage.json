@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "upstream_repository": "LcosmosS/S.T.A.R.-Labs",
+  "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "scope": "sandbox-only-reproducibility",
+  "automatic_promotion": false,
+  "independent_scientific_review": false,
+  "remote_sql_submission": false,
+  "production_publication": false,
+  "default_ci": "automated checks only; optional heavy modes are NOT PASS without running",
+  "workflows": [
+    {
+      "path": ".github/workflows/a01-activation-preflight.yml",
+      "automatic_checks": [
+        "pinned-arithmetic-source"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "activation readiness and independent scientific approval"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Arithmetic source digest is reproduced; A01 activation preflight intentionally not invoked."
+    },
+    {
+      "path": ".github/workflows/a01_primary_evidence.yml",
+      "automatic_checks": [
+        "upstream-saved-packages"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "no primary inference rerun; saved receipts do not prove execution authenticity"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Verifies existing A01 package, not a new controlled execution."
+    },
+    {
+      "path": ".github/workflows/a01_release_package.yml",
+      "automatic_checks": [
+        "upstream-saved-packages"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "--verify-github-approval and off-author approval"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Package content checked without approval/activation status."
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_release_review.yml",
+      "automatic_checks": [
+        "upstream-saved-packages"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "off-author review adjudication"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Immutable package SHA and original-commit checks only."
+    },
+    {
+      "path": ".github/workflows/a03_preexecution_verification.yml",
+      "automatic_checks": [
+        "pinned-arithmetic-source",
+        "upstream-saved-packages"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "registered endpoint/null inference and activation"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Checks pins and archived fixtures; does not run prospective scientific endpoint."
+    },
+    {
+      "path": ".github/workflows/build-image.yml",
+      "automatic_checks": [],
+      "on_demand_suite": "build-image",
+      "excluded_functions": [
+        "GHCR login, image push, tag promotion"
+      ],
+      "coverage": "on_demand_only",
+      "notes": "Build-only verification requires manual resource-intensive dispatch."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "automatic_checks": [
+        "upstream-dataset-sql",
+        "upstream-deterministic-numerics"
+      ],
+      "on_demand_suite": "legacy-unit-suite",
+      "excluded_functions": [
+        "controlled readiness, experimental activation and evidence promotion"
+      ],
+      "coverage": "partial_plus_on_demand",
+      "notes": "Portable registry/SQL and reproducibility tests automatic; full package/unit scope optional."
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "automatic_checks": [
+        "sandbox-codeql"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "upstream Javascript code not cloned into sandbox"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Existing sandbox CodeQL checks its own Python and Actions sources."
+    },
+    {
+      "path": ".github/workflows/independent_dataset_verification.yml",
+      "automatic_checks": [
+        "upstream-dataset-sql"
+      ],
+      "on_demand_suite": "publisher-refetch",
+      "excluded_functions": [
+        "independent scientist signature or receipt; none inferred"
+      ],
+      "coverage": "partial_plus_on_demand",
+      "notes": "Pinned static matrix, SQL and VizieR contracts automatic; live publisher comparison manual."
+    },
+    {
+      "path": ".github/workflows/main.yml",
+      "automatic_checks": [
+        "upstream-dataset-sql"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "automated Google Docs download: private/external documents and mutable content"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Portable provenance receipt validator test runs; no private document downloads."
+    },
+    {
+      "path": ".github/workflows/notebooks.yml",
+      "automatic_checks": [],
+      "on_demand_suite": "sage-notebooks",
+      "excluded_functions": [
+        "controlled inference/review is not inferred from notebook execution"
+      ],
+      "coverage": "on_demand_only",
+      "notes": "All nine notebook smoke tests offered as an on-demand expensive job."
+    },
+    {
+      "path": ".github/workflows/observational_dataset_intake.yml",
+      "automatic_checks": [
+        "upstream-dataset-sql"
+      ],
+      "on_demand_suite": "observational-lfs",
+      "excluded_functions": [
+        "Aladin admission, scientific support or sky publication"
+      ],
+      "coverage": "partial_plus_on_demand",
+      "notes": "Static provenance contracts automatic; full FITS/VOTable/SDSS LFS byte checks on demand."
+    },
+    {
+      "path": ".github/workflows/recovered-intake.yml",
+      "automatic_checks": [],
+      "on_demand_suite": "recovered-lfs",
+      "excluded_functions": [
+        "promotion of quarantine or recovered records to evidence"
+      ],
+      "coverage": "on_demand_only",
+      "notes": "Recovered LFS byte hydration/diagnostics on demand; immutable source only."
+    },
+    {
+      "path": ".github/workflows/sciserver-approval-offline.yml",
+      "automatic_checks": [
+        "upstream-sciserver-offline"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "real operator approvals or signer credentials"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Synthetic offline signature and replay negative tests only; no actual approval."
+    },
+    {
+      "path": ".github/workflows/sciserver-v02-policy.yml",
+      "automatic_checks": [
+        "upstream-sciserver-offline",
+        "candidate-input-contracts"
+      ],
+      "on_demand_suite": null,
+      "excluded_functions": [
+        "remote CasJobs execution and MyDB writes"
+      ],
+      "coverage": "automatic_subset",
+      "notes": "Legacy pinned SQL/receipt tests and sandbox input hashes, no remote submission."
+    },
+    {
+      "path": ".github/workflows/sky_surveys.yml",
+      "automatic_checks": [],
+      "on_demand_suite": "sage-sky",
+      "excluded_functions": [
+        "scientific sky admission or observational correspondence claims"
+      ],
+      "coverage": "on_demand_only",
+      "notes": "Optional SageMath dataset builder, diagnostics and Parquet round trip."
+    },
+    {
+      "path": ".github/workflows/starmap.yml",
+      "automatic_checks": [],
+      "on_demand_suite": "starmap-browser",
+      "excluded_functions": [
+        "production deployment or release/sky admission"
+      ],
+      "coverage": "on_demand_only",
+      "notes": "Optional read-only TypeScript/browser test and production build only."
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "automatic_checks": [
+        "upstream-deterministic-numerics"
+      ],
+      "on_demand_suite": "legacy-unit-suite",
+      "excluded_functions": [
+        "controlled experiment runs, off-author approval"
+      ],
+      "coverage": "partial_plus_on_demand",
+      "notes": "Deterministic numeric regression runs automatically; full legacy package tests opt-in."
+    }
+  ]
+}
