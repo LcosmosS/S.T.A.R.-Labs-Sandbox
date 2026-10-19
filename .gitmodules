@@ -1,0 +1,9 @@
+[submodule "scripts/playground/external/ecdata"]
+	path = scripts/playground/external/ecdata
+	url = https://github.com/JohnCremona/ecdata.git
+[submodule "scripts/playground/external/eclib"]
+	path = scripts/playground/external/eclib
+	url = https://github.com/JohnCremona/eclib.git
+[submodule "scripts/playground/external/lmfdb"]
+	path = scripts/playground/external/lmfdb
+	url = https://github.com/LMFDB/lmfdb.git

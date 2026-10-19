@@ -1,0 +1,32 @@
+{
+  "schema_version": "star-sciserver-query-catalog-v0.2",
+  "remote_submission_enabled": false,
+  "queries": [
+    {
+      "query_id": "DR18-CANARY-10",
+      "dataset_id": "DATA-SDSS18-200K",
+      "path": "verification/datasets/casjobs/STAR_DR18_10_canary.sql",
+      "context": "DR18",
+      "mode": "canary",
+      "approved_sha256": "159b83a0d36c1d05dda6108591d1ea5756a66d1f4355c5304655cf48df655b3d",
+      "expected_columns": 18,
+      "max_rows": 10,
+      "preparation_enabled": true,
+      "submission_enabled": false,
+      "historical_replacement": false
+    },
+    {
+      "query_id": "DR18-DETERMINISTIC-200K",
+      "dataset_id": "DATA-SDSS18-200K",
+      "path": "verification/datasets/casjobs/DATA-SDSS18-200K_deterministic_probe.sql",
+      "context": "DR18",
+      "mode": "deterministic-probe",
+      "approved_sha256": "163bf311ba274d4a7c7a4ceaa136cf691130687d17a456202f2e98d04fc415d4",
+      "expected_columns": 18,
+      "max_rows": 200000,
+      "preparation_enabled": false,
+      "submission_enabled": false,
+      "historical_replacement": false
+    }
+  ]
+}

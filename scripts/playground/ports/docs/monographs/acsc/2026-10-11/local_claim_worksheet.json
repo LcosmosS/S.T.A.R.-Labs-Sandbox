@@ -1,0 +1,182 @@
+{
+  "namespace": "ACSC-LOCAL-2026-10-11",
+  "canonical_registry_mutated": false,
+  "claims": [
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:C0",
+      "statement": "A bounded arithmetic representation may correspond to astronomical structure",
+      "category": [
+        "C"
+      ],
+      "assessment": "Open; narrow operational instance and independent controls required",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:D1",
+      "statement": "Fixed affine feature map has the stated Lipschitz bound",
+      "category": [
+        "D"
+      ],
+      "assessment": "Proof sketch; verify domain and chosen matrix for each implementation",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:D2",
+      "statement": "Rational-isogenous curves have equal rank and conductor",
+      "category": [
+        "D"
+      ],
+      "assessment": "Established arithmetic; supplied argument and catalog example",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:D3",
+      "statement": "Regulator transforms with degree, rank and free-lattice index",
+      "category": [
+        "D"
+      ],
+      "assessment": "Conditional on full bases and height convention; not general equality",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:D4",
+      "statement": "Persistence stability and reconstruction hold under their explicit hypotheses",
+      "category": [
+        "D"
+      ],
+      "assessment": "Existing conditional theorems; cosmic closeness not established",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:H1",
+      "statement": "A locked mapping beats both registered null components by a meaningful effect",
+      "category": [
+        "H",
+        "T"
+      ],
+      "assessment": "Untested here; dataset, protocol and execution review required",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:M1",
+      "statement": "Symbolic regression yields useful held-out arithmetic candidates",
+      "category": [
+        "M",
+        "H"
+      ],
+      "assessment": "Historical scores unverified; split, baseline and leakage audit required",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:M2",
+      "statement": "A categorical construction preserves declared information",
+      "category": [
+        "M",
+        "C"
+      ],
+      "assessment": "Morphisms and preservation statement remain to be constructed",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:S1",
+      "statement": "Arithmetic structures produce physical gravity, time or dark sectors",
+      "category": [
+        "S"
+      ],
+      "assessment": "No established dynamics, mechanism or physical evidence",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:S2",
+      "statement": "Modular, spectral or motivic structures explain quantum behavior",
+      "category": [
+        "S",
+        "C"
+      ],
+      "assessment": "Missing physical state/operator construction and test",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:P1",
+      "statement": "Structural sufficiency. A specified arithmetic state and map suffice for a named physical structural observable within a declared domain.",
+      "category": [
+        "P",
+        "S"
+      ],
+      "assessment": "Adopted only conditionally; no empirical promotion",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:P2",
+      "statement": "Clock interpretation. A specified directed arithmetic evolution defines a calibrated physical time variable.",
+      "category": [
+        "P",
+        "S"
+      ],
+      "assessment": "Adopted only conditionally; no empirical promotion",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:P3",
+      "statement": "Coupling interpretation. Specified functions of arithmetic invariants couple to physically defined fields with consistent units and recovery limits.",
+      "category": [
+        "P",
+        "S"
+      ],
+      "assessment": "Adopted only conditionally; no empirical promotion",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    },
+    {
+      "claim_id": "ACSC-LOCAL-2026-10-11:P4",
+      "statement": "Transformation interpretation. Specified categorical transformations represent particular physical evolutions or symmetries.",
+      "category": [
+        "P",
+        "S"
+      ],
+      "assessment": "Adopted only conditionally; no empirical promotion",
+      "canonical_registry_alias": false,
+      "controlled_support_eligible": false,
+      "physical_support_eligible": false,
+      "scientific_experiment_executed_in_revision": false
+    }
+  ]
+}
