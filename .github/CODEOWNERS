@@ -19,3 +19,6 @@
 /.gitignore @LcosmosS
 /experiments/_template/ @LcosmosS
 /experiments/README.md @LcosmosS
+
+# Curated relocations of the pinned historical research inventory
+/historical/ @LcosmosS

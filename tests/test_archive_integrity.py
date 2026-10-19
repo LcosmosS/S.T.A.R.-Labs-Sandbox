@@ -212,5 +212,87 @@ class ArchiveTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "missing or unexpected paths"):
                     checker.check_upstream_reference(root, upstream)
 
+
+    def test_curated_historical_relocation_preserves_git_blob_mode_and_digest(self):
+        """Permit only an explicitly named root archive move with identical content."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            (root / "historical").mkdir()
+            name = "fibonacci.py"
+            self.assertIn(name, checker.HISTORICAL_ROOT_RELOCATIONS)
+            data = b"archived source\n"
+            oid = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+            entry = {"original_path": name, "preserved_path": f"historical/{name}",
+                     "git_mode": "100644", "git_blob": oid,
+                     "size_bytes": len(data),
+                     "sha256": hashlib.sha256(data).hexdigest()}
+            (root / "historical" / name).write_bytes(data)
+            target = root / "sandbox/archive-manifest.json"
+            target.write_text(json.dumps({"baseline_commit": checker.BASELINE,
+                                          "files": [entry]}))
+            original_tree = {name: ("100644", oid)}
+            proposed_tree = {f"historical/{name}": ("100644", oid)}
+            def tree(_root, revision):
+                """Select original baseline or proposed relocated tree."""
+                return original_tree if revision == checker.BASELINE else proposed_tree
+            with patch.object(checker, "git_tree", side_effect=tree):
+                self.assertEqual(checker.check_archive(root), 1)
+                proposed_tree[name] = ("100644", oid)
+                with self.assertRaisesRegex(ValueError, "exactly one"):
+                    checker.check_archive(root)
+                del proposed_tree[name]
+                proposed_tree[f"historical/{name}"] = ("100755", oid)
+                with self.assertRaisesRegex(ValueError, "archival Git mode changed"):
+                    checker.check_archive(root)
+                proposed_tree[f"historical/{name}"] = ("100644", "f" * 40)
+                with self.assertRaisesRegex(ValueError, "archival Git object changed"):
+                    checker.check_archive(root)
+                proposed_tree.clear()
+                with self.assertRaisesRegex(ValueError, "exactly one"):
+                    checker.check_archive(root)
+
+    def test_unlisted_original_cannot_move_even_with_matching_bytes(self):
+        """Reject a preserved-file relocation not present in the vetted allowance."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sandbox").mkdir()
+            (root / "historical").mkdir()
+            name = "not_whitelisted.txt"
+            self.assertNotIn(name, checker.HISTORICAL_ROOT_RELOCATIONS)
+            data = b"original\n"
+            oid = hashlib.sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
+            entry = {"original_path": name, "preserved_path": f"historical/{name}",
+                     "git_mode": "100644", "git_blob": oid, "size_bytes": len(data),
+                     "sha256": hashlib.sha256(data).hexdigest()}
+            (root / "historical" / name).write_bytes(data)
+            (root / "sandbox/archive-manifest.json").write_text(json.dumps({
+                "baseline_commit": checker.BASELINE, "files": [entry]
+            }))
+            def tree(_root, revision):
+                """Present a relocated file without an approved policy mapping."""
+                return ({name: ("100644", oid)} if revision == checker.BASELINE
+                        else {f"historical/{name}": ("100644", oid)})
+            with patch.object(checker, "git_tree", side_effect=tree):
+                with self.assertRaisesRegex(ValueError, "unexpected relocation"):
+                    checker.check_archive(root)
+
+    def test_historical_layout_accepts_only_explicitly_allowlisted_files(self):
+        """Prevent arbitrary new research from entering historical via relocation."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "historical").mkdir()
+            name = "historical/fibonacci.py"
+            (root / name).write_text("old source\n")
+            with patch.object(checker, "git_tree", return_value={}), \
+                 patch.object(checker.subprocess, "run") as run:
+                run.return_value.stdout = name.encode() + b"\0"
+                checker.check_layout(root)
+                name = "historical/unregistered.py"
+                (root / name).write_text("new work\n")
+                run.return_value.stdout = name.encode() + b"\0"
+                with self.assertRaisesRegex(ValueError, "outside experiments"):
+                    checker.check_layout(root)
+
 if __name__ == '__main__':
     unittest.main()
