@@ -1,0 +1,352 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "check": "minimal-discriminant counterexample arithmetic",
+      "passed": true,
+      "details": {
+        "Cremona_11a3": "-11",
+        "Cremona_11a1": "-161051",
+        "catalog_assertion": "conductor and class from ecdata, not computed here"
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "substitution discriminant scaling",
+      "passed": true,
+      "details": "x=u^2 x-prime, y=u^3 y-prime gives delta-prime=u^-12 delta",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "unimodular determinant but not eigenvalue invariance",
+      "passed": true,
+      "details": {
+        "H": "Matrix([[2, 1], [1, 3]])",
+        "new_H": "Matrix([[2, 3], [3, 7]])",
+        "determinant": "5",
+        "traces": [
+          5,
+          9
+        ]
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "regulator index algebra",
+      "passed": true,
+      "details": {
+        "rank": 2,
+        "degree": 3,
+        "index": 2,
+        "ambient_determinant": "45/4",
+        "toy_lattice_only": true
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "both spherical conversions preserve radius",
+      "passed": true,
+      "details": "latitude and colatitude formulas checked separately",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "rank-zero regulator convention",
+      "passed": true,
+      "details": "empty Gram determinant 1; use rank itself rather than log rank",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "finite-field group need not be cyclic",
+      "passed": true,
+      "details": {
+        "equation": "y^2=x^3-x over F_3",
+        "affine_points": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "group": "Z/2Z x Z/2Z; y=0 implies each point equals its negative"
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "Rips/Cech are not interchangeable at naive radius",
+      "passed": true,
+      "details": {
+        "side_length": 1,
+        "Rips_edge_threshold": 1,
+        "Cech_ball_radius": "1/2",
+        "circumradius": "sqrt(3)/3"
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "diagram-to-empty scaling example",
+      "passed": true,
+      "details": {
+        "W2_one_bar_to_empty": "1",
+        "scaled_W2": "1/10",
+        "ground_norm": "L-infinity"
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "catalog vectors match pinned local source",
+      "passed": true,
+      "details": {
+        "source_sha256": "8a6073c4703da0c39242e68b4af92d9d897d7e894e618c8ff6e2b010b39d57ad",
+        "first_three_records": [
+          "11 a 1 [0,-1,1,-10,-20] 0 5",
+          "11 a 2 [0,-1,1,-7820,-263580] 0 1",
+          "11 a 3 [0,-1,1,0,0] 0 5"
+        ],
+        "pinned_commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f"
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "all fifteen chapters retained",
+      "passed": true,
+      "details": "complete sequence 1-15",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "reference identifiers resolve",
+      "passed": true,
+      "details": {
+        "references": 25,
+        "unresolved": []
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "PDF text has all chapters",
+      "passed": true,
+      "details": {
+        "pages": 43
+      },
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "no unresolved document markers",
+      "passed": true,
+      "details": "editorial source checked",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    },
+    {
+      "check": "original and Charter identities unchanged",
+      "passed": true,
+      "details": "SHA-256 of source PDFs rechecked",
+      "scope": "elementary mathematical/editorial check, not ACSC empirical support"
+    }
+  ],
+  "equations_rendered": [
+    {
+      "source": "E:\\quad y^2=x^3+ax+b,\\qquad \\Delta=-16(4a^3+27b^2)\\ne0.",
+      "render_width": 264.0,
+      "render_height": 14.0,
+      "scale": 1
+    },
+    {
+      "source": "y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6.",
+      "render_width": 192.0,
+      "render_height": 14.0,
+      "scale": 1
+    },
+    {
+      "source": "E(\\mathbf{Q})\\simeq E(\\mathbf{Q})_{\\mathrm{tors}}\\oplus\\mathbf{Z}^{r_E}.",
+      "render_width": 112.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "H_E=(\\langle P_i,P_j\\rangle)_{i,j=1}^{r_E},\\qquad \\mathrm{Reg}(E)=\\det H_E,\\qquad \\mathrm{covol}(E)=\\sqrt{\\det H_E}.",
+      "render_width": 337.0,
+      "render_height": 20.0,
+      "scale": 1
+    },
+    {
+      "source": "a_p=p+1-\\mathrm{card}\\,E(\\mathbf{F}_p),\\qquad L_p(E,s)=(1-a_pp^{-s}+p^{1-2s})^{-1}.",
+      "render_width": 303.0,
+      "render_height": 15.0,
+      "scale": 1
+    },
+    {
+      "source": "\\frac{L^{(r)}(E,1)}{r!} =\\frac{\\Omega_E\\mathrm{Reg}(E)\\,|\\mathrm{Sha}(E)|\\prod_p c_p}{t_E^2}.",
+      "render_width": 130.0,
+      "render_height": 28.0,
+      "scale": 1
+    },
+    {
+      "source": "\\Phi_\\theta:S\\longrightarrow X,\\qquad P_\\theta=\\Phi_\\theta(S).",
+      "render_width": 147.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "\\Phi_{\\mathrm{cart}}(E)=\\left(\\frac{\\ln|\\Delta_{\\min}(E)|}{L_\\Delta}, \\frac{\\ln N_E}{L_N},\\alpha r_E\\right).",
+      "render_width": 153.0,
+      "render_height": 17.0,
+      "scale": 1
+    },
+    {
+      "source": "s_E=\\ln(1+\\mathrm{Reg}(E)/R_*),\\qquad \\Phi_4(E)=(\\Phi_{\\mathrm{cart}}(E),s_E),\\quad R_*>0.",
+      "render_width": 304.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "X=\\rho\\cos\\beta\\cos\\lambda,\\qquad Y=\\rho\\cos\\beta\\sin\\lambda,\\qquad Z=\\rho\\sin\\beta.",
+      "render_width": 258.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "X=\\rho\\sin\\theta\\cos\\lambda,\\qquad Y=\\rho\\sin\\theta\\sin\\lambda,\\qquad Z=\\rho\\cos\\theta.",
+      "render_width": 255.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "\\|\\Phi(E)-\\Phi(F)\\|_2\\leq\\|A\\|_2\\,d_I(E,F).",
+      "render_width": 163.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "j(E)=\\frac{c_4^3}{\\Delta} =1728\\frac{4a^3}{4a^3+27b^2}\\quad\\mathrm{for\\ a\\ short\\ model}.",
+      "render_width": 221.0,
+      "render_height": 21.0,
+      "scale": 1
+    },
+    {
+      "source": "a'=u^{-4}a,\\qquad b'=u^{-6}b,\\qquad \\Delta'=u^{-12}\\Delta.",
+      "render_width": 212.0,
+      "render_height": 13.0,
+      "scale": 1
+    },
+    {
+      "source": "\\widehat h_{E'}(\\phi P)=d\\widehat h_E(P),\\qquad \\mathrm{Reg}(E')=\\frac{d^r}{m^2}\\mathrm{Reg}(E).",
+      "render_width": 217.0,
+      "render_height": 18.0,
+      "scale": 1
+    },
+    {
+      "source": "\\mathrm{VR}_t(P)=\\{\\sigma\\subseteq P:\\mathrm{diam}(\\sigma)\\leq t\\}, \\qquad \\mathrm{VR}_s(P)\\subseteq\\mathrm{VR}_t(P)\\ (s\\leq t).",
+      "render_width": 301.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "\\beta_k(t)=\\dim_{\\mathbf{F}}H_k(\\mathrm{VR}_t(P);\\mathbf{F}).",
+      "render_width": 136.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "W_p(D,D')=\\left(\\inf_\\gamma\\sum_{x\\in D\\cup\\mathrm{diag}} \\|x-\\gamma(x)\\|_\\infty^p\\right)^{1/p}.",
+      "render_width": 214.0,
+      "render_height": 25.0,
+      "scale": 1
+    },
+    {
+      "source": "W_p(D,D')\\leq M^{1/p}\\eta.",
+      "render_width": 97.0,
+      "render_height": 15.0,
+      "scale": 1
+    },
+    {
+      "source": "d_B(D_k(f),D_k(g))\\leq\\|f-g\\|_\\infty.",
+      "render_width": 139.0,
+      "render_height": 12.0,
+      "scale": 1
+    },
+    {
+      "source": "z \\approx 198.4\\,\\frac{\\ln(1+\\mathrm{Reg})}{\\ln N}.",
+      "render_width": 93.0,
+      "render_height": 16.0,
+      "scale": 1
+    },
+    {
+      "source": "s \\approx \\frac{\\ln(1+\\Omega)}{t+1}.",
+      "render_width": 57.0,
+      "render_height": 17.0,
+      "scale": 1
+    },
+    {
+      "source": "\\widehat h(P_K) \\approx \\frac{\\Omega\\,\\mathrm{Reg}\\,r^2}{\\ln N}.",
+      "render_width": 78.0,
+      "render_height": 18.0,
+      "scale": 1
+    },
+    {
+      "source": "q(E)=\\left\\lfloor\\frac{\\ln|\\Delta_{\\min}|}{(\\ln N)^2+t}\\right\\rfloor.",
+      "render_width": 86.0,
+      "render_height": 20.0,
+      "scale": 1
+    },
+    {
+      "source": "g(E)=\\frac{\\ln(1+\\mathrm{Reg}(E)/R_*)}{\\ln N_E}\\,\\Omega_E\\mathrm{Reg}(E).",
+      "render_width": 156.0,
+      "render_height": 18.0,
+      "scale": 1
+    },
+    {
+      "source": "s_h(x)=\\frac{\\sum_i K((x-x_i)/h)s_i}{\\sum_i K((x-x_i)/h)}.",
+      "render_width": 97.0,
+      "render_height": 32.0,
+      "scale": 1
+    },
+    {
+      "source": "j=1728\\,\\frac{g_2^3}{g_2^3-27g_3^2}.",
+      "render_width": 83.0,
+      "render_height": 24.0,
+      "scale": 1
+    },
+    {
+      "source": "f_E\\left(\\frac{a\\tau+b}{c\\tau+d}\\right)=(c\\tau+d)^2 f_E(\\tau).",
+      "render_width": 125.0,
+      "render_height": 16.0,
+      "scale": 1
+    },
+    {
+      "source": "a_p=p+1-\\mathrm{card}\\,E(\\mathbf{F}_p),\\qquad |a_p|\\leq 2\\sqrt{p}.",
+      "render_width": 202.0,
+      "render_height": 17.0,
+      "scale": 1
+    },
+    {
+      "source": "L'(E/K,1)=C_{E,K}\\,\\widehat h(P_K),",
+      "render_width": 120.0,
+      "render_height": 15.0,
+      "scale": 1
+    },
+    {
+      "source": "p=\\frac{1+\\mathrm{card}\\,\\{b:\\delta_b\\leq\\delta_{\\mathrm{obs}}\\}}{B+1}.",
+      "render_width": 102.0,
+      "render_height": 17.0,
+      "scale": 1
+    },
+    {
+      "source": "H(p)=-\\sum_i p_i\\ln p_i,\\qquad p_i\\geq0,\\quad\\sum_i p_i=1.",
+      "render_width": 201.0,
+      "render_height": 21.0,
+      "scale": 1
+    }
+  ],
+  "limitations": [
+    "No astronomical or recovered-code experiment executed",
+    "No formal proof-assistant verification",
+    "No canonical registry mutation",
+    "Independent expert review remains pending"
+  ]
+}

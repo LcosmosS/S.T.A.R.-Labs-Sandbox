@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "scope": "sandbox-only",
+  "status": "source_snapshot_not_scientific_validation",
+  "scientific_claim": false,
+  "independently_reviewed": false,
+  "eligible_for_automatic_promotion": false,
+  "origin_repository": "LcosmosS/S.T.A.R.-Labs",
+  "source_commits": {
+    "sciserver": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+    "ecc": "264faed10173d0e8db6822692d50333eee0af547",
+    "acsc": "51927a9b396cdfa880f3128440db4715acdec8dc",
+    "ansatz": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "scientific_boundaries": {
+    "sciserver": "PR111 merged; v0.2 remote submission disabled; local TOP10 canary plan only",
+    "ecc": "PR103 open/unmerged; draft A/B/C foundation-comparison fixtures and v3 are not independent adjudication",
+    "acsc": "2026-10-11 charter-aligned revision, not a release explicitly labeled ACSC v2",
+    "ansatz": "P0-ANSATZ-001 original closed search frame; original study remains governed upstream"
+  },
+  "files": [
+    {
+      "group": "sciserver",
+      "source_path": "integrations/sciserver/query_policy.py",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/integrations/sciserver/query_policy.py",
+      "git_blob": "ab9e2d490e56adbbed9a6fa0c3ee5441dd721a47"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "integrations/sciserver/receipts.py",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/integrations/sciserver/receipts.py",
+      "git_blob": "467b2c1804c4aed2b525c8ffef195da82ba04b86"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "integrations/sciserver/query_catalog.json",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/integrations/sciserver/query_catalog.json",
+      "git_blob": "afde6da3aec62475230a5bac3eeae7fe02aa7914"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "verification/datasets/casjobs/STAR_DR18_10_canary.sql",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/verification/datasets/casjobs/STAR_DR18_10_canary.sql",
+      "git_blob": "1a049ea75c3cecc8b986d03e3a9293b43eb66d61"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "verification/datasets/casjobs/DATA-SDSS18-200K_deterministic_probe.sql",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/verification/datasets/casjobs/DATA-SDSS18-200K_deterministic_probe.sql",
+      "git_blob": "73cb02492e95517c5218b6a6b5d88dc96cd278f6"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "integrations/sciserver/README-v0.2.md",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/integrations/sciserver/README-v0.2.md",
+      "git_blob": "a70dd640aee50ed10c90e566c95e907cda8ff283"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "integrations/sciserver/protocol.md",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/integrations/sciserver/protocol.md",
+      "git_blob": "0829faff83f7dd406970d36c272264ee22b2b611"
+    },
+    {
+      "group": "sciserver",
+      "source_path": "tests/integrations/test_sciserver_policy.py",
+      "source_commit": "222a550b357bcbde8d6d5a0c7d0cbc9f05fa3bef",
+      "snapshot_path": "scripts/playground/ports/tests/integrations/test_sciserver_policy.py",
+      "git_blob": "55e6aa80c2533bd20a0e5ddce827163b3bd1bc76"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/README.md",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/README.md",
+      "git_blob": "03e90d5e87568b634356204e774c0a9eff2d8bd1"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/protocol.md",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/protocol.md",
+      "git_blob": "6dbf917bb939bf795cbc357752e0bce89dbc1a9c"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/investigator_a.py",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/investigator_a.py",
+      "git_blob": "843a7e760235c2dd5a52764aff7d67eb440be2fe"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/investigator_a_v2.py",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/investigator_a_v2.py",
+      "git_blob": "dc78843109ab52e784b5397e59a862ce3689e966"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/investigator_a_v3.py",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/investigator_a_v3.py",
+      "git_blob": "227f303af05df620a7ef6767e2121afd88b9cbd5"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/GOVERNANCE_GATES.md",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/GOVERNANCE_GATES.md",
+      "git_blob": "2c916e4a22cf171d36d2d63b977a41d6bd92150e"
+    },
+    {
+      "group": "ecc",
+      "source_path": "ecc_b01/partner_handoff.md",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/ecc_b01/partner_handoff.md",
+      "git_blob": "df25b06f44571c9238e1c2003596207a3b8fbde2"
+    },
+    {
+      "group": "ecc",
+      "source_path": "research/gates/EXP-ECC-B01_FOUNDATION_COMPARISON_PROPOSAL.md",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/research/gates/EXP-ECC-B01_FOUNDATION_COMPARISON_PROPOSAL.md",
+      "git_blob": "fd844d2ad9e9676724a097fe4419ef59c80d66cc"
+    },
+    {
+      "group": "ecc",
+      "source_path": "tests/test_ecc_b01_a_c03_v3.py",
+      "source_commit": "264faed10173d0e8db6822692d50333eee0af547",
+      "snapshot_path": "scripts/playground/ports/tests/test_ecc_b01_a_c03_v3.py",
+      "git_blob": "102ee0a52a2548a157e6a49f8d953ccd8fde3f8c"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/monographs/acsc/2026-10-11/README.md",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/monographs/acsc/2026-10-11/README.md",
+      "git_blob": "3590946181ecd4ee850f52848850e897c55a68b9"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/registries/ACSC_REVISION_STATUS_2026-10-11.md",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/registries/ACSC_REVISION_STATUS_2026-10-11.md",
+      "git_blob": "0cb269606d7d4827fe5c8cd63d73096e0e26694a"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/monographs/acsc/2026-10-11/ACSC_Charter_Aligned_Rewrite.md",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/monographs/acsc/2026-10-11/ACSC_Charter_Aligned_Rewrite.md",
+      "git_blob": "7b9252909d4ed8118b9a1ada134c836e81d557fc"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/monographs/acsc/2026-10-11/CORRECTION_LEDGER.md",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/monographs/acsc/2026-10-11/CORRECTION_LEDGER.md",
+      "git_blob": "635ce5c928b590d5856523d47fd6fcc902640c60"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/monographs/acsc/2026-10-11/mathematical_checks.json",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/monographs/acsc/2026-10-11/mathematical_checks.json",
+      "git_blob": "6eb9be2a30fd739cd7d5a91656dfbdd21689eac3"
+    },
+    {
+      "group": "acsc",
+      "source_path": "docs/monographs/acsc/2026-10-11/local_claim_worksheet.json",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/docs/monographs/acsc/2026-10-11/local_claim_worksheet.json",
+      "git_blob": "8e0f4f9428c5bf09c165ced5c27f2b53db1244a2"
+    },
+    {
+      "group": "ansatz",
+      "source_path": "preregistrations/P0-ANSATZ-001/protocol.md",
+      "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+      "snapshot_path": "scripts/playground/ports/preregistrations/P0-ANSATZ-001/protocol.md",
+      "git_blob": "ac9d5157bf7da550fb184fcf1e638869a46ef4ed"
+    }
+  ],
+  "submodules": [
+    {
+      "path": "scripts/playground/external/ecdata",
+      "repo": "JohnCremona/ecdata",
+      "commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+      "git_mode": "160000",
+      "initialized_by_ci": false
+    },
+    {
+      "path": "scripts/playground/external/eclib",
+      "repo": "JohnCremona/eclib",
+      "commit": "39b3909a36d7d611b2d98e3751048b5ef8f5a2e2",
+      "git_mode": "160000",
+      "initialized_by_ci": false
+    },
+    {
+      "path": "scripts/playground/external/lmfdb",
+      "repo": "LMFDB/lmfdb",
+      "commit": "3c09a5f981d5fc3a841430d017ad8b2ab9cc1f15",
+      "git_mode": "160000",
+      "initialized_by_ci": false
+    }
+  ]
+}
