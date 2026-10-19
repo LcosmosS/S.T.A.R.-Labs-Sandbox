@@ -26,8 +26,7 @@ extra scanning requirements disappeared: applicable rules combine.
 - Active branch ruleset; include `~DEFAULT_BRANCH`, exclude nothing.
 - Require a PR with **0** approving reviews; no code-owner or last-push approval
   in this ruleset, no stale-review dismissal, no conversation-resolution gate.
-- Require `sandbox-policy`, from GitHub Actions; branch need not be
-  up to date. No release, controlled-runner, signing or scientific-review check.
+- Require `sandbox-policy`, from GitHub Actions, against an up-to-date branch. No release, controlled-runner, signing or scientific-review check.
 - Block deletion and force pushes. No bypass actors in this ruleset.
 - Leave existing merge-method settings, repository visibility, default branch,
   archived history and contributor access unchanged. Auto-merge remains off.
@@ -43,6 +42,12 @@ extra scanning requirements disappeared: applicable rules combine.
 Separating the two rulesets prevents an owner-review exception from also skipping
 metadata checks or permitting direct writes to the default branch. An administrator
 can still edit rules: the boundary is accountable process, not tamper-proofing.
+This deliberately tightens the supplied design's loose-check suggestion: a policy
+change on the base branch must invalidate an older experiment check, rather than
+letting metadata merge under a superseded validator. The required check is small
+and grants no scientific status. A future incompatible schema/policy migration
+needs a documented steward plan; do not silently bypass the trusted-base check.
+
 CODEOWNERS is already present on `main` from PR #1; this PR extends it. Its actual
 behavior for ordinary versus owned-path PRs needs testing after setup is merged;
 configuration readback is not an end-to-end merge test.

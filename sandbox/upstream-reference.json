@@ -134,7 +134,8 @@
       "The root experiments/ layout and JSON schema landed in PR #1 are retained.",
       "All 221 pre-policy files are bound to Git objects and SHA-256 digests.",
       "The stdlib policy workflow is hardened without executing research programs.",
-      "Concrete default-branch rules are proposed separately from newly changed live settings."
+      "Concrete default-branch rules are proposed separately from newly changed live settings.",
+      "The proposed named check is strict so base-policy updates invalidate older checks."
     ]
   }
 }
