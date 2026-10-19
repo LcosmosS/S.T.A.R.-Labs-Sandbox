@@ -550,6 +550,12 @@ def create_server() -> ThreadingHTTPServer:
     webhook_secret = os.environ["GITHUB_WEBHOOK_SECRET"].encode("utf-8")
     reconciliation_token = os.environ["STEWARDSHIP_RECONCILIATION_TOKEN"].encode("utf-8")
     db_path = os.environ.get("STEWARDSHIP_DELIVERY_DB", "stewardship-deliveries.sqlite3")
+    if not app_id.isdigit() or installation_id <= 0:
+        raise RuntimeError("GITHUB_APP_ID and GITHUB_APP_INSTALLATION_ID must be positive numeric IDs")
+    if len(webhook_secret) < 32:
+        raise RuntimeError("GITHUB_WEBHOOK_SECRET must contain at least 32 bytes of high-entropy secret material")
+    if len(reconciliation_token) < 32:
+        raise RuntimeError("STEWARDSHIP_RECONCILIATION_TOKEN must contain at least 32 bytes of high-entropy secret material")
     if repository_id != EXPECTED_REPOSITORY_ID or repository.casefold() != EXPECTED_REPOSITORY.casefold():
         raise RuntimeError("this build is pinned to LcosmosS/S.T.A.R.-Labs-Sandbox")
     api = GitHubApi(app_id=app_id, private_key=_read_private_key(),
