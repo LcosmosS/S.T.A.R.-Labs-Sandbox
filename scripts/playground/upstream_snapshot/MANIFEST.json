@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "scope": "sandbox-only",
+  "origin": {
+    "repository": "LcosmosS/S.T.A.R.-Labs",
+    "commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+    "license": "MIT"
+  },
+  "status": "source_snapshot_only_not_scientific_validation",
+  "files": [
+    {
+      "source_path": "src/acsc/projection.py",
+      "snapshot_path": "scripts/playground/upstream_snapshot/src/acsc/projection.py",
+      "git_blob": "12a1f05a65446fa705b2a2cfd308167d4cb3f70e",
+      "dependency_group": "numerical-optional"
+    },
+    {
+      "source_path": "src/acsc/null_models.py",
+      "snapshot_path": "scripts/playground/upstream_snapshot/src/acsc/null_models.py",
+      "git_blob": "686f022cb2eb8a7c090a3f6d3aa3d50123e70860",
+      "dependency_group": "numerical-optional"
+    },
+    {
+      "source_path": "src/physics/cosmology.py",
+      "snapshot_path": "scripts/playground/upstream_snapshot/src/physics/cosmology.py",
+      "git_blob": "011dd143bd610191e2b500ee4aa421c71a225f76",
+      "dependency_group": "numerical-optional"
+    },
+    {
+      "source_path": "src/tda/persistence.py",
+      "snapshot_path": "scripts/playground/upstream_snapshot/src/tda/persistence.py",
+      "git_blob": "3d24141d4f16abe58168b80e2f1d0f546bfafb31",
+      "dependency_group": "tda-optional"
+    },
+    {
+      "source_path": "src/data/sky_survey_schema.py",
+      "snapshot_path": "scripts/playground/upstream_snapshot/src/data/sky_survey_schema.py",
+      "git_blob": "7de99d7bf2944e9f01822bbfb648fb8aff2a9cf7",
+      "dependency_group": "numerical-optional"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0002",
+  "scope": "sandbox-only",
+  "status": "exploratory",
+  "study_type": "mapping_null",
+  "scientific_question": "In an entirely synthetic arithmetic-like fixture, how unusual is a log-absolute-discriminant association with a mock response under unrestricted response-label permutations?",
+  "axioms": [
+    "The table contains invented arithmetic-like integers; the rows are not established elliptic curves or observed astronomical objects.",
+    "The coordinate log10(|delta|) is dimensionless and exists only when delta is nonzero; a physical scale requires an independent calibration.",
+    "The sample response is an arbitrary mock value; response-label exchangeability is assumed only for this synthetic teaching fixture.",
+    "A Monte Carlo permutation diagnostic is not a proof of physical correspondence or a preregistered confirmatory test."
+  ],
+  "hypothesis": "The selected coordinate and the synthetic response have nonzero linear association on this small demonstration table.",
+  "rival": "The apparent association is compatible with unstructured response labels under an exchangeable null.",
+  "falsifier": "A null distribution with equally or more extreme correlations, sensitivity to alternate mappings, or a counterexample undermines this toy association; none alone evaluates ACSC or GLMPCT.",
+  "input": {
+    "kind": "synthetic",
+    "path": "synthetic_invariants.csv",
+    "origin": "Hand-authored demonstration table; no astronomical observations and no verified elliptic-curve data."
+  },
+  "mapping": {
+    "axis": "log10_abs_delta",
+    "scale": 1,
+    "coordinate_unit": "dimensionless"
+  },
+  "response": {
+    "column": "mock_signal",
+    "unit": "arbitrary_synthetic_unit"
+  },
+  "null": {
+    "method": "permute_response",
+    "n_permutations": 199,
+    "seed": 1729
+  },
+  "limitations": [
+    "Synthetic, small, ad hoc table; no physical dataset or correspondence tested.",
+    "Unrestricted label permutations assume exchangeability; not valid by default for spatial clustering, survey masks, duplicated isogeny groups or structured time series.",
+    "One exploratory statistic, no preregistered alpha, multiple-testing control, causal inference, independent replication, or theorem-level result."
+  ]
+}
