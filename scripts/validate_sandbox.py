@@ -31,6 +31,7 @@ def load_metadata(path):
 
 
 def inspect(root: Path) -> list[str]:
+    """Inspect new-format experiments and report metadata or boundary failures."""
     errors: list[str] = []
     for name in RESERVED:
         if (root / name).exists():
@@ -145,6 +146,7 @@ def inspect(root: Path) -> list[str]:
 
 
 def main() -> int:
+    """Print structural-validation results and return a conventional exit status."""
     errors = inspect(ROOT)
     for issue in errors:
         print("ERROR:", issue, file=sys.stderr)
