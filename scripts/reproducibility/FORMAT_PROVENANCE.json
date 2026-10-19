@@ -1,0 +1,60 @@
+{
+  "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "method": "Exact function source slices; local import/read_bytes adapter; no upstream main/analyze/static_report or governance functions imported.",
+  "functions": [
+    {
+      "source_path": "scripts/validate_observational_datasets.py",
+      "function": "_fits_value",
+      "lines": [
+        95,
+        110
+      ],
+      "sha256": "de63bd77b1ddcb4218c34e5356933c18f2ac9146c3fbfde1ebc871c09c93be7b"
+    },
+    {
+      "source_path": "scripts/validate_observational_datasets.py",
+      "function": "fits_hdus",
+      "lines": [
+        113,
+        157
+      ],
+      "sha256": "f4c96f4c8e9474c44d16268229508ed7c7241cc1263631dfc699bf44306b87fb"
+    },
+    {
+      "source_path": "scripts/validate_observational_datasets.py",
+      "function": "ra_degrees",
+      "lines": [
+        184,
+        194
+      ],
+      "sha256": "a770dd8e5ce45cc9081865c3c027356eaea0e301e902834dba8fa36d4161a241"
+    },
+    {
+      "source_path": "scripts/validate_observational_datasets.py",
+      "function": "dec_degrees",
+      "lines": [
+        197,
+        209
+      ],
+      "sha256": "3c6a520bf0a6aa593574e074202d2a28181a5d3ee03335a2d660d4649e8c1b09"
+    },
+    {
+      "source_path": "scripts/independent_dataset_verification.py",
+      "function": "local_name",
+      "lines": [
+        535,
+        536
+      ],
+      "sha256": "72bc4c7300ada7b88c47fab75fb16d6366b15c23b7a3504f4c436b2044987912"
+    },
+    {
+      "source_path": "scripts/independent_dataset_verification.py",
+      "function": "_stream_votable",
+      "lines": [
+        539,
+        616
+      ],
+      "sha256": "344ec14e57ffe1580b972b1ef00bfa8e531b44316fbdbebe26e2dadc27a64f47"
+    }
+  ]
+}

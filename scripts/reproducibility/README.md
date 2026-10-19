@@ -1,5 +1,13 @@
 # Sandbox reproducibility CI, independent of scientific review
 
+The additional [hash-locked diagnostic/package checks](PINNED_CHECKS.md) run
+the curated numerical and builder suite, source-bound ECC v3 controls, exact
+symbolic references, data schemas and reproducible wheel builds. Their
+[audit and explicit failures](audit/AUDIT.md) complement the upstream baseline
+and opt-in candidate contracts described below. No workflow grants scientific
+authority. The older extended suites remain separately dispatched source
+checks; their environment qualification is described in the audit.
+
 The sandbox reuses **the mathematical, dataset and software-verification
 mechanics**, not the legacy program's independent-review or activation
 authority. This is a two-direction workflow:

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel==0.45.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "star-sandbox-software-checks"
+version = "0.1.0"
+description = "Isolated pinned numerical software for sandbox regression checks; no scientific authority"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "numpy==1.26.2", "scipy==1.11.3", "pandas==2.2.2", "sympy==1.13.1",
+  "gudhi==3.12.0", "POT==0.9.6.post1", "scikit-learn==1.5.0",
+  "pyarrow==21.0.0", "PyYAML==6.0.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src", "src.*", "scripts", "scripts.*", "tools", "tools.*"]
