@@ -277,6 +277,7 @@ class StewardshipService:
         self.repository_full_name = repository_full_name.casefold()
         self.installation_id = int(installation_id) if installation_id else None
         self.delivery_store = delivery_store
+        self._reconcile_lock = threading.Lock()
 
     def _check_pr(self, pr: dict[str, Any], token: str) -> tuple[str, str, str]:
         number = int(pr["number"])
@@ -307,7 +308,7 @@ class StewardshipService:
             message.append("- No valid current-head non-author steward approval.")
         return head, result["conclusion"], "\n".join(message)
 
-    def reconcile(self, installation_id: int | None = None) -> dict[str, Any]:
+    def _reconcile_locked(self, installation_id: int | None = None) -> dict[str, Any]:
         install = int(installation_id or self.installation_id or 0)
         if not install:
             raise StewardshipError("installation ID is not configured")
@@ -370,6 +371,11 @@ class StewardshipService:
                 "pull_requests": [row[0] for row in rows], "errors": errors,
             })
         return {"evaluated_open_prs": len(listed_by_number), "published_checks": published}
+
+    def reconcile(self, installation_id: int | None = None) -> dict[str, Any]:
+        # One process serializes evaluation/publication to reduce event races.
+        with self._reconcile_lock:
+            return self._reconcile_locked(installation_id)
 
     def handle_webhook(self, event_name: str, delivery_id: str,
                        payload: dict[str, Any]) -> dict[str, Any]:
