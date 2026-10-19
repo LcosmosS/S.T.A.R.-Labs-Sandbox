@@ -1,0 +1,38 @@
+name: Sandbox hypothesis
+description: Propose a speculative idea or a deliberately false test control
+title: "[SBX idea] "
+labels: ["scope:sandbox-only"]
+body:
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Classification
+      options:
+        - speculative
+        - intentionally-false-control
+        - exploratory
+        - refutation
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Proposition and assumptions
+      description: Specify exactly what is being proposed and its domain.
+    validations:
+      required: true
+  - type: textarea
+    id: falsifier
+    attributes:
+      label: What would falsify or contradict it?
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgment
+    attributes:
+      label: Sandbox boundary
+      options:
+        - label: I acknowledge this is an unverified sandbox submission, not upstream evidence.
+          required: true
+        - label: Any intentionally false or synthetic materials will be clearly marked.
+          required: true

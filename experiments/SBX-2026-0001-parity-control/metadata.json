@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0001",
+  "title": "Deliberately false universal parity implication",
+  "status": "intentionally-false-control",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "For every integer n, if n is even then n is divisible by four (deliberately false).",
+  "falsifier": "n=2 is even but is not divisible by four.",
+  "provenance": {
+    "input_kind": "synthetic",
+    "sources": [
+      "Integers generated locally; no observational data."
+    ],
+    "upstream_commit": null
+  },
+  "limitations": [
+    "Elementary logic control only; no empirical or cosmological inference.",
+    "A finite search is not a proof of a universal claim."
+  ]
+}

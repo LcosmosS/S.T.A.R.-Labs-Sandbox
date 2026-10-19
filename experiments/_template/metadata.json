@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "SBX-YYYY-NNNN",
+  "title": "Replace with meaningful experiment title",
+  "status": "speculative",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "Define a testable idea under explicit assumptions.",
+  "falsifier": "Explain what could contradict the hypothesis.",
+  "provenance": {
+    "input_kind": "none",
+    "sources": [],
+    "upstream_commit": null
+  },
+  "limitations": [
+    "Unverified; placeholder template."
+  ]
+}

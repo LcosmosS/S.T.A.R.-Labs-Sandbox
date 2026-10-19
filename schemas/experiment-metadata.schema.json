@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "S.T.A.R. Labs Sandbox experiment metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "status",
+    "scope",
+    "epistemic_status",
+    "proposition",
+    "falsifier",
+    "provenance",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^SBX-[0-9]{4}-[0-9]{4}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 4
+    },
+    "status": {
+      "enum": [
+        "speculative",
+        "intentionally-false-control",
+        "exploratory",
+        "inconclusive",
+        "refuted",
+        "archived"
+      ]
+    },
+    "scope": {
+      "const": "sandbox-only"
+    },
+    "epistemic_status": {
+      "type": "object",
+      "required": [
+        "claim_of_truth",
+        "independently_reviewed",
+        "eligible_for_automatic_promotion"
+      ],
+      "properties": {
+        "claim_of_truth": {
+          "type": "boolean"
+        },
+        "independently_reviewed": {
+          "type": "boolean"
+        },
+        "eligible_for_automatic_promotion": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "proposition": {
+      "type": "string",
+      "minLength": 8
+    },
+    "falsifier": {
+      "type": "string",
+      "minLength": 8
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "input_kind",
+        "sources"
+      ],
+      "properties": {
+        "input_kind": {
+          "enum": [
+            "synthetic",
+            "observed",
+            "mixed",
+            "none"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "upstream_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

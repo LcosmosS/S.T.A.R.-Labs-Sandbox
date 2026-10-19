@@ -1,0 +1,24 @@
+name: sandbox-policy
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sandbox-policy:
+    name: sandbox-policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check metadata and evidence boundaries (no experiment code executed)
+        run: python3 scripts/validate_sandbox.py
+      - name: Unit-test policy validator
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
