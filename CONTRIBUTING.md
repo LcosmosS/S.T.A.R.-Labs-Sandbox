@@ -28,7 +28,25 @@ Changes to `README.md`, policy, license, `.github/`, validation code, and schema
 
 Historical `R&D/` and original root documents are preserved in place and are not retroactively converted.
 
-`python3 -I scripts/verify_archive.py` checks all 221 historical baseline files,
-ancestry and research placement without executing research. Keep derivatives in
-new experiments and cite original paths, commits and hashes. Existing historical
-bytes must not be silently edited; put corrections in companion notes.
+To run the complete archive and pinned-upstream verification locally, obtain
+the public upstream repository at the **exact pinned commit** (the code is
+inspected as data, not executed):
+
+```bash
+git clone --filter=blob:none --sparse --no-checkout \
+  https://github.com/LcosmosS/S.T.A.R.-Labs.git ../star-labs-reference
+git -C ../star-labs-reference sparse-checkout set --no-cone \
+  .github/workflows/ README.md Contributing.md LICENSE SECURITY.md \
+  charter/RESEARCH_CHARTER_v0.2.md research/gates/ECC_RTCH_RECOVERY.md
+git -C ../star-labs-reference checkout --detach \
+  51927a9b396cdfa880f3128440db4715acdec8dc
+python3 -I scripts/verify_archive.py --root . \
+  --upstream ../star-labs-reference
+```
+
+Run the command from the sandbox repository root. `--upstream` is required;
+the script checks the upstream Git commit identity, the complete 24-file
+reference inventory, SHA-256 values, and all 221 historical sandbox files and
+Git modes. Keep derivatives in new experiments, cite exact source commits and
+hashes, and put corrections in companion notes rather than editing archived
+bytes.
