@@ -1,0 +1,173 @@
+name: sandbox-reproducibility
+
+# Offline software and source reproducibility only: no scientific review,
+# preregistered inference, remote SQL execution, approval or deployment.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-input-contracts:
+    name: candidate-input-contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Verify SBX artifact and SQL source contracts without research execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          python3 -B scripts/reproducibility/candidates.py \
+            --root . --output results/sandbox-candidate-contracts.json
+          python3 -B -m unittest discover -s tests -p test_sandbox_reproducibility.py -v
+          echo 'Candidate integrity checks do not perform scientific review or promotion.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sandbox-candidate-contracts
+          path: results/sandbox-candidate-contracts.json
+          if-no-files-found: error
+          retention-days: 30
+
+  upstream-dataset-sql:
+    name: upstream-dataset-sql
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            .github/workflows/ci.yml
+            data/provenance/
+            registry/
+            verification/datasets/
+            scripts/independent_dataset_verification.py
+            scripts/validate_audit_registries.py
+            scripts/validate_provenance_capture.py
+            tests/test_independent_dataset_verification.py
+            tests/test_provenance_capture_validator.py
+            tests/test_registry_validation.py
+            tests/test_audit_registry_validation.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned offline verification dependencies
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          python3 -m pip install pytest==9.0.3 defusedxml==0.7.1
+      - name: Execute legacy dataset, CasJobs SQL and audit negative controls
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../results
+          python3 -B scripts/independent_dataset_verification.py --format json \
+            > ../results/upstream-dataset-sql.json
+          python3 -B -m pytest -q \
+            tests/test_independent_dataset_verification.py \
+            tests/test_provenance_capture_validator.py \
+            tests/test_registry_validation.py \
+            tests/test_audit_registry_validation.py
+          echo 'Legacy checks use exact pinned sources; no publisher re-fetch, CasJobs call, independent approval or support promotion.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pinned-upstream-dataset-sql
+          path: results/upstream-dataset-sql.json
+          if-no-files-found: error
+          retention-days: 30
+
+  upstream-deterministic-numerics:
+    name: upstream-deterministic-numerics
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: LcosmosS/S.T.A.R.-Labs
+          ref: 51927a9b396cdfa880f3128440db4715acdec8dc
+          path: upstream
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            src/
+            tests/test_reproducibility.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install exact numerical test dependencies
+        run: |
+          python3 -m pip install numpy==1.26.2 scipy==1.11.3 \
+            sympy==1.13.1 pandas==2.2.2 pytest==9.0.3
+      - name: Exercise deterministic stochastic and MCMC regressions
+        working-directory: upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 51927a9b396cdfa880f3128440db4715acdec8dc
+          mkdir -p ../results
+          python3 -B -m pytest -q tests/test_reproducibility.py \
+            --junitxml=../results/upstream-numerical.xml
+          echo 'Determinism checks establish test repeatability, not cosmological support.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: pinned-upstream-numerical
+          path: results/upstream-numerical.xml
+          if-no-files-found: warn
+          retention-days: 30
+
+  pinned-arithmetic-source:
+    name: pinned-arithmetic-source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: JohnCremona/ecdata
+          ref: 25cec5ecfec8b9f016eb1631ac633194c2bed39f
+          path: ecdata-source
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            allcurves/allcurves.00000-09999
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+          lfs: false
+          submodules: false
+      - name: Verify immutable gitlink, exact hash and 64,687 records
+        working-directory: ecdata-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 25cec5ecfec8b9f016eb1631ac633194c2bed39f
+          echo '259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968  allcurves/allcurves.00000-09999' | sha256sum -c -
+          test "$(wc -l < allcurves/allcurves.00000-09999)" = 64687
+          echo 'Pinned arithmetic source verified; no endpoint/null inference or external scientific approval.' >> "$GITHUB_STEP_SUMMARY"
