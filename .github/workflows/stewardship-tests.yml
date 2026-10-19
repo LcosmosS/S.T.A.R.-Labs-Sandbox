@@ -5,12 +5,14 @@ on:
     paths:
       - "scripts/stewardship/**"
       - "tests/test_stewardship.py"
+      - "tests/test_stewardship_app.py"
       - ".github/workflows/stewardship-tests.yml"
   push:
     branches: [main]
     paths:
       - "scripts/stewardship/**"
       - "tests/test_stewardship.py"
+      - "tests/test_stewardship_app.py"
       - ".github/workflows/stewardship-tests.yml"
   workflow_dispatch:
 
@@ -31,5 +33,5 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-      - name: Test pure stewardship evaluator
-        run: python3 -I -m unittest discover -s tests -p 'test_stewardship.py' -v
+      - name: Test pure policy and GitHub App decisions
+        run: python3 -I -m unittest discover -s tests -p 'test_stewardship*.py' -v
