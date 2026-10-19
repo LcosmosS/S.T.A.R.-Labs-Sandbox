@@ -146,8 +146,10 @@ class GitHubApi:
             total = result.get("total_count")
             if not isinstance(total, int):
                 raise StewardshipError("GitHub check-run result lacked total_count")
-            if len(values) >= total or len(runs) < PAGE_SIZE:
+            if len(values) >= total:
                 return values
+            if len(runs) < PAGE_SIZE:
+                raise StewardshipError("GitHub check-run pagination returned fewer rows than total_count")
         raise StewardshipError("check-run pagination safety limit reached")
 
     def list_open_pulls(self, token: str) -> list[dict[str, Any]]:
@@ -313,14 +315,37 @@ class StewardshipService:
         if not install:
             raise StewardshipError("installation ID is not configured")
         token = self.api.installation_token(install)
-        open_pulls = self.api.list_open_pulls(token)
-        listed_by_number: dict[int, dict[str, Any]] = {
-            item["number"]: item for item in open_pulls
-            if isinstance(item.get("number"), int)
-        }
+        first_inventory = self.api.list_open_pulls(token)
+        second_inventory = self.api.list_open_pulls(token)
+
+        def inventory_signature(items: list[dict[str, Any]]) -> tuple[tuple[int, str, str], ...]:
+            signature = []
+            for item in items:
+                number = item.get("number")
+                head_sha = item.get("head", {}).get("sha")
+                base_sha = item.get("base", {}).get("sha", "")
+                if not isinstance(number, int) or not isinstance(head_sha, str) or not head_sha:
+                    raise StewardshipError("open-PR inventory contains incomplete metadata")
+                signature.append((number, head_sha, str(base_sha or "")))
+            return tuple(sorted(signature))
+
+        first_signature = inventory_signature(first_inventory)
+        second_signature = inventory_signature(second_inventory)
+        seen_inventories = [first_inventory, second_inventory]
+        inventory_unstable = first_signature != second_signature
+        listed_by_number: dict[int, dict[str, Any]] = {}
+        for item in first_inventory + second_inventory:
+            listed_by_number[item["number"]] = item
         by_sha: dict[str, list[tuple[int, str, str]]] = defaultdict(list)
         evaluation_errors: dict[str, list[str]] = defaultdict(list)
-        for number, listed in listed_by_number.items():
+        if inventory_unstable:
+            for item in first_inventory + second_inventory:
+                sha = item.get("head", {}).get("sha")
+                if isinstance(sha, str) and sha:
+                    evaluation_errors[sha].append(
+                        "open-PR inventory changed during reconciliation; retry required"
+                    )
+        for number, listed in {item["number"]: item for item in second_inventory}.items():
             fallback_sha = listed.get("head", {}).get("sha")
             try:
                 pr = self.api.get_pull(number, token)
@@ -339,6 +364,31 @@ class StewardshipService:
                         f"PR #{number}: unable to verify stewardship; fail closed "
                         f"({type(exc).__name__}: {exc})"
                     )
+
+        # Re-scan after evaluating all PRs to detect openings, closures, base updates,
+        # or head pushes that raced pagination/evaluation.
+        try:
+            final_inventory = self.api.list_open_pulls(token)
+            final_signature = inventory_signature(final_inventory)
+            seen_inventories.append(final_inventory)
+            listed_by_number.update({item["number"]: item for item in final_inventory})
+            if final_signature != second_signature:
+                inventory_unstable = True
+        except Exception as exc:
+            final_inventory = []
+            inventory_unstable = True
+            for sha in set(by_sha) | set(evaluation_errors):
+                evaluation_errors[sha].append(
+                    f"could not verify final open-PR inventory ({type(exc).__name__})"
+                )
+        if inventory_unstable:
+            for inventory in seen_inventories:
+                for item in inventory:
+                    sha = item.get("head", {}).get("sha")
+                    if isinstance(sha, str) and sha:
+                        note = "open-PR inventory changed or could not be verified; retry required"
+                        if note not in evaluation_errors[sha]:
+                            evaluation_errors[sha].append(note)
 
         # A check run is commit-SHA scoped. All open PRs sharing a SHA must pass.
         groups = set(by_sha) | set(evaluation_errors)
