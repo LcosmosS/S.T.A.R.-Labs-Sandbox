@@ -527,53 +527,9 @@ class StewardshipService:
 
     def handle_webhook(self, event_name: str, delivery_id: str,
                        payload: dict[str, Any]) -> dict[str, Any]:
-        repo = payload.get("repository")
-        if not isinstance(repo, dict):
-            raise StewardshipError("webhook payload has no repository metadata")
-        if int(repo.get("id", -1)) != self.repository_id:
-            raise StewardshipError("webhook repository ID does not match configured Sandbox")
-        if str(repo.get("full_name", "")).casefold() != self.repository_full_name:
-            raise StewardshipError("webhook repository name does not match configured Sandbox")
-        installation = payload.get("installation")
-        if not isinstance(installation, dict) or not isinstance(installation.get("id"), int):
-            raise StewardshipError("webhook payload has no installation ID")
-        if self.installation_id and installation["id"] != self.installation_id:
-            raise StewardshipError("webhook installation ID is not allowlisted")
-
-        if event_name == "pull_request":
-            supported = {"opened", "reopened", "synchronize", "edited", "ready_for_review", "closed"}
-            if payload.get("action") not in supported:
-                return {"ignored": True, "reason": "event action is not relevant"}
-        elif event_name == "pull_request_review":
-            if payload.get("action") not in {"submitted", "edited", "dismissed"}:
-                return {"ignored": True, "reason": "review action is not relevant"}
-        else:
-            return {"ignored": True, "reason": "event type is not relevant"}
-
-        if self.delivery_store and not self.delivery_store.claim(delivery_id):
-            return {"duplicate": True}
-        try:
-            result = self.reconcile(installation["id"])
-            if self.delivery_store:
-                self.delivery_store.finish(delivery_id, True)
-            return result
-        except Exception:
-            if self.delivery_store:
-                self.delivery_store.finish(delivery_id, False)
-            pr = payload.get("pull_request")
-            sha = pr.get("head", {}).get("sha") if isinstance(pr, dict) else None
-            if isinstance(sha, str) and sha:
-                try:
-                    token = self.api.installation_token(installation["id"])
-                    self.api.publish_check(
-                        head_sha=sha, conclusion="failure",
-                        summary="Unable to verify current open-PR/review state. Stewardship fails closed; retry reconciliation.",
-                        details_url=f"https://github.com/{self.repository_full_name}/pulls",
-                        token=token,
-                    )
-                except Exception:
-                    pass
-            raise
+        # Convenience entry point for direct callers/tests; production requests
+        # validate and persist the event before returning, then use the queue worker.
+        return self.process_queued_event(event_name, payload)
 
 
 def _read_private_key() -> str:
