@@ -222,49 +222,100 @@ class GitHubApi:
 
 
 class DeliveryStore:
-    """SQLite delivery deduplicator; processing leases can be reclaimed after a crash."""
+    """Durable SQLite webhook queue with deduplication, retry backoff, and leases."""
 
     def __init__(self, path: str) -> None:
         self.path = path
         self._lock = threading.Lock()
         with self._connect() as db:
             db.execute(
-                "CREATE TABLE IF NOT EXISTS deliveries "
-                "(delivery_id TEXT PRIMARY KEY, state TEXT NOT NULL, updated REAL NOT NULL)"
+                "CREATE TABLE IF NOT EXISTS deliveries ("
+                "delivery_id TEXT PRIMARY KEY, state TEXT NOT NULL, updated REAL NOT NULL, "
+                "event_name TEXT, payload TEXT, attempts INTEGER NOT NULL DEFAULT 0, "
+                "next_attempt REAL NOT NULL DEFAULT 0)"
             )
+            # Backward-compatible migration if the table exists from an earlier build.
+            columns = {row[1] for row in db.execute("PRAGMA table_info(deliveries)")}
+            for name, declaration in (
+                ("event_name", "TEXT"), ("payload", "TEXT"),
+                ("attempts", "INTEGER NOT NULL DEFAULT 0"),
+                ("next_attempt", "REAL NOT NULL DEFAULT 0"),
+            ):
+                if name not in columns:
+                    db.execute(f"ALTER TABLE deliveries ADD COLUMN {name} {declaration}")
 
     def _connect(self) -> sqlite3.Connection:
         db = sqlite3.connect(self.path, timeout=10)
         db.execute("PRAGMA journal_mode=WAL")
         return db
 
-    def claim(self, delivery_id: str) -> bool:
+    def enqueue(self, delivery_id: str, event_name: str, payload: dict[str, Any]) -> bool:
         now = time.time()
+        encoded = json.dumps(payload, separators=(",", ":"), sort_keys=True)
         with self._lock, self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
             row = db.execute(
                 "SELECT state, updated FROM deliveries WHERE delivery_id=?",
                 (delivery_id,),
             ).fetchone()
             if row and row[0] == "done":
                 return False
-            if row and row[0] == "processing" and now - row[1] < 900:
+            if row and row[0] in {"queued", "processing"} and (
+                row[0] == "queued" or now - row[1] < 900
+            ):
                 return False
             db.execute(
-                "INSERT INTO deliveries(delivery_id,state,updated) VALUES(?,?,?) "
-                "ON CONFLICT(delivery_id) DO UPDATE SET state=excluded.state, updated=excluded.updated",
-                (delivery_id, "processing", now),
+                "INSERT INTO deliveries(delivery_id,state,updated,event_name,payload,attempts,next_attempt) "
+                "VALUES(?,?,?,?,?,0,0) ON CONFLICT(delivery_id) DO UPDATE SET "
+                "state='queued',updated=excluded.updated,event_name=excluded.event_name,"
+                "payload=excluded.payload,attempts=0,next_attempt=0",
+                (delivery_id, "queued", now, event_name, encoded),
             )
             return True
 
+    def take_next(self) -> dict[str, Any] | None:
+        now = time.time()
+        with self._lock, self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT delivery_id,event_name,payload,attempts FROM deliveries "
+                "WHERE state='queued' AND next_attempt<=? ORDER BY updated LIMIT 1",
+                (now,),
+            ).fetchone()
+            if not row:
+                return None
+            db.execute(
+                "UPDATE deliveries SET state='processing',updated=?,attempts=attempts+1 "
+                "WHERE delivery_id=? AND state='queued'",
+                (now, row[0]),
+            )
+            return {"delivery_id": row[0], "event_name": row[1],
+                    "payload": json.loads(row[2]), "attempts": row[3] + 1}
+
     def finish(self, delivery_id: str, success: bool) -> None:
+        now = time.time()
         with self._lock, self._connect() as db:
             if success:
                 db.execute(
-                    "UPDATE deliveries SET state='done', updated=? WHERE delivery_id=?",
-                    (time.time(), delivery_id),
+                    "UPDATE deliveries SET state='done',updated=? WHERE delivery_id=?",
+                    (now, delivery_id),
+                )
+                return
+            row = db.execute(
+                "SELECT attempts FROM deliveries WHERE delivery_id=?", (delivery_id,)
+            ).fetchone()
+            attempts = int(row[0]) if row else 1
+            if attempts >= 8:
+                db.execute(
+                    "UPDATE deliveries SET state='failed',updated=? WHERE delivery_id=?",
+                    (now, delivery_id),
                 )
             else:
-                db.execute("DELETE FROM deliveries WHERE delivery_id=?", (delivery_id,))
+                delay = min(2 ** attempts, 300)
+                db.execute(
+                    "UPDATE deliveries SET state='queued',updated=?,next_attempt=? WHERE delivery_id=?",
+                    (now, now + delay, delivery_id),
+                )
 
 
 class StewardshipService:
@@ -427,6 +478,53 @@ class StewardshipService:
         with self._reconcile_lock:
             return self._reconcile_locked(installation_id)
 
+    def validate_webhook(self, event_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+        repo = payload.get("repository")
+        if not isinstance(repo, dict):
+            raise StewardshipError("webhook payload has no repository metadata")
+        if int(repo.get("id", -1)) != self.repository_id:
+            raise StewardshipError("webhook repository ID does not match configured Sandbox")
+        if str(repo.get("full_name", "")).casefold() != self.repository_full_name:
+            raise StewardshipError("webhook repository name does not match configured Sandbox")
+        installation = payload.get("installation")
+        if not isinstance(installation, dict) or not isinstance(installation.get("id"), int):
+            raise StewardshipError("webhook payload has no installation ID")
+        if self.installation_id and installation["id"] != self.installation_id:
+            raise StewardshipError("webhook installation ID is not allowlisted")
+        if event_name == "pull_request":
+            supported = {"opened", "reopened", "synchronize", "edited", "ready_for_review", "closed"}
+            relevant = payload.get("action") in supported
+        elif event_name == "pull_request_review":
+            relevant = payload.get("action") in {"submitted", "edited", "dismissed"}
+        else:
+            relevant = False
+        if not relevant:
+            return {"ignored": True, "reason": "event type or action is not relevant"}
+        return {"installation_id": installation["id"], "accepted": True}
+
+    def process_queued_event(self, event_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+        validation = self.validate_webhook(event_name, payload)
+        if validation.get("ignored"):
+            return validation
+        installation_id = validation["installation_id"]
+        try:
+            return self.reconcile(installation_id)
+        except Exception:
+            pr = payload.get("pull_request")
+            sha = pr.get("head", {}).get("sha") if isinstance(pr, dict) else None
+            if isinstance(sha, str) and sha:
+                try:
+                    token = self.api.installation_token(installation_id)
+                    self.api.publish_check(
+                        head_sha=sha, conclusion="failure",
+                        summary="Unable to verify current open-PR/review state. Stewardship fails closed; retry reconciliation.",
+                        details_url=f"https://github.com/{self.repository_full_name}/pulls",
+                        token=token,
+                    )
+                except Exception:
+                    pass
+            raise
+
     def handle_webhook(self, event_name: str, delivery_id: str,
                        payload: dict[str, Any]) -> dict[str, Any]:
         repo = payload.get("repository")
@@ -500,9 +598,10 @@ def create_server() -> ThreadingHTTPServer:
         raise RuntimeError("this build is pinned to LcosmosS/S.T.A.R.-Labs-Sandbox")
     api = GitHubApi(app_id=app_id, private_key=_read_private_key(),
                     repository_full_name=repository, repository_id=repository_id)
+    delivery_store = DeliveryStore(db_path)
     service = StewardshipService(
         api=api, repository_id=repository_id, repository_full_name=repository,
-        installation_id=installation_id, delivery_store=DeliveryStore(db_path),
+        installation_id=installation_id, delivery_store=delivery_store,
     )
 
     class Handler(BaseHTTPRequestHandler):
@@ -548,8 +647,12 @@ def create_server() -> ThreadingHTTPServer:
                     payload = json.loads(raw.decode("utf-8"))
                     if not isinstance(payload, dict):
                         raise ValueError("payload is not an object")
-                    result = service.handle_webhook(event_name, delivery_id, payload)
-                    self._send(202, {"accepted": True, **result})
+                    validation = service.validate_webhook(event_name, payload)
+                    if validation.get("ignored"):
+                        self._send(202, {"accepted": True, **validation})
+                        return
+                    queued = delivery_store.enqueue(delivery_id, event_name, payload)
+                    self._send(202, {"accepted": True, "queued": queued, "duplicate": not queued})
                 except Exception as exc:
                     self._send(503, {"accepted": False, "error": str(exc)[:500]})
                 return
@@ -569,6 +672,24 @@ def create_server() -> ThreadingHTTPServer:
         def log_message(self, fmt: str, *args: Any) -> None:
             print("%s - %s" % (self.client_address[0], fmt % args), flush=True)
 
+    def queue_worker() -> None:
+        while True:
+            item = delivery_store.take_next()
+            if item is None:
+                time.sleep(0.5)
+                continue
+            try:
+                service.process_queued_event(item["event_name"], item["payload"])
+                delivery_store.finish(item["delivery_id"], True)
+            except Exception as exc:
+                print(
+                    f"Stewardship delivery {item['delivery_id']} failed on attempt "
+                    f"{item['attempts']}: {type(exc).__name__}; will retry if budget remains",
+                    flush=True,
+                )
+                delivery_store.finish(item["delivery_id"], False)
+
+    threading.Thread(target=queue_worker, name="stewardship-queue", daemon=True).start()
     return ThreadingHTTPServer(("0.0.0.0", int(os.environ.get("PORT", "8080"))), Handler)
 
 
