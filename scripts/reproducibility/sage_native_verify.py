@@ -1,0 +1,134 @@
+"""Independent native Sage arithmetic smoke test. No conjecture support.
+
+Run only in explicitly dispatched digest-pinned Sage image with the SHA-pinned
+ecdata source. Standard-library receipt generation includes failures.
+"""
+from __future__ import annotations
+
+import argparse
+from fractions import Fraction
+import hashlib
+import json
+from pathlib import Path
+import platform
+import re
+import subprocess
+import sys
+
+SOURCE_SHA256="259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968"
+SOURCE_SIZE=2146401
+SOURCE_ROWS=64687
+CONDUCTORS=(11,26,37,38,50,54,57,58)
+PAT=re.compile(r"(\d+) ([a-z]+) (\d+) \[(-?\d+(?:,-?\d+){4})\] (\d+) (\d+)")
+MAX_SELECTED_PER_N=2
+
+
+def independent_invariants(a):
+    a1,a2,a3,a4,a6=a
+    b2=a1*a1+4*a2
+    b4=a1*a3+2*a4
+    b6=a3*a3+4*a6
+    b8=a1*a1*a6+4*a2*a6-a1*a3*a4+a2*a3*a3-a4*a4
+    c4=b2*b2-24*b4
+    delta=-(b2*b2*b8)-8*b4**3-27*b6*b6+9*b2*b4*b6
+    if delta==0:
+        raise ValueError("Singular record")
+    return delta,Fraction(c4**3,delta)
+
+
+def execute(source):
+    from sage.all import EllipticCurve, QQ
+    data=source.read_bytes()
+    if len(data)!=SOURCE_SIZE or hashlib.sha256(data).hexdigest()!=SOURCE_SHA256:
+        raise ValueError("Pinned data SHA-256 or byte-size mismatch")
+    lines=data.decode("ascii").splitlines()
+    if len(lines)!=SOURCE_ROWS:
+        raise ValueError("Pinned data row census mismatch")
+    chosen={n:[] for n in CONDUCTORS}
+    for lineno,line in enumerate(lines,1):
+        m=PAT.fullmatch(line)
+        if m is None:
+            raise ValueError("Invalid source at line %d"%lineno)
+        n,cl,num,a,rank,torsion=m.groups()
+        conductor=int(n)
+        if conductor in chosen and len(chosen[conductor])<MAX_SELECTED_PER_N:
+            chosen[conductor].append((lineno,n,cl,num,tuple(map(int,a.split(",")))))
+    if any(len(group)<MAX_SELECTED_PER_N for group in chosen.values()):
+        raise ValueError("Incomplete fixed native-control cohort")
+    rows=[]
+    for conductor in CONDUCTORS:
+        for lineno,n,cl,num,ain in chosen[conductor]:
+            delta,j=independent_invariants(ain)
+            E=EllipticCurve(QQ,list(ain))
+            native_delta=int(E.discriminant())
+            native_n=int(E.conductor())
+            native_j=E.j_invariant()
+            j_fraction=Fraction(int(native_j.numerator()),int(native_j.denominator()))
+            if native_delta!=delta or native_n!=conductor or native_j!=j_fraction or native_j!=QQ(j.numerator)/QQ(j.denominator):
+                raise ValueError("Independent native arithmetic mismatch for line %d"%lineno)
+            rows.append({"line":lineno,"label":str(n)+"."+cl+str(num),
+                         "conductor":native_n,"discriminant":str(native_delta),
+                         "j_numerator":str(j_fraction.numerator),
+                         "j_denominator":str(j_fraction.denominator)})
+    proc=subprocess.run(["sage","--version"],capture_output=True,text=True,timeout=30,check=False)
+    return {"source_sha256":SOURCE_SHA256,"source_bytes":len(data),
+            "catalog_rows":len(lines),"curves_checked":len(rows),
+            "sage_version":(proc.stdout+proc.stderr).strip(),"python":platform.python_version(),
+            "examples":rows}
+
+
+def static_self_test():
+    """Source-format and exact rational-identity check; Sage is not imported."""
+    samples = (
+        ("11 a 1 [0,-1,1,-10,-20] 0 5", -161051),
+        ("37 a 1 [0,0,1,-1,0] 1 1", 37),
+    )
+    for raw, expected_delta in samples:
+        match=PAT.fullmatch(raw)
+        if match is None:
+            raise AssertionError("Known ecdata source format rejected")
+        coeff=tuple(map(int,match.group(4).split(",")))
+        delta,j=independent_invariants(coeff)
+        if delta != expected_delta or not isinstance(j,Fraction):
+            raise AssertionError("Exact Weierstrass identity differs")
+    if PAT.fullmatch("11 a 1 [0,-1,1,-10,-20] 0 5 trailing"):
+        raise AssertionError("Invalid trailing fields accepted")
+    return True
+
+
+def main():
+    p=argparse.ArgumentParser()
+    p.add_argument("--source",type=Path)
+    p.add_argument("--out",type=Path)
+    p.add_argument("--self-test",action="store_true")
+    args=p.parse_args()
+    if args.self_test:
+        static_self_test()
+        print("PASS_STATIC_NATIVE_SOURCE_PARSER; no Sage or physical inference")
+        return 0
+    if args.source is None or args.out is None:
+        p.error("--source and --out are required unless --self-test")
+    if args.out.exists():
+        p.error("Output receipt must not already exist")
+    receipt={"schema_version":1,"name":"sage-native-independent-arithmetic-smoke",
+             "scope":"sandbox-only","scientific_support":False,
+             "upstream_promotion":False,"physical_correspondence":False,
+             "stage":"FAILED","error":None}
+    try:
+        result=execute(args.source)
+        receipt.update(result)
+        receipt["stage"]="PASS_NATIVE_ARITHMETIC_SUBSET_ONLY"
+        code=0
+    except Exception as exc:
+        receipt["stage"]="FAIL"
+        receipt["error"]=type(exc).__name__+": "+str(exc)
+        code=1
+    args.out.parent.mkdir(parents=True,exist_ok=True)
+    args.out.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    print(json.dumps({"stage":receipt["stage"],"error":receipt["error"],
+                      "curves_checked":receipt.get("curves_checked")},sort_keys=True))
+    return code
+
+
+if __name__=="__main__":
+    raise SystemExit(main())
