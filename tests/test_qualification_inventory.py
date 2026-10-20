@@ -33,6 +33,22 @@ class QualificationInventoryTests(unittest.TestCase):
         self.assertEqual(workflow.count("PINNED_SAGE_IMAGE: " + immutable), 1)
         self.assertNotIn("image: sagemath/sagemath:latest", workflow)
 
+
+    def test_recovered_lfs_includes_pinned_audit_dependencies(self):
+        workflow = (ROOT/".github/workflows/sandbox-extended-reproducibility.yml").read_text()
+        recovered = workflow.split("  recovered-lfs:", 1)[1].split("  sage-notebooks:", 1)[0]
+        self.assertIn("ref: 51927a9b396cdfa880f3128440db4715acdec8dc", recovered)
+        self.assertIn("sparse-checkout-cone-mode: false", recovered)
+        for name, blob in (
+            ("preregistrations/EXP-MAP-A01/dataset_manifest.json",
+             "108c6058e3c8f20477bea1a492ff54332d57c0c4"),
+            ("data/provenance/publisher_byte_verification_2026-10-08.json",
+             "36220a651872e509b7772d1c7bae46c679cdf35f"),
+        ):
+            self.assertIn("            " + name + "\n", recovered)
+            self.assertIn("git hash-object " + name + ')" = ' + blob, recovered)
+        self.assertIn("python3 -B scripts/validate_audit_registries.py 2>&1 | tee ../results/registry-audit.log", recovered)
+
     def test_coverage_manifest_defect_fails(self):
         # The inventory must not succeed if the 18-workflow census drifts.
         self.assertEqual(len(json.loads((ROOT/"scripts/reproducibility/coverage.json").read_text())["workflows"]), 18)

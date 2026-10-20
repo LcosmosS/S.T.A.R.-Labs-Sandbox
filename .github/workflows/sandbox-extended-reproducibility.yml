@@ -140,7 +140,9 @@ jobs:
           sparse-checkout: |
             data/intake/recovered/
             data/quarantine/
+            data/provenance/publisher_byte_verification_2026-10-08.json
             historical/r&d/
+            preregistrations/EXP-MAP-A01/dataset_manifest.json
             registry/
             tools/recovery_intake.py
             scripts/validate_audit_registries.py
@@ -164,8 +166,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ../results
+          test "$(git hash-object preregistrations/EXP-MAP-A01/dataset_manifest.json)" = 108c6058e3c8f20477bea1a492ff54332d57c0c4
+          test "$(git hash-object data/provenance/publisher_byte_verification_2026-10-08.json)" = 36220a651872e509b7772d1c7bae46c679cdf35f
           python3 -B tools/recovery_intake.py --output ../results/recovery-diagnostics
-          python3 -B scripts/validate_audit_registries.py
+          python3 -B scripts/validate_audit_registries.py 2>&1 | tee ../results/registry-audit.log
           echo 'Quarantined sources remain quarantined; review and support flags unchanged.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
