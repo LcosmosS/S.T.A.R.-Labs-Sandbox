@@ -80,16 +80,16 @@ def execute(source):
 def static_self_test():
     """Source-format and exact rational-identity check; Sage is not imported."""
     samples = (
-        ("11 a 1 [0,-1,1,-10,-20] 0 5", -161051),
-        ("37 a 1 [0,0,1,-1,0] 1 1", 37),
+        ("11 a 1 [0,-1,1,-10,-20] 0 5", -161051, Fraction(-122023936, 161051)),
+        ("37 a 1 [0,0,1,-1,0] 1 1", 37, Fraction(110592, 37)),
     )
-    for raw, expected_delta in samples:
+    for raw, expected_delta, expected_j in samples:
         match=PAT.fullmatch(raw)
         if match is None:
             raise AssertionError("Known ecdata source format rejected")
         coeff=tuple(map(int,match.group(4).split(",")))
         delta,j=independent_invariants(coeff)
-        if delta != expected_delta or not isinstance(j,Fraction):
+        if delta != expected_delta or not isinstance(j,Fraction) or j != expected_j:
             raise AssertionError("Exact Weierstrass identity differs")
     if PAT.fullmatch("11 a 1 [0,-1,1,-10,-20] 0 5 trailing"):
         raise AssertionError("Invalid trailing fields accepted")
@@ -101,19 +101,27 @@ def main():
     p.add_argument("--source",type=Path)
     p.add_argument("--out",type=Path)
     p.add_argument("--self-test",action="store_true")
+    p.add_argument("--image-digest",type=str)
+    p.add_argument("--runner-commit",type=str)
     args=p.parse_args()
     if args.self_test:
         static_self_test()
         print("PASS_STATIC_NATIVE_SOURCE_PARSER; no Sage or physical inference")
         return 0
-    if args.source is None or args.out is None:
-        p.error("--source and --out are required unless --self-test")
+    if args.source is None or args.out is None or args.image_digest is None or args.runner_commit is None:
+        p.error("--source, --out, --image-digest and --runner-commit are required unless --self-test")
+    if re.fullmatch(r"[^@\\s]+@sha256:[0-9a-f]{64}",args.image_digest) is None:
+        p.error("--image-digest must be a pinned image reference with sha256 digest")
+    if re.fullmatch(r"[0-9a-f]{40}",args.runner_commit) is None:
+        p.error("--runner-commit must be a full Git commit SHA")
     if args.out.exists():
         p.error("Output receipt must not already exist")
     receipt={"schema_version":1,"name":"sage-native-independent-arithmetic-smoke",
              "scope":"sandbox-only","scientific_support":False,
              "upstream_promotion":False,"physical_correspondence":False,
-             "stage":"FAILED","error":None}
+             "stage":"FAILED","error":None,
+             "image_digest":args.image_digest,
+             "runner_commit":args.runner_commit}
     try:
         result=execute(args.source)
         receipt.update(result)
