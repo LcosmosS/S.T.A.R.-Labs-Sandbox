@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "experiment_id": "SBX-2026-0006",
+  "stage": "INDEPENDENT_JS_EXACT_INTEGER_IDENTITY_AUDIT_ONLY",
+  "source_repo": "JohnCremona/ecdata",
+  "source_commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+  "source_git_blob": "baab5801d7f81e1d5c44f5eb5acf4f1e100bc90b",
+  "source_sha256": "259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968",
+  "rows_read": 64687,
+  "malformed_rows": 0,
+  "singular_curves": 0,
+  "b8_identity_failures_or_weierstrass_delta_identity_failures": 0,
+  "rank_inconsistencies_within_isogeny_class": 0,
+  "identities": [
+    "4*b8 = b2*b6 - b4^2",
+    "c4^3 - c6^2 = 1728*Delta",
+    "Delta != 0",
+    "rank constant within (N,isogeny-label) class"
+  ],
+  "spotcheck_examples": [
+    {
+      "line": 1,
+      "label": "11.a1",
+      "delta": "-161051",
+      "c4": "496",
+      "c6": "20008"
+    },
+    {
+      "line": 77,
+      "label": "37.a1",
+      "delta": "37",
+      "c4": "48",
+      "c6": "-216"
+    },
+    {
+      "line": 64687,
+      "label": "9999.m1",
+      "delta": "80181981",
+      "c4": "22608",
+      "c6": "3378888"
+    }
+  ],
+  "implementation": "independent self-contained JavaScript BigInt arithmetic over entire pinned source; not imported Python code",
+  "limitation": "Checks internal algebraic identities and row consistency only; both discriminant formulas depend on related Weierstrass invariants, so this is not a Sage/eclib mathematical-independent invariant crosscheck or a proof of conductor/rank catalog correctness.",
+  "python_runner_executed": false,
+  "permutation_statistics_executed": false,
+  "full_sage_crosscheck": "NOT_RUN",
+  "scope": "sandbox-only",
+  "scientific_support": false
+}
