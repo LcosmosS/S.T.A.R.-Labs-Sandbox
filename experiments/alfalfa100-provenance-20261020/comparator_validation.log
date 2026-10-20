@@ -1,0 +1,1 @@
+PASS: 31502 rows, 25 FIELD descriptions (comparator enforced), unique nonempty AGCs, AGC order, nulls, typed and lexical digests; exactly two XML metadata differences

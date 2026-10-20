@@ -1,0 +1,12 @@
+{
+  "frozen_sha256": "654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079",
+  "identical_after_two_replacements": true,
+  "method": "ALFALFA-TWO-TIMESTAMPS-EXACT-BYTES-V1",
+  "normalized_refetch_sha256": "654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079",
+  "python_version": "3.13.12",
+  "raw_identity": "FAIL",
+  "refetched_sha256": "008502caa196f15883f199dfdb8979cfb91f20b087fb63235cd5d26fecc5a4f2",
+  "scientific_support": false,
+  "source_bytes": 10981088,
+  "timestamp_replacements": 2
+}

@@ -1,0 +1,3 @@
+PASS staged LFS pointer frozen.vot 654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079 size 10981088
+PASS staged LFS pointer refetched.vot 008502caa196f15883f199dfdb8979cfb91f20b087fb63235cd5d26fecc5a4f2 size 10981088
+PASS staged scope: only dedicated evidence directory; no environments or caches

@@ -1,0 +1,85 @@
+{
+    "method": "STAR-VOTABLE-TABLEDATA-TYPED-V1",
+    "python": "3.13.12",
+    "defusedxml": "0.7.1",
+    "comparator_sha256": "c28f1cf9d58caaf9df3aa4221d9ce45288c887734c3a486ff3147a7e969a059f",
+    "input_frozen_sha256": "654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079",
+    "input_live_sha256": "008502caa196f15883f199dfdb8979cfb91f20b087fb63235cd5d26fecc5a4f2",
+    "frozen_typed_sha256": "4019ecb6dbe8dc8378388837fa26c4dc8d804bd3738955da6b6287636adbcdcf",
+    "live_typed_sha256": "4019ecb6dbe8dc8378388837fa26c4dc8d804bd3738955da6b6287636adbcdcf",
+    "frozen_cell_lexical_sha256": "bb40a7227805c7a5bb4896cfcbb4a23e13497e2606da6112bdfd18f7bf1c82d3",
+    "live_cell_lexical_sha256": "bb40a7227805c7a5bb4896cfcbb4a23e13497e2606da6112bdfd18f7bf1c82d3",
+    "rows": [
+        31502,
+        31502
+    ],
+    "field_metadata_equal": true,
+    "row_order_equal": true,
+    "typed_ordered_rows_equal": true,
+    "keyed_row_differences": 0,
+    "first_keyed_differences": [],
+    "ordered_row_differences": 0,
+    "first_ordered_differences": [],
+    "nulls_equal": true,
+    "nulls_frozen": {
+        "DEO:empty": 344,
+        "Name:empty": 21114,
+        "RAO:empty": 344
+    },
+    "nulls_live": {
+        "DEO:empty": 344,
+        "Name:empty": 21114,
+        "RAO:empty": 344
+    },
+    "metadata_nodes_differ": 2,
+    "first_metadata_differences": [
+        {
+            "position": 1,
+            "frozen": [
+                "/VOTABLE/0/DESCRIPTION",
+                [],
+                "VizieR Astronomical Server vizier.cds.unistra.fr\n    Date: 2026-10-09T07:47:29 [V7.6.1]\n   Explanations and Statistics of UCDs:\t\t\tSee LINK below\n   In case of problem, please report to:\tcds-question@unistra.fr"
+            ],
+            "live": [
+                "/VOTABLE/0/DESCRIPTION",
+                [],
+                "VizieR Astronomical Server vizier.cds.unistra.fr\n    Date: 2026-10-20T04:16:54 [V7.6.1]\n   Explanations and Statistics of UCDs:\t\t\tSee LINK below\n   In case of problem, please report to:\tcds-question@unistra.fr"
+            ]
+        },
+        {
+            "position": 3,
+            "frozen": [
+                "/VOTABLE/2/INFO",
+                [
+                    [
+                        "name",
+                        "request_date"
+                    ],
+                    [
+                        "value",
+                        "2026-10-09T07:47:29"
+                    ]
+                ],
+                "Query execution date"
+            ],
+            "live": [
+                "/VOTABLE/2/INFO",
+                [
+                    [
+                        "name",
+                        "request_date"
+                    ],
+                    [
+                        "value",
+                        "2026-10-20T04:16:55"
+                    ]
+                ],
+                "Query execution date"
+            ]
+        }
+    ],
+    "metadata_digests": [
+        "6b75f4f13e940d5af7d1fe59dd2ab58ff1ba1596cb77dad76153ffc0cce0914c",
+        "7ee9a1b4fd6b43eb4ba521927f26af1eef519273ffb44063d3f52f3563d71c14"
+    ]
+}
