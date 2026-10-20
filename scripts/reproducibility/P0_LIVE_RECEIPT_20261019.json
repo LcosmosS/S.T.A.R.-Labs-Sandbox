@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "kind": "P0_LIVE_GITHUB_OBSERVATION",
+  "scope": "engineering_stewardship_only",
+  "record_date": "2026-10-19",
+  "live_ruleset_id": 25371960,
+  "required_statuses_at_observation": [
+    "sandbox-policy",
+    "sandbox-stewardship",
+    "saved-reference-integrity-only"
+  ],
+  "sources": [
+    {
+      "pr": 23,
+      "head_sha": "fcfa13263f26836c4bd0d9df90e127b3fdb3e14c",
+      "experiment_only": true,
+      "git_mergeable": true,
+      "observed_github_app_check": {
+        "name": "sandbox-stewardship",
+        "conclusion": "success",
+        "reason": "experiment-only paths; no stewardship approval required"
+      },
+      "required_action_job_conclusions": {
+        "sandbox_policy": "success",
+        "saved_reference_integrity_only": "success"
+      },
+      "review_attestations": "no independent scientific approval; unrelated COMMENTED bot review present",
+      "note": "This receipt binds the first PR head. Subsequent edited head 01adbee0c29e9bf42ae64e785270ac8ecf10062f must be independently rechecked."
+    },
+    {
+      "pr": 24,
+      "head_sha": "6db1ac6a4973be2569b44f98c2e7eab9af258386",
+      "protected_paths": true,
+      "git_mergeable": true,
+      "observed_github_app_check": {
+        "name": "sandbox-stewardship",
+        "conclusion": "failure",
+        "reason": "no eligible non-author steward approval for current head",
+        "check_run_id": 118401925876
+      },
+      "requested_engineering_reviewer": "LibertySquared",
+      "reviewer_write_permission_observed": true,
+      "note": "Protected-path check fails closed as intended; success after authorized non-author approval NOT YET DEMONSTRATED."
+    }
+  ],
+  "overall_status": "PARTIAL_PASS",
+  "closed_gates": [
+    "P0 experiment-only live app PASS at first exact head",
+    "P0 protected-path live app blocks unapproved PR at first exact head"
+  ],
+  "open_gates": [
+    "P0 current-head review and mergeability census for #23",
+    "P0 qualified non-author approval recovery on #24",
+    "P0 six proposed computational contexts not all required",
+    "P0 native/Sage optional environments not qualified",
+    "P0 selected workflow_dispatch suites lack execution receipts"
+  ],
+  "scientific_claim": false,
+  "independent_scientific_review": false,
+  "upstream_promotion": false
+}
