@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0009",
+  "title": "ALFALFA100 frozen-versus-refetched VOTable provenance investigation",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "eligible_for_automatic_promotion": false,
+    "claim_of_truth": false,
+    "independently_reviewed": false
+  },
+  "proposition": "The two authenticated VOTables differ only at two generated publisher request timestamps.",
+  "falsifier": "Any additional byte difference after exactly two timestamp substitutions, a changed scientific row or field, incorrect source hash, or changed null convention defeats this narrow reconciliation.",
+  "provenance": {
+    "input_kind": "observed",
+    "sources": [
+      "Frozen VOTable, SHA256 OID 654217f9b3414856c1a8b09071c81eb834a0b0fbc6ec3aea9777e01fdaea1079; Legacy commit 51927a9b396cdfa880f3128440db4715acdec8dc",
+      "Refetched VOTable, SHA256 OID 008502caa196f15883f199dfdb8979cfb91f20b087fb63235cd5d26fecc5a4f2; failed Sandbox Actions run 39368709247; artifact 12240810510"
+    ],
+    "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "limitations": [
+    "Narrow equivalence of the two captured responses only.",
+    "No future publisher stability.",
+    "No independently approved provenance.",
+    "No observational admission.",
+    "No scientific or physical support."
+  ]
+}

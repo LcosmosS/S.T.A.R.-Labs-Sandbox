@@ -1,0 +1,2 @@
+FAIL: local upstream reference incomplete; Legacy remains unmodified
+Archive check failed: missing file: .github/workflows/a01-activation-preflight.yml

@@ -18,8 +18,8 @@ The comparator hashes JSON-encoded typed rows prefixed with the method identifie
 From the repository root, hydrate only these two LFS paths, then verify the hydrated file checksums. Use Python 3 with venv/pip support; the recorded comparator runtime and exact executable versions are in reproducibility.json. The byte test uses only the standard library and does not import the comparator. Do not run Python with `-O`, which disables assertions.
 
 ```bash
-git lfs pull --include='experiments/alfalfa100-provenance-20261020/*.vot' --exclude=''
-cd experiments/alfalfa100-provenance-20261020
+git lfs pull --include='experiments/SBX-2026-0009-alfalfa100-provenance/*.vot' --exclude=''
+cd experiments/SBX-2026-0009-alfalfa100-provenance
 sha256sum -c SHA256SUMS.txt
 python3 -m venv /tmp/alfalfa-review-venv
 /tmp/alfalfa-review-venv/bin/python -m pip install -r requirements.txt
@@ -30,10 +30,14 @@ cd ../..
 python3 -I scripts/validate_sandbox.py
 ```
 
-The last command currently FAILS: the explicitly requested directory name violates the validator's mandatory `SBX-YYYY-NNNN-short-slug` convention. No policy exception or gate change is included. This draft needs a reviewer decision on a compliant SBX directory and metadata before it can pass admission checks.
+The initial directory name failed the mandatory `SBX-YYYY-NNNN-short-slug` convention; the unchanged `sandbox_policy.log` preserves that historical failure. The directory now uses the previously unclaimed SBX-2026-0009 identifier and includes sandbox-only exploratory metadata. `policy_revalidation.log` records the current validator result separately. No policy exception or gate change is included.
 
 ## Evidence and limits
 
 `frozen.vot` and `refetched.vot` are unchanged LFS originals. `frozen-pointer.txt` exactly matched the Legacy Git blob at commit `51927a9b396cdfa880f3128440db4715acdec8dc`, checked read-only before copying. The comparator and three supplied JSON reports are unchanged source evidence; `comparison_rerun.json` is a fresh execution against the original inputs. Logs preserve byte-test, comparator, LFS and policy outcomes. GitHub API snapshots record the repository ruleset, original failed run and artifact identity. `reproducibility.json` records commands and runtime; `evidence_manifest.json` hashes all other evidence artifacts; `SHA256SUMS.txt` additionally covers the manifest, excluding itself to avoid a cycle.
 
 The artifact digest recorded by GitHub is `ece9228018e53ca5cb2e2d296657ca38c3d8e48903c3b6ee5fe176e8b2530585`; this investigation authenticates the supplied extracted binary by its expected SHA and does not independently download or authenticate the original artifact ZIP. The source comparator was supplied for this task; rerunning it and the separate byte proof is not external independent scientific review. A reviewer must inspect the methods and original source chain, hydrate the remote LFS originals and rerun the checks. No source registry, eligibility, scientific support, review or promotion gate changes are made. No claim of future publisher stability, scientific correctness, dataset admission, upstream acceptance or physical support follows. Issue #34 remains open; arithmetic v3 PR #32 is outside scope.
+
+Current revalidation commands and outcomes, including the repository unittest suite, are recorded in `reproducibility.json` and separate revalidation logs. Original reports, scientific-check scripts and historical logs remain unchanged.
+
+Policy revalidation: PASS. All 141 repository tests passed outside the sandbox after the initial loopback socket restriction (both logs retained). Archive revalidation remains FAIL because the read-only local Legacy reference lacks `.github/workflows/a01-activation-preflight.yml`; a reviewer must rerun against a complete checkout of the pinned upstream commit.

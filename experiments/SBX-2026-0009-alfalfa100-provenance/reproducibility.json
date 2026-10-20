@@ -1,0 +1,62 @@
+{
+  "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
+  "sandbox_base_commit": "d641b4f1fc54db2ef2da870939d8a2d889e1b946",
+  "original_failed_run": 39368709247,
+  "original_artifact": 12240810510,
+  "git": "git version 2.43.0",
+  "git_executable": "/usr/bin/git",
+  "git_lfs": "git-lfs/3.4.1 (GitHub; linux amd64; go 1.22.2)",
+  "byte_test_python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+  "byte_test_python_executable": "/home/kepler/star-vizier-audit/.venv/bin/python3",
+  "comparator_python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+  "comparator_python_executable": "../.venv/bin/python",
+  "defusedxml": "0.7.1",
+  "runtime": {
+    "system": "Linux",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "machine": "x86_64",
+    "libc": [
+      "glibc",
+      "2.39"
+    ]
+  },
+  "comparator_sha256": "c28f1cf9d58caaf9df3aa4221d9ce45288c887734c3a486ff3147a7e969a059f",
+  "commands": [
+    "../.venv/bin/python -I ../alfalfa_votable_compare.py ../frozen/table2.vot ../refetch/mismatches/DATA-VIZIER-ALFALFA100.008502caa196f158.mismatch > /tmp/alfalfa100-independent-comparison.json",
+    "python3 -I experiments/SBX-2026-0009-alfalfa100-provenance/verify_report.py experiments/SBX-2026-0009-alfalfa100-provenance/comparison_rerun.json",
+    "python3 -I experiments/SBX-2026-0009-alfalfa100-provenance/byte_reconciliation_test.py",
+    "python3 -I scripts/validate_sandbox.py",
+    "git check-attr filter diff merge text -- experiments/SBX-2026-0009-alfalfa100-provenance/frozen.vot experiments/SBX-2026-0009-alfalfa100-provenance/refetched.vot"
+  ],
+  "outcomes": {
+    "source_authentication": "PASS; both original sources checked before copying",
+    "frozen_pointer": "PASS exact pinned Legacy blob comparison",
+    "comparator": "PASS",
+    "byte_tests": "PASS (4 tests, including three negative categories)",
+    "raw_identity": "FAIL preserved",
+    "original_publisher_refetch": "FAIL preserved",
+    "historical_sandbox_policy": "FAIL requested directory lacks mandatory SBX prefix",
+    "sandbox_policy": "PASS; policy-compliant SBX directory and exploratory metadata (policy_revalidation.log)",
+    "repository_tests_initial_sandbox": "FAIL: 1 loopback socket PermissionError in 141 tests",
+    "repository_tests_revalidation": "PASS: all 141 tests outside sandbox",
+    "archive_revalidation": "FAIL: local Legacy reference missing .github/workflows/a01-activation-preflight.yml; not modified",
+    "source_checksum_revalidation": "PASS unchanged SHA256 and size; pointers verified",
+    "comparator_revalidation": "PASS identical report to preserved comparison_rerun.json",
+    "byte_revalidation": "PASS all four unchanged tests"
+  },
+  "non_claims": [
+    "No external independent scientific review",
+    "No dataset admission, physical support or promotion",
+    "No frozen source SHA replacement or registry changes",
+    "No future publisher response stability claim"
+  ],
+  "revalidation_commands": [
+    "../.venv/bin/python -I experiments/SBX-2026-0009-alfalfa100-provenance/alfalfa_votable_compare.py experiments/SBX-2026-0009-alfalfa100-provenance/frozen.vot experiments/SBX-2026-0009-alfalfa100-provenance/refetched.vot > /tmp/alfalfa100-policy-update-comparison.json",
+    "python3 -I experiments/SBX-2026-0009-alfalfa100-provenance/verify_report.py /tmp/alfalfa100-policy-update-comparison.json",
+    "python3 -I experiments/SBX-2026-0009-alfalfa100-provenance/byte_reconciliation_test.py",
+    "python3 -I scripts/validate_sandbox.py",
+    "python3 -I -m unittest discover -s tests -p 'test_*.py' -v",
+    "python3 -I scripts/verify_archive.py --root . --upstream ../legacy",
+    "(cd experiments/SBX-2026-0009-alfalfa100-provenance && sha256sum -c SHA256SUMS.txt)"
+  ]
+}

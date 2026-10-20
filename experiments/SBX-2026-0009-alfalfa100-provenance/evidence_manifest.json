@@ -5,12 +5,16 @@
       "sha256": "ceaca1e542d87f4ff9e062c207e9f665ac9beef215114ea4b013ebe7d87f2c07"
     },
     "README.md": {
-      "bytes": 5047,
-      "sha256": "9fdc5a97a3e50a9d228fffb687af35d07df374d25cffa984336728ac103f11c4"
+      "bytes": 5748,
+      "sha256": "244f9a4f8682a7b490b6c5464a36e7725dd49aa93bc6a807ac6dca1d5da3e3ab"
     },
     "alfalfa_votable_compare.py": {
       "bytes": 5623,
       "sha256": "c28f1cf9d58caaf9df3aa4221d9ce45288c887734c3a486ff3147a7e969a059f"
+    },
+    "archive_revalidation.log": {
+      "bytes": 152,
+      "sha256": "1f38d6d377e88d9e1a3f41d2bd739d27dd1947378e0be0ece0fdd65794a05e2d"
     },
     "byte_reconciliation.json": {
       "bytes": 523,
@@ -20,9 +24,17 @@
       "bytes": 3168,
       "sha256": "1b58542e33a8b82fa236c0853c41062c7c1021576f2fde2c703bc8cd041403bd"
     },
+    "byte_revalidation.log": {
+      "bytes": 532,
+      "sha256": "14cea7a48016bf109097587e21b7aeec8b271b387eb3b1c26fe61859ffe07cb6"
+    },
     "byte_validation.log": {
       "bytes": 532,
       "sha256": "b146d8221c327b7123ad6e8d99c59f55ef59321586f399d2e99905c26e03f694"
+    },
+    "comparator_revalidation.log": {
+      "bytes": 167,
+      "sha256": "a7385bde80fd84b8e27d84fc13524f4bc5e08998302e45d0c362510d7a9f7360"
     },
     "comparator_validation.log": {
       "bytes": 167,
@@ -52,6 +64,10 @@
       "bytes": 311,
       "sha256": "c36d03ca7bc50edc528b66464f9bccc77100fabc56ff61bd340f6fa2d4709675"
     },
+    "metadata.json": {
+      "bytes": 1361,
+      "sha256": "f79deb0a2be4117dcf168154d27209b1e136db56038890d5400452ad325911c6"
+    },
     "original_artifact.json": {
       "bytes": 349,
       "sha256": "34a3d8a2a6a0dc7bfd983ba75cbc71c079fc8806330bf6f09cebc51d0433d28e"
@@ -59,6 +75,10 @@
     "original_run.json": {
       "bytes": 184,
       "sha256": "e9c189133c6e65e6969f2976b596e443e4a114cdbc44b7f06bac840ead1e7aa7"
+    },
+    "policy_revalidation.log": {
+      "bytes": 70,
+      "sha256": "0cfb050184946dfdd26d67a4b78648915b9ddd85c6c7a22dfaa618f40233abaa"
     },
     "refetched.vot": {
       "bytes": 10981088,
@@ -72,9 +92,17 @@
       "bytes": 2127,
       "sha256": "3ac65cda8feb77a9df5cf51a10d047bcd00ece69179c9c548495025c5e3e9026"
     },
+    "repository_tests_revalidation.log": {
+      "bytes": 28990,
+      "sha256": "9f09094e40d523b24d55c015ba709f9921f39dcb008c294452a3931e144f0655"
+    },
+    "repository_tests_sandbox.log": {
+      "bytes": 30734,
+      "sha256": "f402405a3cbe4a160544644e786de596720601cc5b7b6258bce64ec9916a9070"
+    },
     "reproducibility.json": {
-      "bytes": 2305,
-      "sha256": "d9356cd2f6109c104d6a89717e1557102ad7fcb162108b452ea45b0dcdedb650"
+      "bytes": 3800,
+      "sha256": "0867a38a106f8f039c7d26c80471a050bd385bb9943432fd1a199fae65cec07a"
     },
     "requirements.txt": {
       "bytes": 18,
@@ -84,20 +112,33 @@
       "bytes": 83,
       "sha256": "94855f5b3982807d9e67bd46fd7f2f45af1bb2dddb2d34f062e3327adcf72282"
     },
+    "source_lfs_revalidation.log": {
+      "bytes": 2783,
+      "sha256": "f25f891582ec996b6b032f03054d982216866f9b8009cac9d9f03c0e084ca4c1"
+    },
     "verify_report.py": {
       "bytes": 1288,
       "sha256": "533fab82b7b29813437e5d69a6685ad4ec99b713b57ea2ea46b4ed24df93d78a"
     }
   },
+  "directory": "experiments/SBX-2026-0009-alfalfa100-provenance",
   "execution_outcomes": {
+    "archive_revalidation": "FAIL: local Legacy reference missing .github/workflows/a01-activation-preflight.yml; not modified",
+    "byte_revalidation": "PASS all four unchanged tests",
     "byte_tests": "PASS (4 tests, including three negative categories)",
     "comparator": "PASS",
+    "comparator_revalidation": "PASS identical report to preserved comparison_rerun.json",
     "frozen_pointer": "PASS exact pinned Legacy blob comparison",
+    "historical_sandbox_policy": "FAIL requested directory lacks mandatory SBX prefix",
     "original_publisher_refetch": "FAIL preserved",
     "raw_identity": "FAIL preserved",
-    "sandbox_policy": "FAIL requested directory lacks mandatory SBX prefix",
-    "source_authentication": "PASS; both original sources checked before copying"
+    "repository_tests_initial_sandbox": "FAIL: 1 loopback socket PermissionError in 141 tests",
+    "repository_tests_revalidation": "PASS: all 141 tests outside sandbox",
+    "sandbox_policy": "PASS; policy-compliant SBX directory and exploratory metadata (policy_revalidation.log)",
+    "source_authentication": "PASS; both original sources checked before copying",
+    "source_checksum_revalidation": "PASS unchanged SHA256 and size; pointers verified"
   },
+  "experiment_id": "SBX-2026-0009",
   "hash_scope": "Every other evidence file; manifest is covered by SHA256SUMS.txt; checksum file excludes itself.",
   "method": [
     "STAR-VOTABLE-TABLEDATA-TYPED-V1",
@@ -111,6 +152,18 @@
   ],
   "original_artifact": 12240810510,
   "original_failed_run": 39368709247,
+  "policy_history": {
+    "initial": {
+      "log": "sandbox_policy.log",
+      "outcome": "FAIL",
+      "reason": "Original requested directory lacked SBX prefix"
+    },
+    "revalidation": {
+      "log": "policy_revalidation.log",
+      "outcome": "PASS",
+      "reason": "Previously unused SBX-2026-0009 directory and schema-conforming exploratory metadata"
+    }
+  },
   "source_commit": "51927a9b396cdfa880f3128440db4715acdec8dc",
   "source_identities": {
     "alfalfa_votable_compare.py": {
