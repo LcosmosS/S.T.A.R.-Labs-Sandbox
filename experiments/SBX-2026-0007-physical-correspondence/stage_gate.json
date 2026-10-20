@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "experiment_id": "SBX-2026-0007",
+  "scope": "sandbox-only",
+  "current_state": "BLOCKED_NOT_STARTED",
+  "observational_execution_allowed": false,
+  "legacy_pr_allowed": false,
+  "automatic_promotion": false,
+  "prerequisites": [
+    {
+      "id": "P0-GOV",
+      "condition": "Live ordinary-vs-protected PR mergeability/approval behavior independently observed at exact head and enforced",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P0-COMPUTE",
+      "condition": "Required computational status contexts enforced and relevant Sage/native/on-demand suites digest/hash pinned with immutable PASS/FAIL receipts",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P1-MATH",
+      "condition": "All critical ACSC/ECC/GLMPCT obstructions relevant to tested map are proven, narrowed or disclosed as bounded assumptions with tests",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P1-ARITH",
+      "condition": "Larger prospective arithmetic pilot run with repeatable results, independent invariant implementation and recorded failures",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P2-MECHANISM",
+      "condition": "Physical E/Q-to-observable rule and units derived or explicitly hypothesized independently of galaxy labels and outcomes, with identifiability test",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P2-DATA",
+      "condition": "Exact source releases+SQL, SHA-256 bytes, row and schema checks, join cardinalities, sky mask and radial selection established",
+      "complete": false,
+      "evidence": null
+    },
+    {
+      "id": "P2-PROTOCOL",
+      "condition": "ONE primary endpoint, holdout cohort, rivals, spatial/arithmetic null exchangeability and alpha frozen before observational endpoint is inspected",
+      "complete": false,
+      "evidence": null
+    }
+  ],
+  "stop_conditions": [
+    "Any nonmatching source digest, inconsistent units, ambiguous crossmatch, target leakage, after-outcome tuning, broken null exchangeability, or failed control is a hard stop.",
+    "A completed source-hash check never certifies observations are accurate or a physical theory is true.",
+    "Any P1 contradiction open in the exact mechanism domain blocks confirmatory execution."
+  ]
+}

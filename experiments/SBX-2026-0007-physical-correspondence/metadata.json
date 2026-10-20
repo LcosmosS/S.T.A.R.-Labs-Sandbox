@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0007",
+  "title": "Gated physical correspondence design and Legacy promotion packet",
+  "status": "speculative",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "After first-principles mathematical and data-provenance gates, test whether a physically justified arithmetic-to-galaxy correspondence predicts held-out cosmic topology better than survey-matched and arithmetic null models.",
+  "falsifier": "On predeclared held-out SDSS/MaNGA/GAMA data, the mapping has no significant improvement versus survey-selection-preserving, arithmetic and physical baselines, or its success vanishes after scale/control ablations.",
+  "provenance": {
+    "input_kind": "none",
+    "sources": [
+      "Sandbox SBX-2026-0005 contradiction ledger (PR #25, not established)",
+      "Sandbox SBX-2026-0006 preflight and protocol (PR #25, v2 primary NOT_RUN)",
+      "Potential future inputs: SDSS DR18, MaNGA Pipe3D, GAMA; currently UNFROZEN."
+    ],
+    "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "limitations": [
+    "No observational bytes, sha256 manifests or held-out predictions exist in this experiment.",
+    "No physical curve-to-galaxy mapping has been derived or specified for execution.",
+    "This is a design contract only, not observational verification or a publication submission."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "experiment_id": "SBX-2026-0007",
+  "sandbox_commit": null,
+  "automatic_promotion": false,
+  "independently_reviewed": false,
+  "source_dataset_sha256": null,
+  "cohort_sha256": null,
+  "protocol_sha256": null,
+  "analysis_code_sha256": null,
+  "run_manifest_sha256": null,
+  "independent_verifier_digest": null,
+  "environment_digest": null,
+  "nonclaims": [
+    "No automatic upstream scientific support, even if the packet is structurally complete."
+  ],
+  "negative_result_inventory": [
+    "NOT_EXECUTED: no negative-result audit exists yet; this placeholder cannot establish validity."
+  ],
+  "artifacts": {}
+}
