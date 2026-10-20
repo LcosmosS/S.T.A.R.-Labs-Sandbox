@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0098",
+  "title": "P0 live zero-scientific-approval admission smoke test",
+  "status": "intentionally-false-control",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "A PR changing only well-formed sandbox experiment files should be admission-eligible without independent scientific approval when exact required engineering checks pass.",
+  "falsifier": "The live GitHub ruleset or stewardship check demands an unrelated scientific approval, or reports an erroneous success despite a protected-path mutation.",
+  "provenance": {
+    "input_kind": "synthetic",
+    "sources": [
+      "Live ruleset #25371960 readback 2026-10-19: required sandbox-policy, sandbox-stewardship, saved-reference-integrity-only; main 01e1429db9749aea3f044448633fb287dda585a3"
+    ],
+    "upstream_commit": null
+  },
+  "limitations": [
+    "Engineering-only control; do not merge as scientific evidence or infer mathematical validity.",
+    "Review/required-check outcomes must be inspected on this PR at its exact head SHA.",
+    "This smoke experiment has no dataset, scientific statistic, or cosmological observation."
+  ]
+}
