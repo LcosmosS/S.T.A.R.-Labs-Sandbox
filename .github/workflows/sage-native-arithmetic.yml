@@ -24,6 +24,29 @@ jobs:
           python-version: '3.12.12'
       - name: Parser and rational Weierstrass self-test only (no Sage, no network)
         run: python3 -I scripts/reproducibility/sage_native_verify.py --self-test
+      - name: Normal FAIL receipt binds immutable image and exact commit (no Sage)
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="sagemath/sagemath@sha256:310dfe23fc786f3a5a06a7b0387c60201ec79b32c0db941b7624505ee5edb565"
+          receipt="$RUNNER_TEMP/expected-native-failure.json"
+          if python3 -I scripts/reproducibility/sage_native_verify.py \
+              --source "$RUNNER_TEMP/absent-ecdata" --out "$receipt" \
+              --image-digest "$image" --runner-commit "$GITHUB_SHA"; then
+            echo "ERROR: an intentionally unavailable input was accepted" >&2
+            exit 1
+          fi
+          python3 - "$receipt" "$image" "$GITHUB_SHA" <<'PY'
+          import json
+          import pathlib
+          import sys
+          data = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          assert data["stage"] == "FAIL", data
+          assert data["image_digest"] == sys.argv[2], data
+          assert data["runner_commit"] == sys.argv[3], data
+          assert data["error"], data
+          assert data["scientific_support"] is False, data
+          PY
 
   sage-native-arithmetic:
     if: github.event_name == 'workflow_dispatch'
@@ -69,7 +92,9 @@ jobs:
             -w /work "$SAGE_IMAGE" \
             sage -python scripts/reproducibility/sage_native_verify.py \
             --source /input/allcurves.00000-09999 \
-            --out /output/native-check.json
+            --out /output/native-check.json \
+            --image-digest "$SAGE_IMAGE" \
+            --runner-commit "$GITHUB_SHA"
           test "$(python3 -c 'import json,os;print(json.load(open(os.environ["RUNNER_TEMP"]+"/sage-output/native-check.json"))["stage"])')" = PASS_NATIVE_ARITHMETIC_SUBSET_ONLY
       - name: Record job identity and digest manifest; never misclassify skipped work
         if: always()
@@ -83,7 +108,7 @@ jobs:
             echo "status=${{ job.status }}"
           } > "$RUNNER_TEMP/sage-output/job-identity.txt"
           if ! test -s "$RUNNER_TEMP/sage-output/native-check.json"; then
-            printf '%s\n' '{"stage":"FAIL_BEFORE_NATIVE_RECEIPT","scientific_support":false,"scope":"sandbox-only","error":"See GitHub run logs for upstream failure"}' > "$RUNNER_TEMP/sage-output/native-check.json"
+            python3 -c 'import json,os; print(json.dumps({"stage":"FAIL_BEFORE_NATIVE_RECEIPT","scientific_support":False,"scope":"sandbox-only","error":"See GitHub run logs for upstream failure","image_digest":os.environ["SAGE_IMAGE"],"runner_commit":os.environ["GITHUB_SHA"]}, sort_keys=True))' > "$RUNNER_TEMP/sage-output/native-check.json"
           fi
           (cd "$RUNNER_TEMP/sage-output"; sha256sum * > SHA256SUMS.txt)
           echo 'Manual native arithmetic-only smoke. PASS here is not Sage notebooks qualified, numerical theory proof, or independent science.' >> "$GITHUB_STEP_SUMMARY"
