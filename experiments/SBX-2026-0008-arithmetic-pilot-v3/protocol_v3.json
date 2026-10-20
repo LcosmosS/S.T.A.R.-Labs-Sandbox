@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "experiment_id": "SBX-2026-0008",
+  "version": "v3",
+  "scope": "sandbox-only",
+  "stage": "DESIGN_FROZEN_BEFORE_V3_RESULT",
+  "preregistered_upstream": false,
+  "scientific_claim": false,
+  "revision_reason": "The full eligible v2 design has 1,068,501 unordered pairs and violates its 300,000 pair hard resource cap before any primary statistic or p-value was calculated. Preserve v2's BLOCKED record and define a separate, executable, pre-outcome cohort.",
+  "source": {
+    "repo": "JohnCremona/ecdata",
+    "commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+    "path": "allcurves/allcurves.00000-09999",
+    "sha256": "259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968",
+    "size_bytes": 2146401,
+    "rows": 64687,
+    "git_blob": "baab5801d7f81e1d5c44f5eb5acf4f1e100bc90b"
+  },
+  "canonical_core": {
+    "origin": "SBX-2026-0006 on Sandbox PR #25",
+    "v2_analysis_git_blob": "ccdf7676a5f9545886f015905ef9b5b4546b2c70",
+    "v2_preflight_git_blob": "577b6b6e37f29d375aabb1b61d15369f64fd5c37",
+    "dependency": "PR #25 must be merged without source-byte changes before v3 execution; code checks git-blob identities and fails closed on drift."
+  },
+  "cohort": {
+    "eligibility": "Use every one of the 64,687 source rows to form conductor groups. An eligible conductor has ≥2 distinct isogeny labels, >=1 within-label pair, >=1 between-label pair, and at least one rank block containing >=2 distinct isogeny labels.",
+    "subsample": "Sort eligible conductors ascending numerically, retain zero-based indices i such that i mod 16 = 0 (starting with index 0); retain EVERY curve in each retained conductor. No other filtering or imputation.",
+    "fixed_stride": 16,
+    "fixed_offset": 0,
+    "expected_eligible_conductors_before_stride": 3323,
+    "expected_stratum_count": 208,
+    "expected_curve_count": 3324,
+    "expected_pair_count": 67094,
+    "hard_pair_cap": 300000,
+    "interpretation": "systematic fixed-conductor-stratum subsample, not representative/randomly sampled claims. Selection based only on prespecified inclusion criteria and N ordering."
+  },
+  "invariants": "Exact general five-integer Weierstrass invariant formulas, independent cubic discriminant and c4^3-c6^2 check inherited from immutable v2 code. External Sage/eclib agreement remains required for independent replication.",
+  "primary": {
+    "maps": [
+      "ACSC-like [ln|Δ|/ln 10^30,ln N/ln 10^9,r]",
+      "Modified-MCJ [ln N/ln 10^9,asinh(j/1728)/40,ln(1+T)/ln 13]"
+    ],
+    "statistic": "equal-conductor-weighted mean of between-minus-within Euclidean arithmetic distances for ACSC minus the same contrast for modified-MCJ",
+    "null": "1999 Fisher-Yates shuffles of isogeny labels within exact (conductor,rank) blocks; features, block sizes, null draws and label multiplicity preserved",
+    "seed": 20261019,
+    "draws": 1999,
+    "tail": "greater_equal",
+    "tie_tolerance": 1e-14,
+    "p_value": "(1+# null >= observed - 1e-14)/2000",
+    "alpha_descriptive": 0.05
+  },
+  "sensitivity": {
+    "variants": [
+      "delta_29",
+      "delta_31",
+      "rank_half",
+      "rank_double",
+      "j_20",
+      "j_80"
+    ],
+    "method": "one-variable-at-a-time; all shown, no favorable re-selection"
+  },
+  "resource_policy": "Source/eligible/selected row and pair counts checked before primary; if any source or size mismatch, or >300,000 selected pairs, FAIL the experiment without changing stride or cap; a new version would be required.",
+  "outputs": [
+    "null_distribution.csv",
+    "result.json",
+    "run_manifest.json"
+  ],
+  "nonclaims": [
+    "No observational galaxy or cosmic study, no ACSC physics, no BSD/ECC/GLMPCT validation, no theorem, no confirmatory preregistration.",
+    "Earlier v2 never generated inference; SBX-0004 used a post-hoc rank-controlled null and is historical exploration.",
+    "A small arithmetic p-value has no physical interpretation by itself."
+  ],
+  "independent_checks_pending": [
+    "Separate Sage/eclib elliptic invariant computation",
+    "Independent second implementation of conditional null statistic",
+    "Independent source/runtime validation and held-out cohorts",
+    "All P0 native/container qualifications relevant to execution"
+  ],
+  "status_of_inference": "NOT_RUN",
+  "automatic_promotion": false
+}

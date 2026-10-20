@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0008",
+  "title": "Prospectively respecified resource-qualified arithmetic isogeny pilot v3",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "Compare fixed ACSC-like and modified-MCJ arithmetic distance contrasts on a systematic fixed-stride subset of eligible conductor strata, with 1999 conductor/rank-stratified null shuffles and seven prespecified scale variants.",
+  "falsifier": "A conditioned arithmetic-null statistic equals or exceeds the observed primary statistic, or the result changes under prespecified coordinate changes or independent implementation.",
+  "provenance": {
+    "input_kind": "observed",
+    "sources": [
+      "JohnCremona/ecdata commit 25cec5ecfec8b9f016eb1631ac633194c2bed39f source sha256 259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968.",
+      "SBX-2026-0006 v2 cohort_resource_receipt.json recorded 1,068,501 pairs exceeding frozen cap before executing its endpoint; v2 remains blocked; SBX-2026-0004 historical results not reused."
+    ],
+    "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "limitations": [
+    "Systematically sampled 208 eligible conductor strata are not a random representative cross-section of all ecdata.",
+    "No observed cosmic data or physical mapping is evaluated.",
+    "The v3 exploratory protocol is fixed before v3 inferential execution, but independent preregistration and reviewer replication remain absent.",
+    "No Legacy eligibility, peer review, mathematical theorem or promotion authority conferred."
+  ]
+}
