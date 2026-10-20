@@ -90,11 +90,11 @@ def run(source,out):
     protocol=(HERE/"protocol_v3.json").read_bytes()
     thisscript=Path(__file__).read_bytes()
     rawsrc=source.read_bytes()
-    if hashlib.sha256(rawsrc).hexdigest()!=core.ORIGIN_SHA256:
+    if hashlib.sha256(rawsrc).hexdigest()!=core.SHA:
         raise ValueError("Source digest drift")
     report={"experiment_id":"SBX-2026-0008","status":"exploratory","physical_observations":0,
             "automatic_promotion":False,"scientifically_reviewed":False,
-            "source_sha256":core.ORIGIN_SHA256,"rows_in_pinned_source":preflight["source_rows"],
+            "source_sha256":core.SHA,"rows_in_pinned_source":preflight["source_rows"],
             "eligible_conductors_full":len(all_eligible),"selected_conductors":len(selected),
             "selected_curves":count,"pair_count":pair_count,"seed":SEED,"draws":DRAWS,
             "primary":results[0],"sensitivity":results[1:],
@@ -120,9 +120,22 @@ def run(source,out):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--source",type=Path,required=True)
-    p.add_argument("--out",type=Path,required=True)
+    p.add_argument("--source",type=Path)
+    p.add_argument("--out",type=Path)
+    p.add_argument("--self-test",action="store_true")
     args=p.parse_args()
+    if args.self_test:
+        core=load_core()
+        assert core.SHA == "259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968"
+        assert core.DRAWS == DRAWS == 1999 and core.SEED == SEED == 20261019
+        assert core.MAX_PAIRS == CAP == 300000
+        assert core.VARIANTS == ("primary","delta_29","delta_31","rank_half","rank_double","j_20","j_80")
+        d,j=core.invariants((0,0,1,-1,0))
+        assert d == 37 and (j.numerator,j.denominator) == (110592,37)
+        print("PASS_STATIC_V3_CORE_LOCK_AND_SOURCE_SHA_SYMBOL; NO INFERENCE")
+        return 0
+    if args.source is None or args.out is None:
+        p.error("--source and --out required except --self-test")
     report=run(args.source,args.out)
     print(json.dumps({"experiment_id":report["experiment_id"],"primary":report["primary"],
                       "unresolved":report["unresolved"]},sort_keys=True))
