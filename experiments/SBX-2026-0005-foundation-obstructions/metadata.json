@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "SBX-2026-0005",
+  "title": "First-principles contradiction register for ACSC ECC and GLMPCT",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "epistemic_status": {
+    "claim_of_truth": false,
+    "independently_reviewed": false,
+    "eligible_for_automatic_promotion": false
+  },
+  "proposition": "Identify exact mathematical obstructions and proof obligations in three historical foundations without promoting claims.",
+  "falsifier": "Any listed obstruction is resolved by a valid counterproof under its exact assumptions or a correct source correction verified independently.",
+  "provenance": {
+    "input_kind": "none",
+    "sources": [
+      "ACSC 2025 monograph; ECC monograph; Cartography GLMPCT thesis; alternative-mapping criteria PDF."
+    ],
+    "upstream_commit": "51927a9b396cdfa880f3128440db4715acdec8dc"
+  },
+  "limitations": [
+    "All work remains sandbox-only, unreviewed and non-promotable.",
+    "No physical correspondence or theorem validity is asserted.",
+    "Original historical manuscripts remain unmodified; this experiment is a critical ledger, not a retrospective correction."
+  ]
+}
