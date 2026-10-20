@@ -36,6 +36,28 @@ def independent_invariants(a):
     return delta,Fraction(c4**3,delta)
 
 
+
+def check_native_values(*, label, lineno, conductor, delta, j, native_conductor, native_delta, native_j):
+    """Compare exact integer/rational values without cross-library equality coercion.
+
+    Sage QQ rationals and Python fractions.Fraction need not share equality
+    semantics. Normalize Sage's numerator/denominator to Python integers first.
+    Keep each discrepancy separately attributable in immutable failure receipts.
+    """
+    native_j_fraction = Fraction(int(native_j.numerator()), int(native_j.denominator()))
+    for name, expected, actual in (
+        ("conductor", conductor, native_conductor),
+        ("discriminant", delta, native_delta),
+        ("j_invariant", j, native_j_fraction),
+    ):
+        if actual != expected:
+            raise ValueError(
+                f"Independent native {name} mismatch for {label} at source line {lineno}: "
+                f"expected={expected}; native={actual}"
+            )
+    return native_j_fraction
+
+
 def execute(source):
     from sage.all import EllipticCurve, QQ
     data=source.read_bytes()
@@ -63,10 +85,12 @@ def execute(source):
             native_delta=int(E.discriminant())
             native_n=int(E.conductor())
             native_j=E.j_invariant()
-            j_fraction=Fraction(int(native_j.numerator()),int(native_j.denominator()))
-            if native_delta!=delta or native_n!=conductor or native_j!=j_fraction or native_j!=QQ(j.numerator)/QQ(j.denominator):
-                raise ValueError("Independent native arithmetic mismatch for line %d"%lineno)
-            rows.append({"line":lineno,"label":str(n)+"."+cl+str(num),
+            label=str(n)+"."+cl+str(num)
+            j_fraction=check_native_values(
+                label=label, lineno=lineno, conductor=conductor, delta=delta, j=j,
+                native_conductor=native_n, native_delta=native_delta, native_j=native_j,
+            )
+            rows.append({"line":lineno,"label":label,
                          "conductor":native_n,"discriminant":str(native_delta),
                          "j_numerator":str(j_fraction.numerator),
                          "j_denominator":str(j_fraction.denominator)})
@@ -91,6 +115,49 @@ def static_self_test():
         delta,j=independent_invariants(coeff)
         if delta != expected_delta or not isinstance(j,Fraction) or j != expected_j:
             raise AssertionError("Exact Weierstrass identity differs")
+        # Mimic a Sage QQ object that deliberately rejects equality to Python Fraction.
+        # The normalizer must use exact numerator/denominator accessors instead.
+        class NonCoercingNativeRational:
+            def numerator(self):
+                return j.numerator
+
+            def denominator(self):
+                return j.denominator
+
+            def __eq__(self, other):
+                raise AssertionError("Cross-library rational equality must not be used")
+
+        data = {
+            "label": str(match.group(1)) + "." + match.group(2) + match.group(3),
+            "lineno": 1,
+            "conductor": int(match.group(1)),
+            "delta": expected_delta,
+            "j": expected_j,
+            "native_conductor": int(match.group(1)),
+            "native_delta": expected_delta,
+            "native_j": NonCoercingNativeRational(),
+        }
+        if check_native_values(**data) != expected_j:
+            raise AssertionError("Normalized native j-invariant incorrect")
+        for field, corrupt, expected_name in (
+            ("native_conductor", data["conductor"] + 1, "conductor"),
+            ("native_delta", expected_delta + 1, "discriminant"),
+            ("native_j", Fraction(expected_j.numerator + expected_j.denominator, expected_j.denominator), "j_invariant"),
+        ):
+            failing = {**data, field: corrupt}
+            # Python Fraction uses attributes, unlike the Sage method API.
+            if field == "native_j":
+                class IncorrectNativeRational(NonCoercingNativeRational):
+                    def numerator(self):
+                        return expected_j.numerator + expected_j.denominator
+                failing["native_j"] = IncorrectNativeRational()
+            try:
+                check_native_values(**failing)
+            except ValueError as exc:
+                if f"native {expected_name} mismatch" not in str(exc):
+                    raise AssertionError("Native failure attributed to wrong field") from exc
+            else:
+                raise AssertionError("Known native arithmetic mismatch passed undetected")
     if PAT.fullmatch("11 a 1 [0,-1,1,-10,-20] 0 5 trailing"):
         raise AssertionError("Invalid trailing fields accepted")
     return True
