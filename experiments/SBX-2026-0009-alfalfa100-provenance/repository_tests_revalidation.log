@@ -1,0 +1,253 @@
+PASS: unrestricted repository suite; 141 tests
+test_curated_historical_relocation_preserves_git_blob_mode_and_digest (test_archive_integrity.ArchiveTests.test_curated_historical_relocation_preserves_git_blob_mode_and_digest)
+Permit only an explicitly named root archive move with identical content. ... ok
+test_duplicate_inventory_keys_rejected (test_archive_integrity.ArchiveTests.test_duplicate_inventory_keys_rejected)
+Reject conflicting duplicate keys in the archival manifest. ... ok
+test_gitmodules_requires_complete_fixed_submodule_set (test_archive_integrity.ArchiveTests.test_gitmodules_requires_complete_fixed_submodule_set)
+Reject partial submodule checkouts and modified Git URLs. ... ok
+test_historical_layout_accepts_only_explicitly_allowlisted_files (test_archive_integrity.ArchiveTests.test_historical_layout_accepts_only_explicitly_allowlisted_files)
+Prevent arbitrary new research from entering historical via relocation. ... ok
+test_inventory_cannot_be_rebound_to_changed_bytes (test_archive_integrity.ArchiveTests.test_inventory_cannot_be_rebound_to_changed_bytes)
+Reject altered archived content despite a rewritten SHA-256 manifest. ... ok
+test_missing_traversal_absolute_and_symlink_paths (test_archive_integrity.ArchiveTests.test_missing_traversal_absolute_and_symlink_paths)
+Reject unsafe or nonexistent archive file paths. ... ok
+test_mode_only_change_to_historical_file_is_rejected (test_archive_integrity.ArchiveTests.test_mode_only_change_to_historical_file_is_rejected)
+Reject chmod-only changes to a preserved file without altered bytes. ... ok
+test_new_research_cannot_bypass_experiment_intake (test_archive_integrity.ArchiveTests.test_new_research_cannot_bypass_experiment_intake)
+Reject unclassified research outside the sandbox experiment namespace. ... ok
+test_pinned_external_gitlink_identity_and_rogue_rejection (test_archive_integrity.ArchiveTests.test_pinned_external_gitlink_identity_and_rogue_rejection)
+Only the precise three foreign commits are admitted as gitlinks. ... ok
+test_reference_rejects_wrong_checkout_revision (test_archive_integrity.ArchiveTests.test_reference_rejects_wrong_checkout_revision)
+Reject an upstream checkout whose Git HEAD is not the pinned commit. ... ok
+test_reference_verifies_original_bytes_and_detects_rebinding (test_archive_integrity.ArchiveTests.test_reference_verifies_original_bytes_and_detects_rebinding)
+Detect altered reference hashes and modified upstream source bytes. ... ok
+test_relocated_readme_is_checked_but_live_readme_is_editable (test_archive_integrity.ArchiveTests.test_relocated_readme_is_checked_but_live_readme_is_editable)
+Apply archive mode checks to the relocated original README only. ... ok
+test_root_gitmodules_disallowed_without_real_gitlinks (test_archive_integrity.ArchiveTests.test_root_gitmodules_disallowed_without_real_gitlinks)
+Reject a misleading submodule manifest without the fixed commits. ... ok
+test_second_stage_names_are_explicit_and_exclude_root_policy_files (test_archive_integrity.ArchiveTests.test_second_stage_names_are_explicit_and_exclude_root_policy_files)
+Authorize only the 29 audited original non-Markdown research objects. ... ok
+test_second_stage_relocation_is_exactly_one_path_and_original_blob (test_archive_integrity.ArchiveTests.test_second_stage_relocation_is_exactly_one_path_and_original_blob)
+Reject missing, duplicate, chmod and modified-blob moved research. ... ok
+test_unapproved_second_stage_relocation_is_rejected (test_archive_integrity.ArchiveTests.test_unapproved_second_stage_relocation_is_rejected)
+Leave every other original file at its pinned source location. ... ok
+test_unlisted_original_cannot_move_even_with_matching_bytes (test_archive_integrity.ArchiveTests.test_unlisted_original_cannot_move_even_with_matching_bytes)
+Reject a preserved-file relocation not present in the vetted allowance. ... ok
+test_upstream_inventory_must_include_exactly_24_paths (test_archive_integrity.ArchiveTests.test_upstream_inventory_must_include_exactly_24_paths)
+Reject missing and unexpected entries even when remaining hashes look valid. ... ok
+test_expected_real_arithmetic_calculation_is_byte_identical (test_arithmetic_pilot.ArithmeticPilotTests.test_expected_real_arithmetic_calculation_is_byte_identical) ... ok
+test_general_weierstrass_arithmetic (test_arithmetic_pilot.ArithmeticPilotTests.test_general_weierstrass_arithmetic) ... ok
+test_numerical_result_is_nonconfirmatory (test_arithmetic_pilot.ArithmeticPilotTests.test_numerical_result_is_nonconfirmatory) ... ok
+test_readiness_report_nonblocking_and_hashes (test_arithmetic_pilot.ArithmeticPilotTests.test_readiness_report_nonblocking_and_hashes) ... ok
+test_source_and_input_tampering_rejected (test_arithmetic_pilot.ArithmeticPilotTests.test_source_and_input_tampering_rejected) ... ok
+test_exactly_eighteen_original_root_files_are_relocated (test_historical_organization.HistoricalOrganizationTests.test_exactly_eighteen_original_root_files_are_relocated)
+Confirm all permitted PDF/Python/CSV files live only in historical/. ... ok
+test_historical_index_contains_all_47_original_moved_files (test_historical_organization.HistoricalOrganizationTests.test_historical_index_contains_all_47_original_moved_files)
+Prevent incomplete historical navigation after both cleanup stages. ... ok
+test_root_contains_no_pdf_py_or_csv_files (test_historical_organization.HistoricalOrganizationTests.test_root_contains_no_pdf_py_or_csv_files)
+Ensure no targeted extension is still presented on the root page. ... ok
+test_second_stage_all_additional_files_preserve_original_git_identity (test_historical_organization.HistoricalOrganizationTests.test_second_stage_all_additional_files_preserve_original_git_identity)
+Check exactly 29 original baseline files, blob IDs, modes and hashes. ... ok
+test_second_stage_root_contains_only_allowed_documentation (test_historical_organization.HistoricalOrganizationTests.test_second_stage_root_contains_only_allowed_documentation)
+Retain Markdown, license, ignorefile and only pinned Git metadata. ... ok
+test_circle_graph_cocycle_is_closed_but_nonexact (test_playground_cochains.FirstPrinciplesCochainTests.test_circle_graph_cocycle_is_closed_but_nonexact)
+A nonzero loop integral obstructs exactness on a graph S1. ... ok
+test_demo_does_not_claim_cohomological_physics (test_playground_cochains.FirstPrinciplesCochainTests.test_demo_does_not_claim_cohomological_physics)
+Check synthetic demonstration has explicit epistemic nonclaims. ... ok
+test_discrete_gradient_telescopes_on_closed_loop (test_playground_cochains.FirstPrinciplesCochainTests.test_discrete_gradient_telescopes_on_closed_loop)
+An exact 1-cochain has zero circulation around any oriented cycle. ... ok
+test_exact_gradients_survive_large_and_float_potentials (test_playground_cochains.FirstPrinciplesCochainTests.test_exact_gradients_survive_large_and_float_potentials)
+Exact boundary sums must telescope despite floating-point cancellation. ... ok
+test_nonfinite_and_unknown_vertices_rejected (test_playground_cochains.FirstPrinciplesCochainTests.test_nonfinite_and_unknown_vertices_rejected)
+Invalid potentials or edge references fail without silent repairs. ... ok
+test_catalog_is_pinned_and_remote_submission_disabled (test_playground_ported_sources.OfflineSciServerTests.test_catalog_is_pinned_and_remote_submission_disabled)
+Validate exact DR18 SQL sources and both blocked submission flags. ... ok
+test_catalog_tampering_is_rejected_before_execution (test_playground_ported_sources.OfflineSciServerTests.test_catalog_tampering_is_rejected_before_execution)
+Reject a forged catalog with remote submission switched on. ... ok
+test_cli_list_and_validate_do_not_create_local_receipts (test_playground_ported_sources.OfflineSciServerTests.test_cli_list_and_validate_do_not_create_local_receipts)
+Exercise CLI read paths without giving it credentials or a state dir. ... ok
+test_prepare_only_canary_locally_with_private_receipt (test_playground_ported_sources.OfflineSciServerTests.test_prepare_only_canary_locally_with_private_receipt)
+Create only local canary receipt files and reject the 200k plan. ... ok
+test_24_files_match_pinned_upstream_git_blobs (test_playground_ported_sources.PortIntegrityTests.test_24_files_match_pinned_upstream_git_blobs)
+Reject altered source copies or missing mapped files. ... ok
+test_critical_source_origins_and_nonclaims (test_playground_ported_sources.PortIntegrityTests.test_critical_source_origins_and_nonclaims)
+Do not silently label an unmerged ECC draft or manuscript ACSC v2. ... ok
+test_ecc_control_is_not_executed_or_promoted (test_playground_ported_sources.PortIntegrityTests.test_ecc_control_is_not_executed_or_promoted)
+Require the corrected v3 negative-control code as a pinned source. ... ok
+test_p0_ansatz_has_all_five_frozen_candidates (test_playground_ported_sources.PortIntegrityTests.test_p0_ansatz_has_all_five_frozen_candidates)
+Verify the exact closed search-frame identities are preserved. ... ok
+test_real_git_submodules_match_exact_upstream_pins (test_playground_ported_sources.PortIntegrityTests.test_real_git_submodules_match_exact_upstream_pins)
+Assert real 160000 gitlinks and the published opt-in remote URLs. ... ok
+test_arithmetic_mapping_axes_are_reproducible (test_playground_workbench.SandboxWorkbenchTests.test_arithmetic_mapping_axes_are_reproducible)
+Check basic logarithmic/rank identities independently of upstream. ... ok
+test_boolean_seed_and_unbounded_simulations_rejected (test_playground_workbench.SandboxWorkbenchTests.test_boolean_seed_and_unbounded_simulations_rejected)
+Keep reproducible randomization parameters finite and well typed. ... ok
+test_constant_response_rejected (test_playground_workbench.SandboxWorkbenchTests.test_constant_response_rejected)
+Reject undefined Pearson correlation for a constant target. ... ok
+test_csv_header_and_duplicate_json_keys_rejected (test_playground_workbench.SandboxWorkbenchTests.test_csv_header_and_duplicate_json_keys_rejected)
+Disallow conflicting schema fields and duplicate JSON bindings. ... ok
+test_deterministic_synthetic_null_result (test_playground_workbench.SandboxWorkbenchTests.test_deterministic_synthetic_null_result)
+Repeat identical seeds and input bytes to obtain identical outcomes. ... ok
+test_domain_restrictions (test_playground_workbench.SandboxWorkbenchTests.test_domain_restrictions)
+Reject zero discriminant, invalid conductor and fractional rank. ... ok
+test_duplicate_rows_retained_not_silently_removed (test_playground_workbench.SandboxWorkbenchTests.test_duplicate_rows_retained_not_silently_removed)
+Preserve duplicate rows and record their count. ... ok
+test_exchangeability_null_is_explicitly_limited (test_playground_workbench.SandboxWorkbenchTests.test_exchangeability_null_is_explicitly_limited)
+Decline unimplemented null models rather than fabricate significance. ... ok
+test_extra_or_authoritative_study_fields_rejected (test_playground_workbench.SandboxWorkbenchTests.test_extra_or_authoritative_study_fields_rejected)
+Reject false scientific promotion and unknown status claims. ... ok
+test_input_cannot_escape_experiment_directory (test_playground_workbench.SandboxWorkbenchTests.test_input_cannot_escape_experiment_directory)
+Prevent file traversal, absolute paths and symlink input reads. ... ok
+test_missing_values_fail_closed (test_playground_workbench.SandboxWorkbenchTests.test_missing_values_fail_closed)
+Refuse incomplete measurements without silent row filtering. ... ok
+test_output_writes_only_inside_runs (test_playground_workbench.SandboxWorkbenchTests.test_output_writes_only_inside_runs)
+Contain optional JSON outputs without changing experimental input. ... ok
+test_physical_units_cannot_be_inserted_without_calibration (test_playground_workbench.SandboxWorkbenchTests.test_physical_units_cannot_be_inserted_without_calibration)
+Require dimensionless mathematical coordinates in the current runner. ... ok
+test_seed_controls_null_realizations (test_playground_workbench.SandboxWorkbenchTests.test_seed_controls_null_realizations)
+Changing a seed alters permutations but not the observed statistic. ... ok
+test_snapshot_is_exactly_pinned_source_without_gates (test_playground_workbench.SandboxWorkbenchTests.test_snapshot_is_exactly_pinned_source_without_gates)
+Hash all five source snapshots against the recorded Git blob IDs. ... ok
+test_symlink_above_experiment_root_is_not_an_input_violation (test_playground_workbench.SandboxWorkbenchTests.test_symlink_above_experiment_root_is_not_an_input_violation)
+Allow a linked ancestor when neither root nor input subtree is linked. ... ok
+test_symlink_within_experiment_root_is_still_rejected (test_playground_workbench.SandboxWorkbenchTests.test_symlink_within_experiment_root_is_still_rejected)
+Reject linked input directories even when they resolve inside root. ... ok
+test_coverage_manifest_defect_fails (test_qualification_inventory.QualificationInventoryTests.test_coverage_manifest_defect_fails) ... ok
+test_digest_pinned_sage_and_remaining_runtime_blockers (test_qualification_inventory.QualificationInventoryTests.test_digest_pinned_sage_and_remaining_runtime_blockers) ... ok
+test_eighteen_workflows_and_eight_optional_suites (test_qualification_inventory.QualificationInventoryTests.test_eighteen_workflows_and_eight_optional_suites) ... ok
+test_recovered_lfs_includes_pinned_audit_dependencies (test_qualification_inventory.QualificationInventoryTests.test_recovered_lfs_includes_pinned_audit_dependencies) ... ok
+test_archive_traversal_links_duplicates_and_limits (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_archive_traversal_links_duplicates_and_limits) ... ok
+test_artifact_empty_logs_inventory_and_bytes (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_artifact_empty_logs_inventory_and_bytes) ... ok
+test_csv_schema_count_width_keys_and_large_ids (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_csv_schema_count_width_keys_and_large_ids) ... ok
+test_duplicate_json_key_rejected (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_duplicate_json_key_rejected) ... ok
+test_mismatching_input_emits_failure_receipt_and_preserves_bytes (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_mismatching_input_emits_failure_receipt_and_preserves_bytes) ... ok
+test_mutated_source_and_extra_module_rejected (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_mutated_source_and_extra_module_rejected) ... ok
+test_pinned_sources (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_pinned_sources) ... ok
+test_pointer_missing_and_hash_drift_rejected (test_reproducibility_integrity.ReproducibilityIntegrityTests.test_pointer_missing_and_hash_drift_rejected) ... ok
+test_actions_are_pinned_and_no_privileged_acquisition_exists (test_reproducibility_workflow.WorkflowBoundaryTests.test_actions_are_pinned_and_no_privileged_acquisition_exists) ... ok
+test_numerical_collection_is_explicit_and_skips_are_rejected (test_reproducibility_workflow.WorkflowBoundaryTests.test_numerical_collection_is_explicit_and_skips_are_rejected) ... ok
+test_duplicate_json_keys_rejected (test_sandbox_policy.AdditionalBoundaryTests.test_duplicate_json_keys_rejected)
+Reject ambiguous experiment JSON containing duplicate keys. ... ok
+test_false_control_requires_visible_false_label (test_sandbox_policy.AdditionalBoundaryTests.test_false_control_requires_visible_false_label)
+Require deliberately false controls to be visibly disclosed. ... ok
+test_file_and_symlink_experiment_entries_rejected (test_sandbox_policy.AdditionalBoundaryTests.test_file_and_symlink_experiment_entries_rejected)
+Reject unclassified files and symlinks within experiments. ... ok
+test_nested_authority_fields_are_rejected (test_sandbox_policy.AdditionalBoundaryTests.test_nested_authority_fields_are_rejected)
+Reject unapproved nested authority flags and unpinned revisions. ... ok
+test_unknown_keys_and_boolean_schema_version_are_rejected (test_sandbox_policy.AdditionalBoundaryTests.test_unknown_keys_and_boolean_schema_version_are_rejected)
+Reject schema violations and malformed metadata field types. ... ok
+test_missing_metadata_rejected (test_sandbox_policy.PolicyTests.test_missing_metadata_rejected)
+Require metadata for each new experiment. ... ok
+test_prevents_claim_of_truth_and_review_self_attestation (test_sandbox_policy.PolicyTests.test_prevents_claim_of_truth_and_review_self_attestation)
+Reject self-certified truth and independent-review claims. ... ok
+test_prohibits_automatic_promotion (test_sandbox_policy.PolicyTests.test_prohibits_automatic_promotion)
+Reject any attempt to enable automatic upstream promotion. ... ok
+test_prohibits_self_certification (test_sandbox_policy.PolicyTests.test_prohibits_self_certification)
+Prevent experiments from asserting validated scientific status. ... ok
+test_upstream_authority_directory_rejected (test_sandbox_policy.PolicyTests.test_upstream_authority_directory_rejected)
+Reject the reserved controlled-execution authority namespace. ... ok
+test_valid_sample_and_legacy_archive (test_sandbox_policy.PolicyTests.test_valid_sample_and_legacy_archive)
+Allow valid experiment metadata without reclassifying old archive files. ... ok
+test_byte_and_row_mutation_fail_closed (test_sandbox_reproducibility.ReproducibilityContractTests.test_byte_and_row_mutation_fail_closed)
+Reject unrecorded dataset edits, even when row structure still parses. ... ok
+test_discovers_only_opted_in_experiment_manifests (test_sandbox_reproducibility.ReproducibilityContractTests.test_discovers_only_opted_in_experiment_manifests)
+Read only SBX manifests; no data or source code is executed. ... ok
+test_duplicate_json_keys_are_rejected (test_sandbox_reproducibility.ReproducibilityContractTests.test_duplicate_json_keys_are_rejected)
+Detect conflicting duplicate keys in an otherwise plausible contract. ... ok
+test_forbidden_sql_and_multi_statements_rejected (test_sandbox_reproducibility.ReproducibilityContractTests.test_forbidden_sql_and_multi_statements_rejected)
+Block obvious DML, unbounded SQL and multiple statements. ... ok
+test_malformed_csv_and_duplicate_headers_fail (test_sandbox_reproducibility.ReproducibilityContractTests.test_malformed_csv_and_duplicate_headers_fail)
+Reject inconsistent fields or duplicate schema declarations. ... ok
+test_path_traversal_and_symlink_inputs_forbidden (test_sandbox_reproducibility.ReproducibilityContractTests.test_path_traversal_and_symlink_inputs_forbidden)
+Reject input substitution through absolute and symlinked paths. ... ok
+test_scientific_authority_flags_are_unconditionally_false (test_sandbox_reproducibility.ReproducibilityContractTests.test_scientific_authority_flags_are_unconditionally_false)
+No user-supplied reproducibility receipt can self-certify a claim. ... ok
+test_unchanged_length_mutation_rejected_by_hash (test_sandbox_reproducibility.ReproducibilityContractTests.test_unchanged_length_mutation_rejected_by_hash)
+A same-length changed byte does not satisfy the declared SHA-256. ... ok
+test_unexpected_fields_and_boolean_sizes_rejected (test_sandbox_reproducibility.ReproducibilityContractTests.test_unexpected_fields_and_boolean_sizes_rejected)
+Reject schema expansion and booleans masquerading as integer sizes. ... ok
+test_valid_contract_retains_duplicates_and_nulls (test_sandbox_reproducibility.ReproducibilityContractTests.test_valid_contract_retains_duplicates_and_nulls)
+Preserve all rows and describe missing values rather than dropping any. ... ok
+test_every_automatic_claim_has_a_real_ci_job (test_sandbox_reproducibility_coverage.CoverageIntegrityTests.test_every_automatic_claim_has_a_real_ci_job)
+Identify every mapped check by its actual workflow job ID. ... ok
+test_exactly_eighteen_original_workflows_are_accounted_for (test_sandbox_reproducibility_coverage.CoverageIntegrityTests.test_exactly_eighteen_original_workflows_are_accounted_for)
+Require a one-to-one inventory of the upstream workflow names. ... ok
+test_extended_checks_require_explicit_manual_selection (test_sandbox_reproducibility_coverage.CoverageIntegrityTests.test_extended_checks_require_explicit_manual_selection)
+Require no push/PR trigger and no privileged write or secret tokens. ... ok
+test_scientific_gates_are_never_claimed_by_coding_checks (test_sandbox_reproducibility_coverage.CoverageIntegrityTests.test_scientific_gates_are_never_claimed_by_coding_checks)
+Do not grant scientific review or promotion from a passing pipeline. ... ok
+test_user_documentation_has_actual_code_fences (test_sandbox_reproducibility_coverage.CoverageIntegrityTests.test_user_documentation_has_actual_code_fences)
+Reject escaped backticks that break documented commands/examples. ... ok
+test_author_cannot_approve_self (test_stewardship.StewardshipTests.test_author_cannot_approve_self) ... ok
+test_change_request_blocks_even_with_other_approval (test_stewardship.StewardshipTests.test_change_request_blocks_even_with_other_approval) ... ok
+test_current_head_approval_passes (test_stewardship.StewardshipTests.test_current_head_approval_passes) ... ok
+test_dismissal_does_not_clear_change_request (test_stewardship.StewardshipTests.test_dismissal_does_not_clear_change_request) ... ok
+test_dismissed_approval_does_not_count (test_stewardship.StewardshipTests.test_dismissed_approval_does_not_count) ... ok
+test_evaluate_returns_failed_result_for_invalid_policy (test_stewardship.StewardshipTests.test_evaluate_returns_failed_result_for_invalid_policy) ... ok
+test_experiment_only_passes_without_review (test_stewardship.StewardshipTests.test_experiment_only_passes_without_review) ... ok
+test_experiment_plus_protected_fails_without_approval (test_stewardship.StewardshipTests.test_experiment_plus_protected_fails_without_approval) ... ok
+test_file_snapshot_from_an_old_head_cannot_exempt_current_head (test_stewardship.StewardshipTests.test_file_snapshot_from_an_old_head_cannot_exempt_current_head) ... ok
+test_incomplete_files_fail_closed (test_stewardship.StewardshipTests.test_incomplete_files_fail_closed) ... ok
+test_incomplete_review_or_permission_results_fail_closed (test_stewardship.StewardshipTests.test_incomplete_review_or_permission_results_fail_closed) ... ok
+test_invalid_policy_pattern_is_rejected_on_load (test_stewardship.StewardshipTests.test_invalid_policy_pattern_is_rejected_on_load) ... ok
+test_lost_write_permission_fails (test_stewardship.StewardshipTests.test_lost_write_permission_fails) ... ok
+test_malformed_changed_file_row_fails_closed (test_stewardship.StewardshipTests.test_malformed_changed_file_row_fails_closed) ... ok
+test_malformed_review_rows_and_users_fail_closed (test_stewardship.StewardshipTests.test_malformed_review_rows_and_users_fail_closed) ... ok
+test_omitted_completeness_flags_fail_closed (test_stewardship.StewardshipTests.test_omitted_completeness_flags_fail_closed) ... ok
+test_rename_checks_old_and_new_path (test_stewardship.StewardshipTests.test_rename_checks_old_and_new_path) ... ok
+test_review_order_uses_review_id_when_timestamps_tie (test_stewardship.StewardshipTests.test_review_order_uses_review_id_when_timestamps_tie) ... ok
+test_stale_approval_fails (test_stewardship.StewardshipTests.test_stale_approval_fails) ... ok
+test_unknown_and_template_paths_are_protected (test_stewardship.StewardshipTests.test_unknown_and_template_paths_are_protected) ... ok
+test_check_publisher_reuses_owned_completed_run (test_stewardship_app.AppIntegrationTests.test_check_publisher_reuses_owned_completed_run) ... ok
+test_check_publisher_uses_dedicated_name_and_app_source (test_stewardship_app.AppIntegrationTests.test_check_publisher_uses_dedicated_name_and_app_source) ... ok
+test_current_head_approval_passes_protected_pr (test_stewardship_app.AppIntegrationTests.test_current_head_approval_passes_protected_pr) ... ok
+test_delivery_queue_deduplicates_and_completes_durably (test_stewardship_app.AppIntegrationTests.test_delivery_queue_deduplicates_and_completes_durably) ... ok
+test_dismissed_approval_fails_protected_pr (test_stewardship_app.AppIntegrationTests.test_dismissed_approval_fails_protected_pr) ... ok
+test_dismissed_review_webhook_recomputes_protected_pr (test_stewardship_app.AppIntegrationTests.test_dismissed_review_webhook_recomputes_protected_pr) ... ok
+test_experiment_only_pr_passes_without_review_or_permission_reads (test_stewardship_app.AppIntegrationTests.test_experiment_only_pr_passes_without_review_or_permission_reads) ... ok
+test_head_change_after_file_listing_fails_closed (test_stewardship_app.AppIntegrationTests.test_head_change_after_file_listing_fails_closed) ... ok
+test_incomplete_reviewer_permission_fails_closed (test_stewardship_app.AppIntegrationTests.test_incomplete_reviewer_permission_fails_closed) ... ok
+test_invalid_deployed_policy_publishes_failure_instead_of_crashing (test_stewardship_app.AppIntegrationTests.test_invalid_deployed_policy_publishes_failure_instead_of_crashing) ... ok
+test_malformed_file_and_review_rows_publish_failure (test_stewardship_app.AppIntegrationTests.test_malformed_file_and_review_rows_publish_failure) ... ok
+test_periodic_reconciliation_catches_permission_revocation (test_stewardship_app.AppIntegrationTests.test_periodic_reconciliation_catches_permission_revocation) ... ok
+test_reconciliations_are_serialized_against_out_of_order_workers (test_stewardship_app.AppIntegrationTests.test_reconciliations_are_serialized_against_out_of_order_workers) ... ok
+test_same_sha_protected_pr_failure_prevents_experiment_sibling_leak (test_stewardship_app.AppIntegrationTests.test_same_sha_protected_pr_failure_prevents_experiment_sibling_leak) ... ok
+test_shared_head_sha_fails_closed_even_when_both_prs_are_experiment_only (test_stewardship_app.AppIntegrationTests.test_shared_head_sha_fails_closed_even_when_both_prs_are_experiment_only) ... ok
+test_stale_approval_fails_protected_pr (test_stewardship_app.AppIntegrationTests.test_stale_approval_fails_protected_pr) ... ok
+test_stale_webhook_payload_cannot_restore_a_dismissed_approval (test_stewardship_app.AppIntegrationTests.test_stale_webhook_payload_cannot_restore_a_dismissed_approval) ... ok
+test_http_lifecycle_events_return_202_without_enqueue (test_stewardship_lifecycle.LifecycleWebhookTests.test_http_lifecycle_events_return_202_without_enqueue) ... /home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b21d0130>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b22cbc40>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b1f55120>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b1f54f40>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b1f55210>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b1f55300>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/kepler/miniforge3/lib/python3.13/unittest/mock.py:428: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7112b1f553f0>
+  def __init__(self, /, *args, **kwargs):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+127.0.0.1 - "POST /webhook HTTP/1.1" 202 -
+127.0.0.1 - "POST /webhook HTTP/1.1" 202 -
+127.0.0.1 - "POST /webhook HTTP/1.1" 202 -
+127.0.0.1 - "POST /webhook HTTP/1.1" 503 -
+127.0.0.1 - "POST /webhook HTTP/1.1" 401 -
+ok
+test_lifecycle_events_without_repository_are_ignored (test_stewardship_lifecycle.LifecycleWebhookTests.test_lifecycle_events_without_repository_are_ignored) ... ok
+test_pr_without_repository_fails_closed (test_stewardship_lifecycle.LifecycleWebhookTests.test_pr_without_repository_fails_closed) ... ok
+test_queued_lifecycle_events_skip_reconciliation (test_stewardship_lifecycle.LifecycleWebhookTests.test_queued_lifecycle_events_skip_reconciliation) ... ok
+test_review_without_repository_fails_closed (test_stewardship_lifecycle.LifecycleWebhookTests.test_review_without_repository_fails_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 141 tests in 1.570s
+
+OK

@@ -1,0 +1,9 @@
+test_authenticated_reconciliation (__main__.ReconciliationTests.test_authenticated_reconciliation) ... ok
+test_missing_replacement_rejected (__main__.ReconciliationTests.test_missing_replacement_rejected) ... ok
+test_scientific_cell_mutation_rejected (__main__.ReconciliationTests.test_scientific_cell_mutation_rejected) ... ok
+test_wrong_expected_hash_rejected (__main__.ReconciliationTests.test_wrong_expected_hash_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.120s
+
+OK
