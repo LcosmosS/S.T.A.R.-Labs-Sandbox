@@ -110,7 +110,7 @@ def main():
         return 0
     if args.source is None or args.out is None or args.image_digest is None or args.runner_commit is None:
         p.error("--source, --out, --image-digest and --runner-commit are required unless --self-test")
-    if re.fullmatch(r"[^@\\s]+@sha256:[0-9a-f]{64}",args.image_digest) is None:
+    if re.fullmatch(r"[A-Za-z0-9_./:-]+@sha256:[0-9a-f]{64}",args.image_digest) is None:
         p.error("--image-digest must be a pinned image reference with sha256 digest")
     if re.fullmatch(r"[0-9a-f]{40}",args.runner_commit) is None:
         p.error("--runner-commit must be a full Git commit SHA")
