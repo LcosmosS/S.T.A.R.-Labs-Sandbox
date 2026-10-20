@@ -30,6 +30,7 @@ class QualificationInventoryTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/sandbox-extended-reproducibility.yml").read_text()
         immutable = "sagemath/sagemath@sha256:310dfe23fc786f3a5a06a7b0387c60201ec79b32c0db941b7624505ee5edb565"
         self.assertEqual(workflow.count("image: " + immutable), 2)
+        self.assertEqual(workflow.count("PINNED_SAGE_IMAGE: " + immutable), 1)
         self.assertNotIn("image: sagemath/sagemath:latest", workflow)
 
     def test_coverage_manifest_defect_fails(self):
