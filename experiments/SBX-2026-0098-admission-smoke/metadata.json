@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "SBX-2026-0098",
-  "title": "P0 live zero-scientific-approval admission smoke test",
-  "status": "intentionally-false-control",
+  "title": "P0 prospective live zero-scientific-approval admission smoke test",
+  "status": "speculative",
   "scope": "sandbox-only",
   "epistemic_status": {
     "claim_of_truth": false,
