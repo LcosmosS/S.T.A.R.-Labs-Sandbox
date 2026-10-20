@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "experiment_id": "SBX-2026-0006",
+  "status": "exploratory",
+  "scope": "sandbox-only",
+  "frozen_at_design_stage": "before_running_v2_endpoint",
+  "preregistered_confirmatory": false,
+  "source": {
+    "repository": "JohnCremona/ecdata",
+    "commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+    "path": "allcurves/allcurves.00000-09999",
+    "sha256": "259f3846329395b371e8079c77a6f1097adaebc98a054974573e241416efa968",
+    "size_bytes": 2146401,
+    "lines": 64687
+  },
+  "cohort_rule": "Use ALL source rows; include a conductor stratum if it has at least two distinct isogeny labels, at least one within-class unordered pair and one between-class unordered pair, and at least one (conductor,rank) block containing two distinct isogeny labels. No manual exclusions, missing-row imputation, post-hoc source-band changes or class-size truncation. Abort if source digest/census or invariant identities fail.",
+  "preliminary_observations": "None for this v2 endpoint. The prior 38-curve pilot p=0.005 (unconditioned) and p=0.344 (post-hoc rank-conditioned) are historical exploratory outcomes and must not be used as new confirmatory evidence.",
+  "invariant_calculation": "Use full five-integer Weierstrass a-invariants; derive b2,b4,b6,b8,c4,c6,Delta,j with Python exact integers/Fraction. Independently check delta against completed-square cubic discriminant and c4^3-c6^2=1728*Delta. An independent Sage/eclib calculator remains a separate required external crosscheck.",
+  "primary": {
+    "maps": [
+      "ACSC-like: (ln|Delta|/ln(10^30), ln N/ln(10^9), r)",
+      "Modified-MCJ: (ln N/ln(10^9), asinh(j/1728)/40, ln(1+T)/ln(13))"
+    ],
+    "distances": "Unweighted Euclidean distances on strictly dimensionless coordinates. Curves receive no physical positions.",
+    "statistic": "Across included conductors, equal-weight mean[(between-label mean pair distance - within-label mean pair distance) for ACSC - same for modified MCJ].",
+    "null": "Fisher-Yates labels shuffled strictly within each (conductor,rank) block. Keep all coordinates, block sizes, multiplicities and conductor memberships fixed. Singleton or homogeneous blocks are unchanged.",
+    "seed": 20261019,
+    "draws": 1999,
+    "tail": "one-sided greater_or_equal",
+    "p_value_rule": "(1 + #null_statistics >= T_observed - 1e-14)/(B+1)",
+    "alpha": 0.05
+  },
+  "sensitivity": {
+    "coordinate_scales": [
+      "ACSC delta denominator log(10^29), log(10^30), log(10^31)",
+      "Rank axis multiplied by 0.5, 1, 2",
+      "MCJ j asinh denominator 20,40,80"
+    ],
+    "methods": "Exactly six one-factor-at-a-time ablations plus the unmodified primary; report observed statistic and separately permuted p-value for each, using the same seeded conditional shuffle sequence. No 3x3x3 factorial search or favorable-scale selection."
+  },
+  "blocked_requirements": [
+    "External independent Sage/eclib invariant agreement; source snippet checks alone are insufficient",
+    "Independent second implementation of permutation statistic",
+    "Pinned executable analysis and exact-head PASS/FAIL receipt",
+    "Held-out new arithmetic source ranges or prospective replication",
+    "Any physical or astronomical observational endpoint"
+  ],
+  "nonclaims": [
+    "No new preregistered upstream test is being claimed; v2 protocol is frozen here before running v2, but not independently registered in Legacy.",
+    "No ACSC theorem, physical mapping, BSD, ECC or GLMPCT proof.",
+    "Null testing is arithmetic-only and cannot establish any causal/physical mechanism."
+  ],
+  "status_of_execution": "NOT_RUN",
+  "status_of_physical_correspondence": "NOT_STARTED",
+  "automatic_promotion": false,
+  "resource_budget": "Before drawing permutations, abort without analysis or subsampling if total per-conductor unordered pairs across the frozen eligible cohort exceeds 300000. Preserve source cohort and eligibility rules; resource failures are BLOCKED and require a prospective versioned protocol change.",
+  "execution_entrypoint": "python3 -I experiments/SBX-2026-0006-arithmetic-pilot-v2/analysis.py --source /path/to/allcurves.00000-09999 --out /new/empty/run-dir",
+  "output_contract": [
+    "result.json",
+    "null_distribution.csv",
+    "run_manifest.json"
+  ]
+}
