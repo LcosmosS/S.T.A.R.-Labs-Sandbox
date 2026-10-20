@@ -1,0 +1,93 @@
+PASS: all 31 previous checksum entries before regeneration (runtime metadata checked under renamed path)
+
+candidate-input-contracts PASS
+{
+  "automatic_promotion": false,
+  "experiment_contracts_checked": 1,
+  "reports": [
+    {
+      "artifacts": [
+        {
+          "columns": [
+            "source_line",
+            "conductor",
+            "isogeny",
+            "number",
+            "a1",
+            "a2",
+            "a3",
+            "a4",
+            "a6",
+            "rank",
+            "torsion_order"
+          ],
+          "duplicate_rows_retained": 0,
+          "format": "csv",
+          "null_count_by_column": {
+            "a1": 0,
+            "a2": 0,
+            "a3": 0,
+            "a4": 0,
+            "a6": 0,
+            "conductor": 0,
+            "isogeny": 0,
+            "number": 0,
+            "rank": 0,
+            "source_line": 0,
+            "torsion_order": 0
+          },
+          "path": "curves.csv",
+          "rows_retained": 38,
+          "sha256": "651db40360657efdf5a4dd531438cd06a6e55db5da97abb71fbe65060173d49e",
+          "size_bytes": 1146,
+          "source": "Frozen ecdata subset (original source line numbers and pinned commit)"
+        },
+        {
+          "format": "json",
+          "path": "study_protocol.json",
+          "sha256": "e01fc67685c1871345d37834207108a737ac87af9d5d3b7052bec98275c14860",
+          "size_bytes": 5430,
+          "source": "Locally declared frozen protocol"
+        },
+        {
+          "format": "json",
+          "path": "result.json",
+          "sha256": "8a86eef940dd0815f0040f867431ed3a53f6e7b339250f7ceb396e9bcee0c9a3",
+          "size_bytes": 2496,
+          "source": "Deterministic read-only arithmetic pilot output"
+        }
+      ],
+      "automatic_promotion": false,
+      "disposition": "reproducibility_precheck_only_not_scientific_acceptance",
+      "execution_performed": false,
+      "experiment_id": "SBX-2026-0004",
+      "independently_reviewed": false,
+      "remote_submission": false,
+      "schema_version": 1,
+      "scientific_claim": false,
+      "scope": "sandbox-only",
+      "status": "exploratory"
+    }
+  ],
+  "scientific_review_performed": false,
+  "scope": "sandbox-only",
+  "source": "proposed_repository_checkout"
+}
+
+
+sandbox policy PASS
+Sandbox policy checks passed. This does NOT certify scientific truth.
+
+comparator PASS
+PASS: 31502 rows, 25 FIELD descriptions (comparator enforced), unique nonempty AGCs, AGC order, nulls, typed and lexical digests; exactly two XML metadata differences
+
+exact timestamp reconciliation and negative tests PASS
+test_authenticated_reconciliation (__main__.ReconciliationTests.test_authenticated_reconciliation) ... ok
+test_missing_replacement_rejected (__main__.ReconciliationTests.test_missing_replacement_rejected) ... ok
+test_scientific_cell_mutation_rejected (__main__.ReconciliationTests.test_scientific_cell_mutation_rejected) ... ok
+test_wrong_expected_hash_rejected (__main__.ReconciliationTests.test_wrong_expected_hash_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.122s
+
+OK

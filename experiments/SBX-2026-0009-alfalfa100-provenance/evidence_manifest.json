@@ -5,8 +5,8 @@
       "sha256": "ceaca1e542d87f4ff9e062c207e9f665ac9beef215114ea4b013ebe7d87f2c07"
     },
     "README.md": {
-      "bytes": 5748,
-      "sha256": "244f9a4f8682a7b490b6c5464a36e7725dd49aa93bc6a807ac6dca1d5da3e3ab"
+      "bytes": 6385,
+      "sha256": "26cd693e70780e5ba7b8552da3d7e41e6e0f12fd322304c75e607756078523ea"
     },
     "alfalfa_votable_compare.py": {
       "bytes": 5623,
@@ -15,6 +15,10 @@
     "archive_revalidation.log": {
       "bytes": 152,
       "sha256": "1f38d6d377e88d9e1a3f41d2bd739d27dd1947378e0be0ece0fdd65794a05e2d"
+    },
+    "archive_revalidation_pass.log": {
+      "bytes": 149,
+      "sha256": "eb9037c9856ce3cfa0d723f69954acf69879b20e4faf6de9877f4b171cfa0a66"
     },
     "byte_reconciliation.json": {
       "bytes": 523,
@@ -51,6 +55,10 @@
     "comparison_rerun.json": {
       "bytes": 2641,
       "sha256": "f472a9a44f0b943ca1244466352e470fbd55b6adc1236e0f48daa1db73a5000d"
+    },
+    "contract_correction_validation.log": {
+      "bytes": 3113,
+      "sha256": "314b6ec3cd323b6cda2d8a288a6db5f831c088e73aa7da4f2745bf13e4e2236c"
     },
     "frozen-pointer.txt": {
       "bytes": 133,
@@ -100,13 +108,13 @@
       "bytes": 30734,
       "sha256": "f402405a3cbe4a160544644e786de596720601cc5b7b6258bce64ec9916a9070"
     },
-    "reproducibility.json": {
-      "bytes": 3800,
-      "sha256": "0867a38a106f8f039c7d26c80471a050bd385bb9943432fd1a199fae65cec07a"
-    },
     "requirements.txt": {
       "bytes": 18,
       "sha256": "36f60fecd9c3546ad484e50324b4b2657649c51a8578ab8ca76a0ae8d9306a8a"
+    },
+    "runtime_reproducibility.json": {
+      "bytes": 4881,
+      "sha256": "a7015535bf4d654488e7463b2ac55bfe934ff4279569855ca58eef9022b5d8ef"
     },
     "sandbox_policy.log": {
       "bytes": 83,
@@ -123,12 +131,14 @@
   },
   "directory": "experiments/SBX-2026-0009-alfalfa100-provenance",
   "execution_outcomes": {
-    "archive_revalidation": "FAIL: local Legacy reference missing .github/workflows/a01-activation-preflight.yml; not modified",
+    "archive_revalidation": "PASS: 221 archive files and 24 upstream references; archive_revalidation_pass.log",
     "byte_revalidation": "PASS all four unchanged tests",
     "byte_tests": "PASS (4 tests, including three negative categories)",
+    "candidate_input_contracts": "PASS; runtime metadata renamed to avoid reserved candidate filename",
     "comparator": "PASS",
     "comparator_revalidation": "PASS identical report to preserved comparison_rerun.json",
     "frozen_pointer": "PASS exact pinned Legacy blob comparison",
+    "historical_archive_revalidation": "FAIL: local Legacy reference missing .github/workflows/a01-activation-preflight.yml; not modified",
     "historical_sandbox_policy": "FAIL requested directory lacks mandatory SBX prefix",
     "original_publisher_refetch": "FAIL preserved",
     "raw_identity": "FAIL preserved",
