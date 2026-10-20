@@ -44,7 +44,7 @@ class ReconciliationTests(unittest.TestCase):
         self.assertIsNotNone(match)
         pos = match.start(1)
         changed = self.live[:pos] + (b'1' if self.live[pos:pos+1] != b'1' else b'2') + self.live[pos+1:]
-        with self.assertRaisesRegex(AssertionError, 'source hash'):
+        with self.assertRaisesRegex(AssertionError, 'live source hash'):
             verify(self.frozen, changed)
         # Also prove reconciliation rejects a changed cell independently of hash authentication.
         with self.assertRaisesRegex(AssertionError, 'reconciled bytes differ'):
