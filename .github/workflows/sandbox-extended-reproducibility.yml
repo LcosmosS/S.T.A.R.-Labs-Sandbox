@@ -52,7 +52,7 @@ jobs:
           submodules: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: "3.12"
+          python-version: "3.12.12"
       - name: Hydrate only five immutable, declared LFS source objects
         working-directory: upstream
         shell: bash
@@ -102,7 +102,7 @@ jobs:
           submodules: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: "3.12"
+          python-version: "3.12.12"
       - name: Install hardened public VOTable parser
         run: python3 -m pip install defusedxml==0.7.1
       - name: Re-fetch pinned public VizieR and SDSS/MaNGA sources
@@ -150,7 +150,7 @@ jobs:
           submodules: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: "3.12"
+          python-version: "3.12.12"
       - name: Hydrate quarantined recovery source objects at pinned SHA
         working-directory: upstream
         shell: bash
@@ -180,7 +180,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     container:
-      image: sagemath/sagemath:latest
+      image: sagemath/sagemath@sha256:310dfe23fc786f3a5a06a7b0387c60201ec79b32c0db941b7624505ee5edb565
       options: --user root --memory=8g
     steps:
       - name: Install Git in Sage container
@@ -194,7 +194,7 @@ jobs:
           persist-credentials: false
           lfs: false
           submodules: false
-      - name: Install source notebook runtime (external Sage image is NOT digest-pinned)
+      - name: Install source notebook runtime (Sage image digest-pinned; pip deps still NOT locked)
         working-directory: upstream
         run: |
           sage -python -m pip install -r requirements.txt
@@ -218,7 +218,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     container:
-      image: sagemath/sagemath:latest
+      image: sagemath/sagemath@sha256:310dfe23fc786f3a5a06a7b0387c60201ec79b32c0db941b7624505ee5edb565
       options: --user root
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -360,7 +360,7 @@ jobs:
           submodules: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: "3.12"
+          python-version: "3.12.12"
       - name: Install pinned upstream software dependencies
         working-directory: upstream
         shell: bash
@@ -391,4 +391,93 @@ jobs:
           name: sandbox-full-legacy-unit-tests
           path: legacy-full-software-test.xml
           if-no-files-found: warn
+          retention-days: 30
+
+  qualification-receipt:
+    # Run after the one selected suite completes (PASS, FAIL, or SKIPPED).
+    # This records observable software smoke, never independent scientific evidence.
+    if: always()
+    needs:
+      - observational-lfs
+      - publisher-refetch
+      - recovered-lfs
+      - sage-notebooks
+      - sage-sky
+      - starmap-browser
+      - build-image
+      - legacy-unit-suite
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      SELECTED_SUITE: ${{ inputs.suite }}
+      SUITE_NEEDS_JSON: ${{ toJSON(needs) }}
+      SOURCE_REF: 51927a9b396cdfa880f3128440db4715acdec8dc
+      PINNED_SAGE_IMAGE: sagemath/sagemath@sha256:310dfe23fc786f3a5a06a7b0387c60201ec79b32c0db941b7624505ee5edb565
+    steps:
+      - name: Emit fail-closed, source-bound selected-suite receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qualification
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          allowed = (
+              "observational-lfs", "publisher-refetch", "recovered-lfs",
+              "sage-notebooks", "sage-sky", "starmap-browser",
+              "build-image", "legacy-unit-suite",
+          )
+          selected = os.environ["SELECTED_SUITE"]
+          needs = json.loads(os.environ["SUITE_NEEDS_JSON"])
+          result = needs.get(selected, {}).get("result", "missing")
+          if selected not in allowed:
+              result = "invalid-selection"
+          # A passing workflow smoke does not guarantee a reproducible environment:
+          # upstream pip requirements retain ranges/unhashed transitive dependencies,
+          # apt/conda/browser runtime may be resolved afresh, and live publisher data
+          # can change. These require independent, versioned lock/receipt validation.
+          stage = {
+              "success": "SMOKE_PASS_ENVIRONMENT_UNQUALIFIED",
+              "failure": "SMOKE_FAIL",
+              "cancelled": "SMOKE_CANCELLED",
+              "skipped": "SMOKE_NOT_RUN",
+          }.get(result, "SMOKE_INVALID_OR_MISSING")
+          receipt = {
+              "schema_version": 1,
+              "scope": "sandbox-only",
+              "selected_suite": selected,
+              "selection_result": result,
+              "stage": stage,
+              "all_job_results": {key: val.get("result", "missing")
+                                  for key, val in sorted(needs.items())},
+              "pinned_legacy_commit": os.environ["SOURCE_REF"],
+              "sandbox_workflow_commit": os.environ["GITHUB_SHA"],
+              "github_run_id": os.environ["GITHUB_RUN_ID"],
+              "pinned_sage_image": os.environ["PINNED_SAGE_IMAGE"],
+              "runtime_qualification_complete": False,
+              "physical_support": False,
+              "scientific_independent_review": False,
+              "legacy_promotion": False,
+              "open_risks": [
+                  "Upstream Python dependency transitive hashes are not locked.",
+                  "OS packages, conda/apt, and browser/image build toolchains can change.",
+                  "Live publisher byte mismatches must remain FAIL, not be normalized.",
+                  "Only an actually dispatched selected suite has execution evidence."
+              ],
+          }
+          Path("qualification/selected-suite.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          (cd qualification && sha256sum selected-suite.json > SHA256SUMS.txt)
+          echo 'Extended suite receipts are smoke evidence only; no scientific qualification implied.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: sandbox-extended-receipt-${{ inputs.suite }}-${{ github.run_id }}
+          path: qualification/
+          if-no-files-found: error
           retention-days: 30
